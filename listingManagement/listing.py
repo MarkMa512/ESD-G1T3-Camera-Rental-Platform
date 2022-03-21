@@ -68,5 +68,59 @@ def get_all():
     )
 
 
+@app.route("/listing/<string:listing_id>")
+def find_by_listing_id(listing_id):
+    list = Listing.query.filter_by(listing_id=listing_id).first()
+    if list:
+        return jsonify(
+            {
+                "code": 200,
+                "data": list.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "list not found"
+        }
+    ), 404
+
+
+@app.route("/listing/<string:listing_id>", methods=['POST'])
+def create_listing(listing_id):
+    if (Listing.query.filter_by(listing_id=listing_id).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "listing_id": listing_id
+                },
+                "message": "listing already exists."
+            }
+        ), 404
+
+    data = request.get_json()
+    listing = Listing(listing_id, **data)
+
+    try:
+        db.session.add(listing)
+        db.session.commit()
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {"isbn13": listing_id},
+                "message": "Error in creating a listing"
+            }
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": listing.json()
+        }
+    ), 201
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5100, debug=True)
