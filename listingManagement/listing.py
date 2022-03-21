@@ -109,7 +109,7 @@ def create_listing(listing_id):
         return jsonify(
             {
                 "code": 500,
-                "data": {"isbn13": listing_id},
+                "data": {"listing_id": listing_id},
                 "message": "Error in creating a listing"
             }
         ), 500
