@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "camera-rental-27d28",
+    "private_key_id": "4b8ad8a38ba4a0d8b09188a0ca365b0aa9f5883b",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDnbleTifcMQSEM\nLPxMA2ydq1t+mgTbpecH23YSPwuHhBP+iUiWSFzTaadhnnyuXVF5CTiR4MdpfrER\nLoxk/YiA98KOYbFXn2usF5NhgZdjwtiRNZ5ZULIwTGPDZ/tfQwcg5GRckeC41uwl\nZeHyoY/tS7EJJJEvmWtIhsk7JesHfG1cf12PXRIzGVuiTQLQULs7SU8GZb56qRNU\nln43DmMHgCmLYWvVkIF5h63HXRsPH37kDMltd0okcxn1yaA6IQ9JCki7sDbCzkZL\n2aAFKw1zuKlh1YPUWigkeQBj8FR8CnclhBeOgS2D5nZfG/OKx2zALuOY7pYIkfdp\nAHml61rXAgMBAAECggEAUi6oUb+t53+fRSwaYcHbibfmkzQNYpRs0Kj5qiwSI4re\n8MX+bUOAFyEPK8a0ftSrkGAaYw8fsRIovbG6cEhp92ZEA/ykFboKab+refYjdO0l\nq5cPRqc1x5nw2Vys8pyiROdlzkuNMgY8MGGYFWmS6xC0ass99Vm1M7mNbwAdkHfN\nedhggP8H/4cyZJX6lxB8FJzN8txnm20sxoAfyaTwSQmSO9JuwcmvJ80qJn5YJiaJ\noto3YPWFUjwngIJuzVtkKwQ9TEuw8YZJcYb2f16gfn3pbW5cPTGlMnTE/o3FU0iH\n2h/zmBY8GdpuPSpyD5NPpxWtFBQ46xP951PWUbya6QKBgQD9SVdtwzNyB7vDA0aj\n9tDLo4c6at9CFRhPyCJ8pmXyJvHiXtjRDK7TCQ0Brr1USALt8Lzgkn4v5oWM9wxo\nm/f4ZJym5AhcPm5EbWabuRIvypWoyzXElCaDk8U8hruUAXe+NZ5n0dNbgIzqG+8Z\nrHaOpZMUlTEG7/COQQKcp/5wLwKBgQDp6Q9p45vjq8BP39bD/sAz002PqfWG4E6c\nzICb687QyZEvP/l3ASGaiOr732sKVyq8mDX8PFHSH1TW03RVJmDSOaLXfVKqhtj2\n/1Ri/7/gYcThee68qkhUaW6kFjNAbnPdmUduV0mRnhOzot/FU1NQBxdABBKZ0ADX\np38q+1ot2QKBgCGkmUFSGUY/MrhvefWTdh5mZTLkOS1s4eLPAY2vCIGGnMBlusTh\nu2L6o8iibjGAsyrpvBzUOICiTQDxW6uVc/WBX7FnPpkKDdl28pcimQDSFtjpzQWE\nbC0z9pHYj5fULhSMyLKfk0RnKdB6z2KInuLJqWSlgHKcckZi6jbmtYwvAoGAPkN4\ng+I/a8IbJefafj+AoAr+GWDPZ4CrzFcvYNHLMo6FJAOufvwBGuaZTkRxdMYxLRSD\nQko4KWuHpMuSqtvVaABJlXzZlWThuhXLO7MCO1MrGi3f276kFDwgZHM4X01HcFRN\nzFRV0/o1Glsfn6IHikTo7nRnEyRoJP+D/Uf9ADkCgYBmzsAiKkMYIbbHy5ChYOpl\nJGotzLQ3hd6rGnAlzuIGvPb+nRSerPC4P9H1ntc+a8b2taIS46cxfazEG5r6LJP3\n2kQXLFqk6PJ7hlf9L/rSnw03UesNRrjGTTyj4M7lbhQvC2ZR9H0arWAescln1t2l\nmvlzlPfVq5V4GFpUaX+N5Q==\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-4jghq@camera-rental-27d28.iam.gserviceaccount.com",
+    "client_id": "106679588853264174555",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-4jghq%40camera-rental-27d28.iam.gserviceaccount.com"
+  }
