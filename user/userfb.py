@@ -2,23 +2,22 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 import firebase_admin
-from firebase_admin import credentials, db, firestore, initialize_app
-
-from user.user import User
+from firebase_admin import credentials, db, firestore, initialize_app 
 
 # Initialise Flask app
 app = Flask(__name__)
 
 # Fetch the service account key JSON file contents
-cred = credentials.Certificate('https://storage.cloud.google.com/deedsfb/key.json')
+cred = credentials.Certificate('???')
 
 # Initialize the app with a service account, granting admin privileges
 firebase_admin.initialize_app(cred, {
     'databaseURL': "https://camera-rental-27d28-default-rtdb.asia-southeast1.firebasedatabase.app/"
 })
 
-db = firestore.client()
-User = db.collection('users')
+# db = firestore.client()
+db = firebase.firestore()
+User = db.collection('user')
 
 # db = SQLAlchemy(app)
 
