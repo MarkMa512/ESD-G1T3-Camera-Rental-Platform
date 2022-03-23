@@ -1,3 +1,4 @@
+use user_listing
 
 INSERT INTO `listing` (`listing_id`, `owner_id`, `brand`, `model`, `price`, `image_url`, `availabiltity`, `listing_description`, `daily_rate`) VALUES
 (1, 1, 'Canon', 'Canon EOS 2000D DSLR Camera and EF-S 18-55 mm f/3.5-5.6 is II Lens, Black', 626, 'https://m.media-amazon.com/images/I/613WC3OoLFL._AC_SX679_.jpg', 1, '1 Lithium ion batteries required', 25),
