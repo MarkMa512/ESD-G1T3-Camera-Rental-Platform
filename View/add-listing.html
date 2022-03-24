@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Add a Listing</title>
+
+    <link rel="stylesheet" href="">
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- Bootstrap libraries -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <!-- Bootstrap CSS -->
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
+        rel='stylesheet'
+        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
+        crossorigin='anonymous'>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1 class="display-4">Add a book</h1>
+    <form id='addBookForm'>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" aria-describedby="emailHelp"
+                placeholder="Enter title" value="Book from jQuery">
+        </div>
+        <div class="form-group">
+            <label for="isbn13">ISBN13</label>
+            <input type="text" class="form-control" id="isbn13" placeholder="Enter isbn13"
+                value="4567893847563">
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="text" class="form-control" id="price" placeholder="Enter price"
+                value="18.70">
+        </div>
+
+        <div class="form-group">
+            <label for="availability">Availability</label><br />
+            <input type="text" class="form-control" id="availability" placeholder="Enter quantity"
+                value="1">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <label id="error" class="text-danger"></label>
+    <script>
+        // Helper function to display error message
+        function showError(message) {
+            // Display an error under the the predefined label with error as the id
+            $('#error').text(message);
+        }
+
+        $("#addBookForm").submit(async (event) => {
+            //Prevents screen from refreshing when submitting
+            event.preventDefault();
+
+            var serviceURL = "http://127.0.0.1:5000/book/";
+
+            //Get form data 
+            var title = $('#title').val();
+            var isbnNumber = $('#isbn13').val();
+            var price = parseFloat($('#price').val());
+            var availability = parseInt($("#availability").val());
+
+            // form the POST url which includes the dynamic isbnNumber
+            serviceURL += isbnNumber;
+            try {
+                const response =
+                    await fetch(
+                        serviceURL, {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ title: title, price: price, availability: availability })
+                    });
+                const data = await response.json();
+
+                if (response.ok) {
+                    // relocate to home page
+                    window.location.replace("index.html");
+                    return false;
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this book, please try again later. " + error);
+
+            } // error
+        });
+    </script>
+
+    <!-- Bootstrap Javascript -->
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
+        integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
+        crossorigin='anonymous'></script>
+
+</body>
+
+</html>
