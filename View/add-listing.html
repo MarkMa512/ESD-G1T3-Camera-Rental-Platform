@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width">
 
     <title>Add a Listing</title>
-
-    <link rel="stylesheet" href="">
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -24,43 +22,42 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+        .form-group{
+            margin-bottom:10px;
+        }
+    </style>
+
 </head>
 
 <body>
-    <h1 class="display-4 m-4">Add a Listing</h1>
-    <form id='addBookForm' class="p-4">
+    <h1 class="display-4 m-4 container mx-auto">Add a Listing</h1>
+    
+    <form id='addListForm' class="p-4 container">
         <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" class="form-control" id="title" aria-describedby="emailHelp"
-                placeholder="Enter title">
-        </div>
-        <div class="form-group">
-            <label for="availability">Description</label><br />
-            <input type="text" class="form-control" id="listing_description" placeholder="Enter quantity"
-                value="1">
-        </div>
-        <div class="form-group">
-            <label for="isbn13">Brand</label>
-            <input type="text" class="form-control" id="brand" placeholder="Enter isbn13">
+            <label for="title">Owner</label>
+            <input type="text" class="form-control " id="owner_id" placeholder="">
         </div>
         <div class="form-group">
             <label for="isbn13">Model</label>
-            <input type="text" class="form-control" id="model" placeholder="Enter isbn13">
+            <input type="text" class="form-control" id="model" placeholder="e.g. Nikon Z 7 Mirrorless Digital Camera with 24-70mm Lens and FTZ Adapter">
         </div>
         <div class="form-group">
-            <label for="price">Price</label>
-            <input type="text" class="form-control" id="price" placeholder="Enter price"
-                value="18.70">
+            <label for="availability">Description</label><br />
+            <input type="text" class="form-control" id="listing_description" placeholder="e.g. Bought in 2006, my favourite lens/camera">
         </div>
         <div class="form-group">
-            <label for="price">Daily Rate</label>
-            <input type="text" class="form-control" id="daily_rate" placeholder="Enter price"
-                value="18.70">
+            <label for="isbn13">Brand</label>
+            <input type="text" class="form-control" id="brand" placeholder="e.g. Canon">
         </div>
         <div class="form-group">
-            <label for="availability">Availability</label><br />
-            <input type="text" class="form-control" id="availability" placeholder="Enter quantity"
-                value="1">
+            <label for="price">Price ($)</label>
+            <input type="text" class="form-control" id="price" placeholder="e.g. 4195.00">
+        </div>
+        <div class="form-group">
+            <label for="price">Daily Rate ($/Day)</label>
+            <input type="text" class="form-control" id="daily_rate" placeholder="e.g. 15">
         </div>
         <button type="submit" class="btn btn-primary mt-2">Submit</button>
     </form>
@@ -72,27 +69,28 @@
             $('#error').text(message);
         }
 
-        $("#addBookForm").submit(async (event) => {
+        $("#addListForm").submit(async (event) => {
             //Prevents screen from refreshing when submitting
             event.preventDefault();
 
             var serviceURL = "http://127.0.0.1:5000/listing";
 
-            //Get form data 
-            var title = $('#title').val();
-            var isbnNumber = $('#isbn13').val();
+            //Get form data
+            var owner = ("#owner_id").val();
+            var description = $('#listing_description').val();
             var price = parseFloat($('#price').val());
-            var availability = parseInt($("#availability").val());
+            var availabiltity = true;
+            var brand = $('#brand').val();
+            var model = $('#model').val();
+            var image = "https://cdn-icons.flaticon.com/png/512/2668/premium/2668896.png?token=exp=1648136178~hmac=390c472d50f5f1e9ee518a2c89658b86";
 
-            // form the POST url which includes the dynamic isbnNumber
-            serviceURL += isbnNumber;
             try {
                 const response =
                     await fetch(
                         serviceURL, {
                         method: 'POST',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ title: title, price: price, availability: availability })
+                        body: JSON.stringify({ owner_id:owner, listing_description: description, brand:brand, model:model, price:price, availabiltity:availabiltity, image_url:image})
                     });
                 const data = await response.json();
 
@@ -108,7 +106,7 @@
                 // Errors when calling the service; such as network error, 
                 // service offline, etc
                 showError
-                    ("There is a problem adding this book, please try again later. " + error);
+                    ("There is a problem adding this listing, please try again later. " + error);
 
             } // error
         });
