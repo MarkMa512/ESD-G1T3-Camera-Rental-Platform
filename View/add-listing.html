@@ -90,7 +90,7 @@
             var model = $('#model').val();
             var daily_rate = parseFloat($("#daily_rate").val());
             var image = "https://cdn-icons.flaticon.com/png/512/2668/premium/2668896.png?token=exp=1648136178~hmac=390c472d50f5f1e9ee518a2c89658b86";
-            serviceURL += owner;
+            serviceURL += $("#listing_id").val();
             try {
                 const response =
                     await fetch(
