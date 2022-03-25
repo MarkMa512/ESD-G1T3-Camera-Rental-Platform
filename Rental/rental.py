@@ -1,18 +1,19 @@
 from flask import Flask, request, jsonify 
 from flask_sqlalchemy import SQLAlchemy 
 from os import environ
+from flask_cors import CORS
 
  
 app = Flask(__name__) 
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
- 
+
 db = SQLAlchemy(app)
- 
+CORS(app)
+
 class Rental(db.Model):
     __tablename__ = 'rental' 
 
@@ -86,23 +87,11 @@ def find_by_rental_id(rental_id):
         }
     ), 404
  
-@app.route("/rental/<string:rental_id>", methods=['POST'])
-def create_rental(rental_id):
-    if (Rental.query.filter_by(rental_id=rental_id).first() ): 
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "rental_id": rental_id
-                },
-                "message": "Rental already exists."
-            }
-        ), 400
- 
-    data = request.get_json()
-
-    rental = Rental(rental_id, **data)
- 
+@app.route("/rental", methods=['POST'])
+def create_rental():
+    fakedata = request.json.get("owner_id") 
+    fakedata2 = request.json.get("listing_id")
+    rental = Rental(owner_id = fakedata, listing_id = fakedata2)
     try:
         db.session.add(rental) 
         db.session.commit()
@@ -111,7 +100,7 @@ def create_rental(rental_id):
             {
                 "code": 500,
                 "data": {
-                    "rental_id": rental_id
+                    "rental_id": "successful"
                 },
                 "message": "An error occurred creating the rental."
             }
@@ -126,4 +115,4 @@ def create_rental(rental_id):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True) 
+    app.run(host ="0.0.0.0", port=5000, debug=True) 

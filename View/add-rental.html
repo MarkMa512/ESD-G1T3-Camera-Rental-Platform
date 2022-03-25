@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Add a rental</title>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- Bootstrap libraries -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <!-- Bootstrap CSS -->
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
+        rel='stylesheet'
+        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
+        crossorigin='anonymous'>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+        .form-group{
+            margin-bottom:10px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 class="display-4 m-4 container mx-auto">Add a rental</h1>
+    
+    <form id='addRentalForm' class="p-4 container">
+        <div class="form-group">
+            <label for="owner">Owner</label>
+            <input type="text" class="form-control " id="owner_id" placeholder="">
+        </div>
+        <!-- <div class="form-group">
+            <label for="listing">Listing ID</label>
+            <input type="text" class="form-control " id="listing_id" placeholder="">
+        </div> -->
+        <div class="form-group">
+            <label for="listing">Listing ID</label>
+            <input type="text" class="form-control" id="listing" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="renter">Renter</label>
+            <input type="text" class="form-control" id="renter" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="renter_start">Renter start date </label>
+            <input type="date" class="form-control" id="renter_start" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="renter_end">Renter end date </label>
+            <input type="date" class="form-control" id="renter_end" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="price">howmmuch </label>
+            <input type="text" class="form-control" id="price" placeholder="">
+        </div>
+    
+       
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>
+    <label id="error" class="text-danger"></label>
+    <script>
+
+        // Helper function to display error message
+        function showError(message) {
+            // Display an error under the the predefined label with error as the id
+            $('#error').text(message);
+        }
+
+
+        $("#addRentalForm").submit(async (event) => {
+            //Prevents screen from refreshing when submitting
+            event.preventDefault();
+
+            var serviceURL = "http://192.168.1.227:5000/rental";
+
+            //Get form data
+            var owner = $("#owner_id").val();
+            var listing = $('#listing').val();
+            var price = parseFloat($('#price').val());
+            var renter = $('#renter').val();
+            var rental_start_date = $('#rental_start').val();
+            var rental_end_date = $("#rental_end").val()
+            
+            try {
+                const response =
+                    await fetch(
+                        serviceURL, {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({renter_id:renter, rental_start_date:rental_start_date, rental_end_date:rental_end_date,listing_id:listing, owner_id:owner, price:price})
+                    });
+                const data = await response.json();
+
+                if (response.ok) {
+                    // relocate to home page
+                    window.location.replace("index.html");
+                    return false;
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this listing, please try again later. " + error);
+
+            } // error
+        });
+    </script>
+
+    <!-- Bootstrap Javascript -->
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
+        integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
+        crossorigin='anonymous'></script>
+
+</body>
+
+</html>
