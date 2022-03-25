@@ -39,7 +39,6 @@
                     <th>Brand</th>
                     <th>Rental Rate</th>
                     <th>Availability</th>
-                    <th>Update</th>
                 </tr>
             </thead>
         	<tbody id="ListingTable"></tbody>
@@ -92,8 +91,8 @@
                                 "<td>" + lists.model + "</td>" +
                                 "<td>" + lists.brand + "</td>" +
                                 "<td> $" + lists.daily_rate + " /day</td>" +
-                                "<td>" + availabiltity + "</td>"+
-                                "<td><a href='http://192.168.1.87:5000/listing/" + lists.listing_id + "'>Update Listing</a></td>" ;
+                                "<td>" + availabiltity + "</td>"
+                                ;
                        rows += "<tr>" + eachRow + "</tr>";
                     }
                         // add all the rows to the table

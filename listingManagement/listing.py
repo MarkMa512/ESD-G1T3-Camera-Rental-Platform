@@ -129,7 +129,7 @@ def update_listing(listing_id):
                     "data": {
                         "listing_id": listing_id
                     },
-                    "message": "Order not found."
+                    "message": "Listing not found."
                 }
             ), 404
 
@@ -151,7 +151,7 @@ def update_listing(listing_id):
                 "data": {
                     "listing_id": listing_id
                 },
-                "message": "An error occurred while updating the order. " + str(e)
+                "message": "An error occurred while updating the listing. " + str(e)
             }
         ), 500
 
