@@ -3,7 +3,7 @@ create database user_listing;
 
 use user_listing; 
 
--- Table 1
+-- Table 1 : USER_INFO
 drop table if exists user_info; 
 create table user_info(
     user_id int not null auto_increment,
@@ -15,7 +15,7 @@ create table user_info(
     constraint user_info_pk primary key (user_id)
 );
 
--- Table 2
+-- Table 2 : LISTING
 drop table if exists listing; 
 create table listing(
     listing_id int not null auto_increment,
@@ -32,10 +32,11 @@ create table listing(
     constraint listing_fk1 foreign key (owner_id) references user_info(user_id)
 ); 
 
--- Table 3
+-- Table 3 : RENTAL 
 drop table if exists rental; 
 create table rental(
     rental_id int not null auto_increment, 
+    listing_id int not null,
     owner_id int, 
     renter_id int, 
     rent_start_date date, 
@@ -45,5 +46,6 @@ create table rental(
 
     constraint rental_pk primary key (rental_id), 
     constraint rental_fk1 foreign key (owner_id) references user_info(user_id), 
-    constraint rental_fk2 foreign key (renter_id) references user_info(user_id)
+    constraint rental_fk2 foreign key (renter_id) references user_info(user_id),
+    constraint rental_fk3 foreign key (listing_id) references listing(listing_id)
 );
