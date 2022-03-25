@@ -13,7 +13,7 @@ CORS(app)
 
 class Listing(db.Model):
     __tablename__ = 'listing'
-    listing_id = db.Column(db.String(), primary_key=True)
+    listing_id = db.Column(db.String(), primary_key=True, autoincrement=True)
     owner_id = db.Column(db.String(), nullable=False)
     brand = db.Column(db.String(), nullable=False)
     model = db.Column(db.String(), nullable=False)
@@ -86,21 +86,21 @@ def find_by_listing_id(listing_id):
     ), 404
 
 
-@app.route("/listing/<string:listing_id>", methods=['POST'])
-def create_listing(listing_id):
-    if (Listing.query.filter_by(listing_id=listing_id).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "listing_id": listing_id
-                },
-                "message": "listing already exists."
-            }
-        ), 404
+@app.route("/listing/", methods=['POST'])
+def create_listing():
+    # if (Listing.query.filter_by(listing_id=listing_id).first()):
+    #     return jsonify(
+    #         {
+    #             "code": 400,
+    #             "data": {
+    #                 "listing_id": listing_id
+    #             },
+    #             "message": "listing already exists."
+    #         }
+    #     ), 404
 
     data = request.get_json()
-    listing = Listing(listing_id, **data)
+    listing = Listing(**data)
 
     try:
         db.session.add(listing)
@@ -109,7 +109,6 @@ def create_listing(listing_id):
         return jsonify(
             {
                 "code": 500,
-                "data": {"listing_id": listing_id},
                 "message": "Error in creating a listing"
             }
         ), 500

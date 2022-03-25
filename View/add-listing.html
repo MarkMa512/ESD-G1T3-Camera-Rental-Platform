@@ -39,10 +39,10 @@
             <label for="owner">Owner</label>
             <input type="text" class="form-control " id="owner_id" placeholder="">
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="listing">Listing ID</label>
             <input type="text" class="form-control " id="listing_id" placeholder="">
-        </div>
+        </div> -->
         <div class="form-group">
             <label for="model">Model</label>
             <input type="text" class="form-control" id="model" placeholder="e.g. Nikon Z 7 Mirrorless Digital Camera with 24-70mm Lens and FTZ Adapter">
@@ -90,14 +90,15 @@
             var model = $('#model').val();
             var daily_rate = parseFloat($("#daily_rate").val());
             var image = "https://cdn-icons.flaticon.com/png/512/2668/premium/2668896.png?token=exp=1648136178~hmac=390c472d50f5f1e9ee518a2c89658b86";
-            serviceURL += $("#listing_id").val();
+            
+            
             try {
                 const response =
                     await fetch(
                         serviceURL, {
                         method: 'POST',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ availabiltity:availabiltity, brand:brand, daily_rate:daily_rate, image_url:image, listing_description:description, model:model, owner_id:owner, price:price})
+                        body: JSON.stringify({availabiltity:availabiltity, brand:brand, daily_rate:daily_rate, image_url:image, listing_description:description, model:model, owner_id:owner, price:price})
                     });
                 const data = await response.json();
 
