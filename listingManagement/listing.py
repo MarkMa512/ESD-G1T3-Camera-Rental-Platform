@@ -23,8 +23,7 @@ class Listing(db.Model):
     listing_description = db.Column(db.String(), nullable=False)
     daily_rate = db.Column(db.Float(precision=2), nullable=False)
 
-    def __init__(self, listing_id, owner_id, brand, model, price, image_url, availabiltity, listing_description, daily_rate):
-        self.listing_id = listing_id
+    def __init__(self, owner_id, brand, model, price, image_url, availabiltity, listing_description, daily_rate):
         self.owner_id = owner_id
         self.brand = brand
         self.model = model
@@ -87,39 +86,43 @@ def find_by_listing_id(listing_id):
 
 
 @app.route("/listing/", methods=['POST'])
-def create_listing():
-    # if (Listing.query.filter_by(listing_id=listing_id).first()):
+def create_book():
+    # if(Listing.query.filter_by(listing_id=listing_id).first()):
     #     return jsonify(
     #         {
-    #             "code": 400,
-    #             "data": {
-    #                 "listing_id": listing_id
+    #             "code":400,
+    #             "data":{
+    #                 "listing_id":listing_id
     #             },
-    #             "message": "listing already exists."
+    #             "message":"List already exists."
     #         }
-    #     ), 404
-
-    data = request.get_json()
-    listing = Listing(**data)
+    #     ),400
+    
+    data=request.get_json()
+    listing=Listing(**data)
+    #**data, contain of body from postman to pass the data
 
     try:
         db.session.add(listing)
         db.session.commit()
+
     except:
         return jsonify(
             {
-                "code": 500,
-                "message": "Error in creating a listing"
+                "code":500,
+                # "data":
+                # {
+                #     "listing_id":listing_id
+                # },
+                "message":"An error occured creating the list."
             }
-        ), 500
+        ),500
 
     return jsonify(
         {
-            "code": 201,
-            "data": listing.json()
+            "code":201,
+            "data":listing.json()
         }
-    ), 201
-
-
-if __name__ == '__main__':
+    )
+if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
