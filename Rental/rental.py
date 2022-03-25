@@ -48,7 +48,7 @@ class Rental(db.Model):
             
             }
 
- 
+ #hello :D
 @app.route("/rental")
 def get_all(): 
 	rental_list = Rental.query.all()
