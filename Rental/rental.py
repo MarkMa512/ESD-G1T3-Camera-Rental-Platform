@@ -3,23 +3,19 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from flask_cors import CORS
 
- 
 app = Flask(__name__) 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-
 
 db = SQLAlchemy(app)
 CORS(app)
 
 class Rental(db.Model):
     __tablename__ = 'rental' 
-
-    rental_id = db.Column(db.String(), primary_key=True)
-    owner_id = db.Column(db.String(), nullable=False)
-    renter_id = db.Column(db.String(), nullable=False)
+    rental_id = db.Column(db.Integer, primary_key=True)
+    listing_id = db.Column(db.Integer, nullable=False)
+    owner_id = db.Column(db.Integer, nullable=False)
+    renter_id = db.Column(db.Integer, nullable=False)
     rent_start_date = db.Column(db.Date(), nullable=False)
     rent_end_date = db.Column(db.Date(), nullable=False)
     total_price = db.Column(db.Float(precision=2), nullable=False)
@@ -27,9 +23,9 @@ class Rental(db.Model):
 
 
  
-    def __init__(self, rental_id, owner_id, renter_id, rent_start_date, rent_end_date, total_price, rental_status): # constructor in an object oriented approach
-        self.rental_id = rental_id
+    def __init__(self, listing_id,owner_id, renter_id, rent_start_date, rent_end_date, total_price, rental_status): # constructor in an object oriented approach
         self.owner_id = owner_id
+        self.listing_id = listing_id
         self.renter_id = renter_id
         self.rent_start_date = rent_start_date
         self.rent_end_date = rent_end_date
@@ -40,6 +36,7 @@ class Rental(db.Model):
     def json(self): #specify the properties of a Book
         return {
             "rental_id": self.rental_id, 
+            "listing_id" : self.listing_id,
             "owner_id": self.owner_id, 
             "renter_id": self.renter_id, 
             "rent_start_date": self.rent_start_date,
@@ -49,7 +46,6 @@ class Rental(db.Model):
             
             }
 
- #hello :D
 @app.route("/rental")
 def get_all(): 
 	rental_list = Rental.query.all()
@@ -89,29 +85,32 @@ def find_by_rental_id(rental_id):
  
 @app.route("/rental", methods=['POST'])
 def create_rental():
-    fakedata = request.json.get("owner_id") 
-    fakedata2 = request.json.get("listing_id")
-    rental = Rental(owner_id = fakedata, listing_id = fakedata2)
+    owner_id = request.json.get('owner_id')
+    listing_id = request.json.get('listing_id')
+    total_price = request.json.get('price')
+    renter_id = request.json.get('renter_id')
+    rent_start_date = request.json.get('rent_start_date')
+    rent_end_date = request.json.get('rent_end_date')
+
+    rental = Rental(owner_id = owner_id, listing_id = listing_id, total_price = total_price, renter_id = renter_id, rent_end_date= rent_end_date , rent_start_date=rent_start_date, rental_status="Pending" )
     try:
         db.session.add(rental) 
         db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "rental_id": "successful"
-                },
-                "message": "An error occurred creating the rental."
-            }
-        ), 500
- 
+    except Exception as e:
+            return jsonify(
+                {
+                    "code": 500,
+                    "message": "An error occurred while creating the list. " + str(e)
+                }
+            ), 500
+
     return jsonify(
         {
             "code": 201,
             "data": rental.json()
         }
     ), 201
+
 
 
 if __name__ == '__main__':
