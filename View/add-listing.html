@@ -36,19 +36,23 @@
     
     <form id='addListForm' class="p-4 container">
         <div class="form-group">
-            <label for="title">Owner</label>
+            <label for="owner">Owner</label>
             <input type="text" class="form-control " id="owner_id" placeholder="">
         </div>
         <div class="form-group">
-            <label for="isbn13">Model</label>
+            <label for="listing">Listing ID</label>
+            <input type="text" class="form-control " id="listing_id" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="model">Model</label>
             <input type="text" class="form-control" id="model" placeholder="e.g. Nikon Z 7 Mirrorless Digital Camera with 24-70mm Lens and FTZ Adapter">
         </div>
         <div class="form-group">
-            <label for="availability">Description</label><br />
+            <label for="description">Description</label><br />
             <input type="text" class="form-control" id="listing_description" placeholder="e.g. Bought in 2006, my favourite lens/camera">
         </div>
         <div class="form-group">
-            <label for="isbn13">Brand</label>
+            <label for="brand">Brand</label>
             <input type="text" class="form-control" id="brand" placeholder="e.g. Canon">
         </div>
         <div class="form-group">
@@ -56,41 +60,44 @@
             <input type="text" class="form-control" id="price" placeholder="e.g. 4195.00">
         </div>
         <div class="form-group">
-            <label for="price">Daily Rate ($/Day)</label>
+            <label for="daily_rate">Daily Rate ($/Day)</label>
             <input type="text" class="form-control" id="daily_rate" placeholder="e.g. 15">
         </div>
         <button type="submit" class="btn btn-primary mt-2">Submit</button>
     </form>
     <label id="error" class="text-danger"></label>
     <script>
+
         // Helper function to display error message
         function showError(message) {
             // Display an error under the the predefined label with error as the id
             $('#error').text(message);
         }
 
+
         $("#addListForm").submit(async (event) => {
             //Prevents screen from refreshing when submitting
             event.preventDefault();
 
-            var serviceURL = "http://127.0.0.1:5000/listing";
+            var serviceURL = "http://127.0.0.1:5000/listing/";
 
             //Get form data
-            var owner = ("#owner_id").val();
+            var owner = $("#owner_id").val();
             var description = $('#listing_description').val();
             var price = parseFloat($('#price').val());
             var availabiltity = true;
             var brand = $('#brand').val();
             var model = $('#model').val();
+            var daily_rate = parseFloat($("#daily_rate").val());
             var image = "https://cdn-icons.flaticon.com/png/512/2668/premium/2668896.png?token=exp=1648136178~hmac=390c472d50f5f1e9ee518a2c89658b86";
-
+            serviceURL += owner;
             try {
                 const response =
                     await fetch(
                         serviceURL, {
                         method: 'POST',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ owner_id:owner, listing_description: description, brand:brand, model:model, price:price, availabiltity:availabiltity, image_url:image})
+                        body: JSON.stringify({ availabiltity:availabiltity, brand:brand, daily_rate:daily_rate, image_url:image, listing_description:description, model:model, owner_id:owner, price:price})
                     });
                 const data = await response.json();
 
