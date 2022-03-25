@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/user_listing'
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -88,10 +88,17 @@ def find_by_listing_id(listing_id):
 
 @app.route("/listing", methods=['POST'])
 def create_list():
-    owner_id = request.json.get('owner_id', None)
+    owner_id = request.json.get('owner_id')
+    model = request.json.get('model')
+    listing_description = request.json.get('listing_description')
+    brand = request.json.get('brand')
+    price = request.json.get('price')
+    daily_rate = request.json.get('daily_rate')
+    availabiltity = request.json.get('availabiltity')
+    image_url = request.json.get('image_url')
     # order = Order(customer_id=customer_id, status='NEW')
 
-    listing=Listing(owner_id=owner_id);
+    listing=Listing(owner_id=owner_id,availabiltity=availabiltity, brand=brand, daily_rate=daily_rate, image_url=image_url, listing_description=listing_description, model=model,  price=price );
 
     try:
         db.session.add(listing)
@@ -110,6 +117,43 @@ def create_list():
             "data": listing.json()
         }
     ), 201
+
+@app.route("/listing/<string:listing_id>", methods=['PUT'])
+def update_listing(listing_id):
+    try:
+        listing= Listing.query.filter_by(listing_id=listing_id).first()
+        if not listing:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "listing_id": listing_id
+                    },
+                    "message": "Order not found."
+                }
+            ), 404
+
+        # update status
+        data = request.get_json()
+        if data['status']:
+            listing.status = data['status']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": listing.json()
+                }
+            ), 200
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "listing_id": listing_id
+                },
+                "message": "An error occurred while updating the order. " + str(e)
+            }
+        ), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
