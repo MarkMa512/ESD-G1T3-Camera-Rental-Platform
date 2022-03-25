@@ -1,2 +1,7 @@
 # for macOS
 .DS_Store
+
+
+# for python 
+__pycache__/
+*.db 
