@@ -36,6 +36,7 @@ create table listing(
 drop table if exists rental; 
 create table rental(
     rental_id int not null auto_increment, 
+    listing_id int not null,
     owner_id int, 
     renter_id int, 
     rent_start_date date, 
@@ -45,5 +46,6 @@ create table rental(
 
     constraint rental_pk primary key (rental_id), 
     constraint rental_fk1 foreign key (owner_id) references user_info(user_id), 
-    constraint rental_fk2 foreign key (renter_id) references user_info(user_id)
+    constraint rental_fk2 foreign key (renter_id) references user_info(user_id),
+    constraint rental_fk3 foreign key (listing_id) references listing(listing_id)
 );
