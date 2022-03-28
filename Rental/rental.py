@@ -111,6 +111,42 @@ def create_rental():
         }
     ), 201
 
+@app.route("/rental/<string:rental_id>", methods=['PUT'])
+def update_rental(rental_id):
+    try:
+        rental= Rental.query.filter_by(rental_id=rental_id).first()
+        if not rental:
+            return jsonify(
+                {
+                    "code": 404,
+                        "data": {
+                            "rental_id": rental_id
+                        },
+                        "message": "Rental not found."
+                }
+            ), 404
+        # update status
+        data = request.get_json()
+        if data['status']:
+            rental.status = data['status']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": rental.json()
+                }
+
+    except Exception as e:
+        return jsonify(
+                {
+                    "code": 500,
+                    "data": {
+                        "rental_id": rental_id
+                    },
+                    "message": "An error occurred while updating the rental. " + str(e)
+                }
+            ), 500
+
 
 
 if __name__ == '__main__':
