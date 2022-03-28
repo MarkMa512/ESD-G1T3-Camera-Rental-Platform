@@ -1,5 +1,6 @@
 import smtplib
 from email.message import EmailMessage
+import keys
 
 
 def email_alert(subject, body, to):
@@ -8,9 +9,9 @@ def email_alert(subject, body, to):
     msg['subject'] = subject
     msg['to'] = to
 
-    user = "esdg1t32022@gmail.com"
+    user = keys.esd_emailesd_email
     msg['from'] = user
-    password = ""
+    password = keys.app_password
 
     # server parameter
     server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -23,7 +24,7 @@ def email_alert(subject, body, to):
 
 if __name__ == '__main__':
     email_alert("ESD Notification Test", "ESD Test",
-                "email address to be sent")
+                keys.esd_email)
 
 
 # 2FA for gmail account is required
