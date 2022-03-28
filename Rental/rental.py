@@ -135,6 +135,7 @@ def update_rental(rental_id):
                     "code": 200,
                     "data": rental.json()
                 }
+            ), 200
 
     except Exception as e:
         return jsonify(
