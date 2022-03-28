@@ -5,3 +5,6 @@
 # for python 
 __pycache__/
 *.db 
+
+# sensitive data: 
+keys.py
