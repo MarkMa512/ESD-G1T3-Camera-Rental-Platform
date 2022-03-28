@@ -127,8 +127,8 @@ def update_rental(rental_id):
             ), 404
         # update status
         data = request.get_json()
-        if data['status']:
-            rental.status = data['status']
+        if data['rental_status']:
+            rental.rental_status = data['rental_status']
             db.session.commit()
             return jsonify(
                 {

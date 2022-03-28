@@ -47,8 +47,8 @@
     <div id="results">
         <table id="rentalTable" class='table table-striped border-1' id='rental-list' >
             <thead class='border-1'>
-                <th>Listing</th>
-                    <th>Renter</th>
+                <th>Listing ID</th>
+                    <th>Rental ID</th>
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Total rent price</th>
@@ -59,8 +59,7 @@
     </div>
 
     <div id="results">
-        <form id="status" method="POST">
-            <!---ON HOLD -->
+        <form id="status" method="GET">
             <input type="submit" value="Confirm">
         </form>
     </div>
@@ -84,10 +83,8 @@
 
             //Get form data
             var owner = $("#owner_id").val();
-            var serviceURL = "http://192.168.18.17:5000/rental/" + owner;
+            var serviceURL = "http://10.124.17.51:5000/rental" +"/"+ + owner;
 
-            
-            
             try {
                     const response =
                         await fetch(
@@ -101,7 +98,7 @@
                         
 
                        row ="<td>" + rentals.listing_id + "</td>" +
-                                "<td>" + rentals.renter_id + "</td>" +
+                                "<td> <input type='hidden' id='rental_id' value="+ rentals.rental_id + ">" + rentals.rental_id + "</td>" +
                                 "<td>" + rentals.rental_start_date + "</td>" +
                                 "<td>" + rentals.rental_end_date + "</td>" +
                                 "<td> $" + rentals.total_price + "</td>" +
@@ -114,8 +111,6 @@
                                     + "</select>"
                                     + "</td>"
                                 ;
-                                
-                       
                     
                         // add all the rows to the table
                         $('#rentalTable').append(row);
@@ -136,6 +131,50 @@
 
             } // error
         });
+
+
+        $("#status").submit(async (event) => {
+            //Prevents screen from refreshing when submitting
+            event.preventDefault();
+
+            //Get form data
+            var rental_id = $("#rental_id").val();
+            var rental_status = $('#status').val();
+            console.log(rental_id)
+            console.log(rental_status)
+
+            var serviceURL = "http://10.124.17.51:5000/rental" +"/"+ rental_id;
+            
+            try {
+                const response =
+                    await fetch(
+                        serviceURL,{method: 'put',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({rental_status:rental_status})
+
+            });
+                const data = await response.json();
+
+
+                if (response.ok) {
+                    // relocate to home page
+                    window.location.replace("index.html");
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+        });
+
     </script>
 
     <!-- Bootstrap Javascript -->
