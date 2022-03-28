@@ -8,3 +8,7 @@ __pycache__/
 
 # sensitive data: 
 keys.py
+key.*
+keys.*
+*key*
+*keys*
