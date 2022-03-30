@@ -1,5 +1,6 @@
 auth.onAuthStateChanged(user => {
-    console.log(user)
+    // console.log('show user',user.displayName)
+    // console.log(displayName)
 })
 
 const signupForm = document.querySelector("#signUpForm");
@@ -26,10 +27,10 @@ signupForm.addEventListener('submit', (e) => {
             console.log(cred.user)
 
             db.collection('users').doc(cred.user.uid).set({
-                user_name: signupForm['signUpUsername'].value,
-                user_email: signupForm['signUpEmail'].value,
-                residential_address: signupForm['signUpAddress'].value,
-                phone: signupForm['signUpPhone'].value
+                user_name: username,
+                user_email: email,
+                residential_address: address,
+                phone: phone
 
             });
 
@@ -75,44 +76,55 @@ loginForm.addEventListener("submit", (e) => {
 
 })
 
+// show sign in form
 function showLogin() {
-    console.log('login btn clicked')
+    console.log('show login btn clicked')
     var loginpage = document.getElementById('login')
     var signuppage = document.getElementById('register')
 
     signuppage.style.display = 'none'
-    login.style.display = 'block'
+    loginpage.style.display = 'block'
+
 
 }
+
+// show sign up form
+function showSignUp() {
+    console.log('show sign up btn clicked')
+    var loginpage = document.getElementById('login')
+    var signuppage = document.getElementById('register')
+
+    signuppage.style.display = 'block'
+    loginpage.style.display = 'none'
+    
+
+}
+
+// sign up/in with google
 function loginWithGoogle(event) {
+    console.log('google signin')
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth()
         .signInWithPopup(provider)
         .then((result) => {
             // /** @type {firebase.auth.OAuthCredential} */
             var credential = result.credential;
-            console.log('google', credential)
+            console.log(credential)
             var token = credential.accessToken;
            
-            var user = result.user;
-            // console.log(user.email, user.display_name)
-            console.log('google sign in', user)
-            window.location = 'index.html';
+            // var user = result.user;
+            console.log(result.user)
+            console.log('username',result.user.displayName)
+            console.log('email',result.user.email)
 
-            // auth.createUserWithEmailAndPassword(email, password).then(cred => {
+            db.collection('users').doc(result.user.uid).set({
+                user_name: result.user.displayName,
+                user_email: result.user.email,
+                // residential_address: address,
+                phone: result.user.phoneNumber
 
-            //     console.log(cred.user)
-
-            //     db.collection('users').doc(cred.user.uid).set({
-            //         user_name: signupForm['signUpUsername'].value,
-            //         user_email: signupForm['signUpEmail'].value,
-            //         residential_address: signupForm['signUpAddress'].value,
-            //         phone: signupForm['signUpPhone'].value
-
-            //     });
-            // })
-            //     .catch(error => console.log(error.message))
-
+            });
+            // window.location = 'index.html';
 
         }).catch((error) => {
             // Handle Errors here.
