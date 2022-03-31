@@ -148,6 +148,31 @@ def update_rental(rental_id):
                 }
             ), 500
 
+@app.route("/rental/<string:rental_id>", methods=['DELETE'])
+def delete_book(rental_id):
+    rental = Rental.query.filter_by(rental_id=rental_id).first()
+    if rental:
+        db.session.delete(rental)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "rental_id": rental_id
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                 "rental_id": rental_id
+            },
+            "message": "Rental not found."
+        }
+    ), 404
+
+
 
 
 if __name__ == '__main__':

@@ -37,12 +37,14 @@
 </head>
 
 <body>
-    <h1 class="display-4 m-4 container mx-auto">Search Rental Status</h1>
+    <h1 class="display-4 m-4 container mx-auto">Update Rental Status</h1>
 
     <form id='SearchRental' class="p-4 container">
 
         <button type="submit" class="btn btn-primary mt-2">Retrieve Rentals</button>
     </form>
+
+    <div id="message" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully updated rental status.</div>
 
     <div id="results">
         <table id="rentalTable" class='table table-striped border-1' id='rental-list' >
@@ -53,6 +55,7 @@
                     <th>End Date</th>
                     <th>Total rent price</th>
                     <th>Status</th>
+                    <th> </th>
 
             </thead>
         </table>
@@ -64,8 +67,12 @@
         </form>
     </div>
 
+
     <label id="error" class="text-danger"></label>
     <script>
+
+
+
 
         // Helper function to display error message
         function showError(message) {
@@ -115,7 +122,8 @@
                             }
                         }
                         row += "</select> </td>"
-                    
+                        row += "<td> <button onclick = 'dothis' id = 'delete' type='button' class='btn btn-danger' value ='"+ rentals.rental_id + "''> Delete </button> </td>"
+
                         // add all the rows to the table
                         $('#rentalTable').append(row);
 
@@ -136,6 +144,9 @@
             } // error
         });
 
+        $("#deletee").click(async(event) =>{
+            console.log("hi")
+        })
 
         $("#status").submit(async (event) => {
             //Prevents screen from refreshing when submitting
@@ -161,8 +172,9 @@
 
 
                 if (response.ok) {
-                    // relocate to home page
-                    window.location.replace("index.html");
+                    // open up ok message
+                    message = document.getElementById("message")
+                    message.style.display = "block";
                     return false;
 
                 } else {
@@ -179,6 +191,11 @@
             } // error
         });
 
+        function dothis(){
+            console.log("hi")
+        }
+
+
     </script>
 
     <!-- Bootstrap Javascript -->
@@ -187,5 +204,6 @@
         crossorigin='anonymous'></script>
 
 </body>
+
 
 </html>
