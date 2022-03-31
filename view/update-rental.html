@@ -83,7 +83,7 @@
 
             //Get form data
             var owner = $("#owner_id").val();
-            var serviceURL = "http://10.124.17.51:5000/rental" +"/"+ + owner;
+            var serviceURL = "http://192.168.1.227:5000/rental" +"/"+ + owner;
 
             try {
                     const response =
@@ -95,12 +95,15 @@
                     if (response.status === 200) {
                         var rentals = data.data;
                         console.log(rentals);
-                        
+                        end_date = new Date(rentals.rent_end_date)
+                        end_date = end_date.toDateString()
+                        start_date = new Date(rentals.rent_start_date)
+                        start_date = start_date.toDateString()
 
                        row ="<td>" + rentals.listing_id + "</td>" +
                                 "<td> <input type='hidden' id='rental_id' value="+ rentals.rental_id + ">" + rentals.rental_id + "</td>" +
-                                "<td>" + rentals.rental_start_date + "</td>" +
-                                "<td>" + rentals.rental_end_date + "</td>" +
+                                "<td>" +start_date + "</td>" +
+                                "<td>" + end_date + "</td>" +
                                 "<td> $" + rentals.total_price + "</td>" +
                                 "<td>" + 
                                     "<select class='form-select' id='status' aria-label='Default select example'>" +
