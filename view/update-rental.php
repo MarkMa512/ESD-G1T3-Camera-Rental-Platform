@@ -1,3 +1,10 @@
+<?php
+  session_start();
+  $user_id = $_SESSION['user_id'];
+  $someVar = 1 # test
+?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -34,14 +41,10 @@
 
 <body>
     <h1 class="display-4 m-4 container mx-auto">Search Rental Status</h1>
-    
-    <form id='SearchRental' class="p-4 container">
-        <div class="form-group">
-            <label for="owner">Please Insert Owner ID</label>
-            <input type="text" class="form-control " id="owner_id" placeholder="Owner ID">
-        </div>
 
-        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    <form id='SearchRental' class="p-4 container">
+
+        <button type="submit" class="btn btn-primary mt-2">Retrieve Rentals</button>
     </form>
 
     <div id="results">
@@ -76,14 +79,11 @@
             $('#status').hide();
         }
 
-
-        $("#SearchRental").submit(async (event) => {
-            //Prevents screen from refreshing when submitting
-            event.preventDefault();
+        $(async (event) => {
 
             //Get form data
             var owner = $("#owner_id").val();
-            var serviceURL = "http://192.168.1.227:5000/rental" +"/"+ + owner;
+            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ "<?php echo $someVar; ?>";
 
             try {
                     const response =
@@ -146,7 +146,7 @@
             console.log(rental_id)
             console.log(rental_status)
 
-            var serviceURL = "http://10.124.17.51:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
             
             try {
                 const response =
