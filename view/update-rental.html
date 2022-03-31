@@ -1,10 +1,7 @@
-<?php
-  session_start();
-  $user_id = $_SESSION['user_id'];
-  $someVar = 1 # test
-?>
-
-
+<script>
+    window.sessionStorage;  // <!-- this is to activate session storage-->
+    sessionStorage.setItem("User_ID","1");
+</script>
 <!DOCTYPE html>
 <html>
 
@@ -82,8 +79,8 @@
         $(async (event) => {
 
             //Get form data
-            var owner = $("#owner_id").val();
-            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ "<?php echo $someVar; ?>";
+            var owner = sessionStorage.getItem("User_ID")
+            var serviceURL = "http://192.168.1.227:5000/rental" +"/"+ owner;
 
             try {
                     const response =
@@ -104,16 +101,20 @@
                                 "<td> <input type='hidden' id='rental_id' value="+ rentals.rental_id + ">" + rentals.rental_id + "</td>" +
                                 "<td>" +start_date + "</td>" +
                                 "<td>" + end_date + "</td>" +
-                                "<td> $" + rentals.total_price + "</td>" +
-                                "<td>" + 
-                                    "<select class='form-select' id='status' aria-label='Default select example'>" +
-                                    "<option selected>" + rentals.rental_status + "</option>"
-                                    + "<option value='Approved'> Approved </option>"
-                                    + "<option value='Delivered'>Delivered</option>"
-                                    + "<option value='Returned'>Returned</option>"
-                                    + "</select>"
-                                    + "</td>"
-                                ;
+                                "<td> $" + rentals.total_price + "</td>";
+
+                        row += "<td> <select class='form-select' id='status' aria-label='Default select example'>";
+
+                        var statuses = ["Pending","Approved","Delivered", "Returned"]
+                        for(i=0; i<statuses.length ; i++){
+                            if(statuses[i] != rentals.rental_status){
+                                row += "<option value=" + statuses[i] + ">" + statuses[i] + "</option>"
+                            } 
+                            else{
+                                row += "<option selected>" + statuses[i]+ "</option>"
+                            }
+                        }
+                        row += "</select> </td>"
                     
                         // add all the rows to the table
                         $('#rentalTable').append(row);
@@ -146,7 +147,7 @@
             console.log(rental_id)
             console.log(rental_status)
 
-            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://192.168.1.227:5000/rental" +"/"+ rental_id;
             
             try {
                 const response =
