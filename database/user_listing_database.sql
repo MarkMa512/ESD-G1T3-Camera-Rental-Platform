@@ -19,7 +19,7 @@ create table user_info(
 drop table if exists listing; 
 create table listing(
     listing_id int not null auto_increment,
-    owner_id int, 
+    owner_id varchar(255), 
     brand varchar(255),
     model varchar(255),
     price double,
