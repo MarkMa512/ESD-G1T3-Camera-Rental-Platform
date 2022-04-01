@@ -62,6 +62,8 @@
         </form>
     </div>
 
+    <form id="delete" method="GET"></form>
+
 
     <label id="error" class="text-danger"></label>
     <script>
@@ -76,6 +78,7 @@
             $('#error').text(message);
             $('#error').show();
             $('#status').hide();
+            $('#delete').hide();
         }
 
         $(async (event) => {
@@ -117,7 +120,7 @@
                             }
                         }
                         row += "</select> </td>"
-                        row += "<td> <button onclick = 'dothis' id = 'delete' type='button' class='btn btn-danger' value ='"+ rentals.rental_id + "''> Delete </button> </td>"
+                        row += "<td> <button onclick ='dothis' id ='delete' type='button' class='btn btn-danger' value ='"+ rentals.rental_id + "'> Delete </button> </td>"
 
                         // add all the rows to the table
                         $('#rentalTable').append(row);
@@ -139,9 +142,43 @@
             } // error
         });
 
-        $("#deletee").click(async(event) =>{
-            console.log("hi")
-        })
+        $('#delete').on('click', async function(event){
+            event.preventDefault();
+
+            //Get form data
+            var rental_id = $("#delete").val();
+            console.log(rental_id)
+
+            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
+            
+            try {
+                const response =
+                    await fetch(
+                        serviceURL,{method: 'DELETE',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({rental_id:rental_id})
+
+            });
+                const data = await response.json();
+                if (response.ok) {
+                    // open up ok message
+                    message = document.getElementById("message")
+                    message.style.display = "block";
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+        });
 
         $("#status").submit(async (event) => {
             //Prevents screen from refreshing when submitting
