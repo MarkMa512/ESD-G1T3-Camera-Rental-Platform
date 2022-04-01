@@ -100,36 +100,36 @@
 
                         for (r of rentals){
                             if(r.owner_id == sessionStorage.getItem("User_ID")){
-                            console.log(r)
-                        end_date = new Date(r.rent_end_date)
-                        end_date = end_date.toDateString()
-                        start_date = new Date(r.rent_start_date)
-                        start_date = start_date.toDateString()
+                                console.log(r)
+                                end_date = new Date(r.rent_end_date)
+                                end_date = end_date.toDateString()
+                                start_date = new Date(r.rent_start_date)
+                                start_date = start_date.toDateString()
 
-                       row ="<tr><td>" + r.listing_id + "</td>" +
-                                "<td> <input type='hidden' id='rental_id' value="+ r.rental_id + ">" + r.rental_id + "</td>" +
-                                "<td>" +start_date + "</td>" +
-                                "<td>" + end_date + "</td>" +
-                                "<td> $" + r.total_price + "</td>";
+                                row ="<tr><td>" + r.listing_id + "</td>" +
+                                        "<td> <input type='hidden' id='rental_id' value="+ r.rental_id + ">" + r.rental_id + "</td>" +
+                                        "<td>" +start_date + "</td>" +
+                                        "<td>" + end_date + "</td>" +
+                                        "<td> $" + r.total_price + "</td>";
 
-                        row += "<td> <select class='form-select' id='status' aria-label='Default select example'>";
+                                row += "<td> <select class='form-select'"+ "id='status' aria-label='Default select example'>";
 
-                        var statuses = ["Pending","Approved","Delivered", "Returned"]
-                        for(i=0; i<statuses.length ; i++){
-                            if(statuses[i] != r.rental_status){
-                                row += "<option value=" + statuses[i] + ">" + statuses[i] + "</option>"
-                            } 
-                            else{
-                                row += "<option selected>" + statuses[i]+ "</option>"
+                                var statuses = ["Pending","Approved","Delivered", "Returned"]
+                                for(i=0; i<statuses.length ; i++){
+                                    if(statuses[i] != r.rental_status){
+                                        row += "<option value=" + statuses[i] + ">" + statuses[i] + "</option>"
+                                    } 
+                                    else{
+                                        row += "<option selected>" + statuses[i]+ "</option>"
+                                    }
+                                }
+                                row += "</select> </td>"
+                                row += "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
+
+                                // add all the rows to the table
+                                $('#rentalTable').append(row);
                             }
                         }
-                        row += "</select> </td>"
-                        row += "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
-
-                        // add all the rows to the table
-                        $('#rentalTable').append(row);
-                        }
-                    }
                     } else if (response.status == 404) {
                         // No books
                         showError(result.message);
@@ -167,7 +167,6 @@
                 if (response.ok) {
                     // open up ok message
                     message = document.getElementById("message")
-                    message.style.display = "block";
                     location.reload()
                     return false;
 
@@ -190,10 +189,11 @@
             event.preventDefault();
 
             //Get form data
-            var rental_id = $("#rental_id").val();
-            var rental_status = $('#status').val();
+            var rental_id = $('#rental_id').val()
+            var rental_status = $('#status').val()
             console.log(rental_id)
             console.log(rental_status)
+            
 
             var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
             
