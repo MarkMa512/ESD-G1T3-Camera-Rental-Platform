@@ -1,6 +1,5 @@
 auth.onAuthStateChanged(user => {
-    // console.log('show user',user.displayName)
-    // console.log(displayName)
+    // console.log('show user',user)
 })
 
 const signupForm = document.querySelector("#signUpForm");
@@ -124,7 +123,7 @@ function loginWithGoogle(event) {
                 phone: result.user.phoneNumber
 
             });
-            // window.location = 'index.html';
+            window.location = 'index.html';
 
         }).catch((error) => {
             // Handle Errors here.
