@@ -41,33 +41,32 @@
     
     <form id='addRentalForm' class="p-4 container">
         <div class="form-group" >
-            <label for="owner">Owner</label>
             <input type="hidden" class="form-control " id="owner_id" placeholder="">
         </div>
         <!-- this part should not be a form input but passed into using the complex microservce -->
 
         <div class="form-group">
             <label for="listing">Listing ID</label>
-            <input type="text" class="form-control" id="listing_id" placeholder="">
+            <input type="text" class="form-control" id="listing_id" placeholder="Enter the listing you want to rent">
         </div>
         <!-- this part should not be a form input but passed into using the complex microservce -->
 
         <div class="form-group">
             <label for="renter">Renter</label>
-            <input type="text" class="form-control" id="renter" placeholder="">
+            <input type="text" class="form-control" id="renter" placeholder="Enter your renter ID">
         </div>
         <!-- this part should not be a form input but passed into using the complex microservce -->
         <div class="form-group">
-            <label for="rent_start_date">Renter start date </label>
-            <input type="date" class="form-control" id="rent_start_date" placeholder="">
+            <label for="rent_start_date">Rental Start Date</label>
+            <input type="date" class="form-control" id="rent_start_date" placeholder="Enter the start date of rental">
         </div>
         <div class="form-group">
-            <label for="rent_end_date">Renter end date </label>
-            <input type="date" class="form-control" id="rent_end_date" placeholder="">
+            <label for="rent_end_date">Rental End Date </label>
+            <input type="date" class="form-control" id="rent_end_date" placeholder="Enter the end date of rental">
         </div>
         <div class="form-group">
-            <label for="price">howmmuch </label>
-            <input type="text" class="form-control" id="price" placeholder="">
+            <label for="price">Total Price of Rental</label>
+            <input type="text" class="form-control" id="price" placeholder="$">
         </div>
     
        
@@ -90,7 +89,7 @@
             var serviceURL = "http://localhost:5000/rental";
 
             //Get form data
-            var owner = $("#owner_id").val();
+            var owner = sessionStorage.getItem("User_ID"); //Retreive from sessionstorage
             var listing_id = $('#listing_id').val();
             var price = parseFloat($('#price').val());
             var renter = $('#renter').val();
