@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <script>
-   list_id=sessionStorage.getItem("listing_id");
+    window.sessionStorage; 
+    sessionStorage.setItem("listing_id","1");
 </script>
 <html>
 
@@ -35,17 +36,9 @@
 </head>
 
 <body>
-    <h1 class="display-4 m-4 container mx-auto">Add a Listing</h1>
+    <h1 class="display-4 m-4 container mx-auto">Update a Listing</h1>
     
     <form id='addListForm' class="p-4 container">
-        <div class="form-group">
-            <label for="owner">Owner</label>
-            <input type="text" class="form-control " id="owner_id" placeholder="">
-        </div>
-        <!-- <div class="form-group">
-            <label for="listing">Listing ID</label>
-            <input type="text" class="form-control " id="listing_id" placeholder="">
-        </div> -->
         <div class="form-group">
             <label for="model">Model</label>
             <input type="text" class="form-control" id="model" placeholder="e.g. Nikon Z 7 Mirrorless Digital Camera with 24-70mm Lens and FTZ Adapter">

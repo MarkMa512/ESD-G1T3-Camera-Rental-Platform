@@ -13,7 +13,7 @@
  
     <title>Camera And Equipment Rental</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
   <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="">
     <!--[if lt IE 9]>
@@ -91,6 +91,7 @@
     </div>
 
     <script>
+      user_id=sessionStorage.getItem("user_id");
         // Helper function to display error message
         function showError(message) {
             // Hide the table and button in the event of error
@@ -130,6 +131,7 @@
                         {
                             availabiltity = "Not Available"
                         }
+                        if(lists.owner_id!=user_id){
                        eachRow ="<td><img width='150' height='100' src='" + lists.image_url + "'></td>" +
                                 "<td>" + lists.model + "</td>" +
                                 "<td>" + lists.brand + "</td>" +
@@ -137,6 +139,7 @@
                                 "<td>" + availabiltity + "</td>";
                        rows += "<tr>" + eachRow + "</tr>";
                     }
+                  }
                         // add all the rows to the table
                         $('#ListingTable').append(rows);
                     } else if (response.status == 404) {
