@@ -64,7 +64,7 @@
         // - using await requires the function that calls it to be async
         $(async() => {           
             // Change serviceURL to your own
-            var serviceURL = "http://127.0.0.1:5000/listing";
+            var serviceURL = "http://10.124.13.16:5000/listing";
      
             try {
                 const response =
@@ -93,7 +93,7 @@
                                 "<td>" + lists.brand + "</td>" +
                                 "<td> $" + lists.daily_rate + " /day</td>" +
                                 "<td>" + availabiltity + "</td>"+
-                                "<td><a href='http://10.124.128.76:5000/listing/edit-listing.html?listing_id=" + lists.listing_id + "'>Update Listing</a></td>" ;
+                                "<td><a href='http://10.124.128.76:5000/update-listing.html/listing_id=?" + lists.listing_id + "'>Update Listing</a></td>" ;
                        rows += "<tr>" + eachRow + "</tr>";
                     }
                         // add all the rows to the table
