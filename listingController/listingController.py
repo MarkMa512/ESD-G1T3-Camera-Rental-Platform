@@ -14,15 +14,18 @@ from invokes import invoke_http
 app = Flask(__name__)
 CORS(app)
 
+# URL used to retrieve User information
 user_url = 'http://user-management:5111/user'
+# URL used to retieve listing information
 listing_url = "http://localhost:5100/"
-image_url = "http://localhost:5000/"
-sms_url = "http://localhost:5200/"
-email_url = "http://localhost:5200/"
+image_url = "http://localhost:5000/"  # URL used to retrieve images
+sms_url = "http://localhost:5200/"  # URL used to send SMS
+email_url = "http://localhost:5200/"  # URL used to send email
 
 
 @app.route("/createListing", methods=['POST'])
-def createListing():
+def create_listing():
+    # 1. validate the JSON sent over by the client
     if request.is_json:
         try:
             listing = request.get_json()

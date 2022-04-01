@@ -15,8 +15,8 @@ CORS(app)
 
 class Listing(db.Model):
     __tablename__ = 'listing'
-    listing_id = db.Column(db.Integer, primary_key=True)
-    owner_id = db.Column(db.Integer, nullable=False)
+    listing_id = db.Column(db.String(255), primary_key=True)
+    owner_id = db.Column(db.String(255), nullable=False)
     brand = db.Column(db.String(255), nullable=False)
     model = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
@@ -31,7 +31,7 @@ class Listing(db.Model):
         self.model = model
         self.price = price
         self.image_url = image_url
-        self. availabiltity =  availabiltity
+        self. availabiltity = availabiltity
         self.listing_description = listing_description
         self.daily_rate = daily_rate
 
@@ -99,7 +99,8 @@ def create_list():
     image_url = request.json.get('image_url')
     # order = Order(customer_id=customer_id, status='NEW')
 
-    listing=Listing(owner_id=owner_id,availabiltity=availabiltity, brand=brand, daily_rate=daily_rate, image_url=image_url, listing_description=listing_description, model=model,  price=price );
+    listing = Listing(owner_id=owner_id, availabiltity=availabiltity, brand=brand, daily_rate=daily_rate,
+                      image_url=image_url, listing_description=listing_description, model=model,  price=price)
 
     try:
         db.session.add(listing)
@@ -119,11 +120,12 @@ def create_list():
         }
     ), 201
 
+
 @app.route("/listing/<string:listing_id>", methods=['PUT'])
 def update_listing(listing_id):
-    listing= Listing.query.filter_by(listing_id=listing_id).first()
+    listing = Listing.query.filter_by(listing_id=listing_id).first()
     try:
-        
+
         if not listing:
             return jsonify(
                 {
@@ -157,6 +159,7 @@ def update_listing(listing_id):
         #         "message": "An error occurred while updating the listing. " + str(e)
         #     }
         # ), 500
+
 
 @app.route("/listing/<string:listing_id>", methods=['DELETE'])
 def delete_listing(listing_id):
