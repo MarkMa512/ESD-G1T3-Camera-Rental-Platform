@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-
 <script>
-    window.sessionStorage;  // <!-- this is to activate session storage-->
-    
+    window.sessionStorage; 
+    sessionStorage.setItem("user_id","1");
 </script>
 <html>
- 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -13,8 +11,8 @@
  
     <title>Camera And Equipment Rental</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="">
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -36,7 +34,6 @@
 </head>
  
 <body>
-
     <nav class="border-gray-200 px-2 sm:px-4 py-2.5 rounded bg-gray-400 mb-10">
         <div class="container flex flex-wrap justify-between items-center mx-auto">
           <div class="flex items-center">
@@ -83,15 +80,18 @@
                     <th>Brand</th>
                     <th>Rental Rate</th>
                     <th>Availability</th>
+                    <th>Update</th>
                 </tr>
             </thead>
         	<tbody id="ListingTable"></tbody>
   </table>
-       
+        <a id="addListingBtn" class="btn btn-primary" 
+     href="add-listing.html">Add another listing</a>
     </div>
 
     <script>
-      user_id=sessionStorage.getItem("user_id");
+        user_id=sessionStorage.getItem("user_id");
+        console.log(user_id);
         // Helper function to display error message
         function showError(message) {
             // Hide the table and button in the event of error
@@ -123,6 +123,7 @@
                     // for loop to setup all table rows with obtained book data
                     var rows = "";
                     var availabiltity="";
+                   
                     for (const lists of listings) {
                         if(lists.availabiltity == true){
                             availabiltity = "Available"
@@ -131,15 +132,18 @@
                         {
                             availabiltity = "Not Available"
                         }
-                        if(lists.owner_id!=user_id){
+                        if(lists.owner_id==user_id){
                        eachRow ="<td><img width='150' height='100' src='" + lists.image_url + "'></td>" +
                                 "<td>" + lists.model + "</td>" +
                                 "<td>" + lists.brand + "</td>" +
                                 "<td> $" + lists.daily_rate + " /day</td>" +
-                                "<td>" + availabiltity + "</td>";
+                                "<td>" + availabiltity + "</td>"+
+                                "<td><a href='update-listing.html'"+lists.listing_id+">Update Listing</a></td>" ;
                        rows += "<tr>" + eachRow + "</tr>";
+                       //sessionStorage.setItem("listing_id",lists.listing_id);
+                        }
                     }
-                  }
+                
                         // add all the rows to the table
                         $('#ListingTable').append(rows);
                     } else if (response.status == 404) {

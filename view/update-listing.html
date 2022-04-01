@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<script>
+    window.sessionStorage; 
+    sessionStorage.setItem("listing_id","1");
+</script>
 <html>
 
 <head>
@@ -6,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
 
-    <title>Add a Listing</title>
+    <title>Update a Listing</title>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -32,17 +36,9 @@
 </head>
 
 <body>
-    <h1 class="display-4 m-4 container mx-auto">Add a Listing</h1>
+    <h1 class="display-4 m-4 container mx-auto">Update a Listing</h1>
     
     <form id='addListForm' class="p-4 container">
-        <div class="form-group">
-            <label for="owner">Owner</label>
-            <input type="text" class="form-control " id="owner_id" placeholder="">
-        </div>
-        <!-- <div class="form-group">
-            <label for="listing">Listing ID</label>
-            <input type="text" class="form-control " id="listing_id" placeholder="">
-        </div> -->
         <div class="form-group">
             <label for="model">Model</label>
             <input type="text" class="form-control" id="model" placeholder="e.g. Nikon Z 7 Mirrorless Digital Camera with 24-70mm Lens and FTZ Adapter">
@@ -68,55 +64,68 @@
     <label id="error" class="text-danger"></label>
     <script>
 
+        console.log(list_id);
         // Helper function to display error message
         function showError(message) {
-            // Display an error under the the predefined label with error as the id
-            $('#error').text(message);
+            // Hide the table and button in the event of error
+            $('#ListingTable').hide();
+            $('#addListingBtn').hide();
+     
+            // Display an error under the main container
+            $('#main-container')
+                .append("<label>"+message+"</label>");
         }
-
-
-        $("#addListForm").submit(async (event) => {
-            //Prevents screen from refreshing when submitting
-            event.preventDefault();
-
-            var serviceURL = "http://10.124.13.16:5000/listing";
-
-            //Get form data
-            var owner = $("#owner_id").val();
-            var description = $('#listing_description').val();
-            var price = parseFloat($('#price').val());
-            var availabiltity = true;
-            var brand = $('#brand').val();
-            var model = $('#model').val();
-            var daily_rate = parseFloat($("#daily_rate").val());
-            var image = "https://cdn-icons.flaticon.com/png/512/2668/premium/2668896.png?token=exp=1648136178~hmac=390c472d50f5f1e9ee518a2c89658b86";
-            
-            
+     
+        // anonymous async function 
+        // - using await requires the function that calls it to be async
+        $(async() => {           
+            // Change serviceURL to your own
+            var serviceURL = "http://127.0.0.1:5000/listing/"+list_id;
+     
             try {
                 const response =
-                    await fetch(
-                        serviceURL, {
-                        method: 'POST',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({availabiltity:availabiltity, brand:brand, daily_rate:daily_rate, image_url:image, listing_description:description, model:model, owner_id:owner, price:price})
-                    });
-                const data = await response.json();
-
-                if (response.ok) {
-                    // relocate to home page
-                    window.location.replace("index.html");
-                    return false;
-                } else {
-                    console.log(data);
-                    showError(data.message);
-                }
-            } catch (error) {
-                // Errors when calling the service; such as network error, 
-                // service offline, etc
-                showError
-                    ("There is a problem adding this listing, please try again later. " + error);
-
-            } // error
+                 await fetch(
+                   serviceURL, { method: 'GET' }
+                );
+                const result = await response.json();
+                 if (response.status === 200) {
+                    // success case
+                    var listings = result.data.listings;
+                    console.log(listings); //the array is in books within data of 
+                                                   // the returned result
+                    // for loop to setup all table rows with obtained book data
+                    var rows = "";
+                    var availabiltity="";
+                    for (const lists of listings) {
+                        if(lists.availabiltity == true){
+                            availabiltity = "Available"
+                        }
+                        else
+                        {
+                            availabiltity = "Not Available"
+                        }
+                       eachRow ="<td><img width='150' height='100' src='" + lists.image_url + "'></td>" +
+                                "<td>" + lists.model + "</td>" +
+                                "<td>" + lists.brand + "</td>" +
+                                "<td> $" + lists.daily_rate + " /day</td>" +
+                                "<td>" + availabiltity + "</td>"+
+                                "<td><a href='update-listing.html'>Update Listing</a></td>" ;
+                       rows += "<tr>" + eachRow + "</tr>";
+                    }
+                        // add all the rows to the table
+                        $('#ListingTable').append(rows);
+                    } else if (response.status == 404) {
+                        // No books
+                        showError(result.message);
+                    } else {
+                        // unexpected outcome, throw the error
+                        throw response.status;
+                    }
+                } catch (error) {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    showError('There is a problem retrieving Listing data, please try again later.<br />' + error);
+                } // error
         });
     </script>
 
