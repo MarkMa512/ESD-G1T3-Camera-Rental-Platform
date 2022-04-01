@@ -1,12 +1,12 @@
 # credit: https://www.youtube.com/watch?v=zMhmZ_ePGiM&t=345s
 from flask import Flask, request, Response
 from werkzeug.utils import secure_filename
+from flask import redirect
 
 from db import db_init, db
 from models import Img
 
 app = Flask(__name__)
-# SQLAlchemy config. Read more: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///img.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db_init(app)
@@ -31,8 +31,7 @@ def upload():
     img = Img(img=pic.read(), name=filename, mimetype=mimetype)
     db.session.add(img)
     db.session.commit()
-
-    return 'Img Uploaded!', 200
+    return redirect("http://localhost:5500/view/")
 
 
 @app.route('/<int:id>')
