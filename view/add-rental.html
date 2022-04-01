@@ -72,6 +72,7 @@
        
         <button type="submit" class="btn btn-primary mt-2">Submit</button>
     </form>
+
     <div id="myModal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -90,7 +91,9 @@
             </div>
           </div>
         </div>
-      </div>
+    </div>
+
+
     <label id="error" class="text-danger"></label>
 
     <script>
@@ -129,8 +132,7 @@
                 if (response.ok) {
                     // relocate to home page
                     
-                        $('#myModal').modal('show'); 
-
+                    $('#myModal').modal('show'); 
                     return false;
                 } else {
                     console.log(data);
