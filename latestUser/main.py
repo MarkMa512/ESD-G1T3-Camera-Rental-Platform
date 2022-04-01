@@ -1,4 +1,6 @@
+import email
 from json import dumps
+import traceback
 from pyrebase import pyrebase
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for, jsonify
 
@@ -101,14 +103,15 @@ def register():
             person['address']=addr
             person['phone']=phone
             #Append data to the firebase realtime database
-            data = {"name": name, "email": email,'address':addr,'phone':phone}
+            data = {"name": name, "email": email, 'address':addr,'phone':phone}
             db.child("users").child(user["localId"]).set(data)
             #Go to welcome page
             return redirect(url_for('welcome'))
-        except:
+        except :
+            traceback.print_exc()
             #If there is any error, redirect to register
-            return redirect(url_for('register'))
-            # return dumps(result)
+            # return redirect(url_for('register'))
+            dumps(result)
             #return jsonify({
             #    "code":500,
             #    "message":"Error detected when adding user."
@@ -139,18 +142,18 @@ def get_all():
             }
         ),404
 
-# Find user by id
-#@app.route('/user/<string:uid>')
-#def find_user(uid):
-#    user=db.child("users").child(uid).get()
-#    if user:
-#        return user.val()
-#    return jsonify(
-#            {
-#                "code": 404,
-#                "message": "User not found"
-#            }
-#        ), 404
+# Find user by email
+@app.route('/user/<string:email>')
+def find_user(email):
+    user=db.child("users").order_by_child('email').equal_to(email).get()
+    if user:
+        return user.val()
+    return jsonify(
+            {
+                "code": 404,
+                "message": "User not found"
+            }
+        ), 404
 
 
 if __name__ == "__main__":
