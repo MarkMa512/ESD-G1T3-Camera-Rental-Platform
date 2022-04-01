@@ -149,7 +149,7 @@
      
         // anonymous async function 
         // - using await requires the function that calls it to be async
-        $(async() => {           
+        $(async(event) => {           
             // Change serviceURL to your own
             var serviceURL = "http://localhost:5000/listing";
      
@@ -185,12 +185,12 @@
                                 "<td> <button onClick ='onDelete()' id ='deletebutton' type='button' class='btn btn-danger btn-default active' value ='"+ 
                                 lists.listing_id+ "'> Delete </button> </td></tr>";
                        rows += "<tr>" + eachRow + "</tr>";
-          
+                       $('#ListingTable').append(rows);
                         }
                     }
                 
                         // add all the rows to the table
-                        $('#ListingTable').append(rows);
+                        
                     } else if (response.status == 404) {
                         // No books
                         showError(result.message);
@@ -204,6 +204,43 @@
                     showError('There is a problem retrieving Listing data, please try again later.<br />' + error);
                 } // error
         });
+
+        async function onDelete(){
+
+            //Get form data
+            var listing_id = $("#deletebutton").val();
+            console.log(listing_id)
+
+            var serviceURL = "http://localhost:5000/listing" +"/"+ listing_id;
+            
+            try {
+                const response = await 
+                    fetch(
+                        serviceURL,{method: 'DELETE',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({listing_id:listing_id})
+
+            });
+                const data = response;
+                if (response.ok) {
+                    // open up ok message
+                    message = document.getElementById("message")
+                    location.reload()
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+        };
 
        
     </script>
