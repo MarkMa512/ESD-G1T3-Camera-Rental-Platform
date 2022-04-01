@@ -146,8 +146,21 @@ def get_all():
 @app.route('/user/<string:email>')
 def find_user(email):
     user=db.child("users").order_by_child('email').equal_to(email).get()
-    if user:
+    if user: 
         return user.val()
+    return jsonify(
+            {
+                "code": 404,
+                "message": "User not found"
+            }
+        ), 404
+
+# Retrieve user's phone (must use Peter's email)
+@app.route('/userphone/<string:email>')
+def get_phone(email):
+    result=dict(db.child("users").order_by_child('email').equal_to(email).get().val())
+    if result: 
+        return result['U0aVbUvpdrUd675gbdVMXqeSjDf1']['phone']
     return jsonify(
             {
                 "code": 404,
