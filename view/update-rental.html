@@ -1,6 +1,6 @@
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-    sessionStorage.setItem("User_ID","0");
+    sessionStorage.setItem("User_ID","1");
 </script>
 <!DOCTYPE html>
 <html>
@@ -124,7 +124,7 @@
                                     }
                                 }
                                 row += "</select> </td>"
-                                row += "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
+                                row += "<td> <button onclick ='onDelete("+ r.rental_id +")' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
 
                                 // add all the rows to the table
                                 $('#rentalTable').append(row);
@@ -147,11 +147,13 @@
             } // error
         });
 
-        async function onDelete(){
+        async function onDelete(rental_value){
 
             //Get form data
-            var rental_id = $("#delete").val();
-            console.log(rental_id)
+            var rental_id = rental_value;
+            console.log(rental_id);
+
+
 
             var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
             
