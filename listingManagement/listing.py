@@ -15,7 +15,7 @@ CORS(app)
 
 class Listing(db.Model):
     __tablename__ = 'listing'
-    listing_id = db.Column(db.String(255), primary_key=True)
+    listing_id = db.Column(db.Integer(), primary_key=True)
     owner_id = db.Column(db.String(255), nullable=False)
     brand = db.Column(db.String(255), nullable=False)
     model = db.Column(db.String(255), nullable=False)
