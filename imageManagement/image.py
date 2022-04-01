@@ -14,7 +14,7 @@ db_init(app)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return 'Image Microservice running!'
 
 
 @app.route('/upload', methods=['POST'])
