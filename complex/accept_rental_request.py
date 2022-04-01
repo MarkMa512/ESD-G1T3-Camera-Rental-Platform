@@ -14,7 +14,7 @@ rental_URL = "http://localhost:5000/rental"
 listing_URL = "http://localhost:5001/listing"
 user_url = "http://localhost:5002/user"         # check port num
 # activity_log_URL = "http://localhost:5003/activity_log"
-# error_URL = "http://localhost:5004/error"
+error_URL = "http://localhost:5004/error"
 
 
 @app.route("/accept_request", methods=['POST'])
@@ -53,7 +53,7 @@ def processAcceptRequest(request):
     
     # 1. Invoke the rental microservice
     print('\n-----Invoking rental microservice-----')
-    request_result = invoke_http(rental_URL, method='POST', json=rental)
+    rental_result = invoke_http(rental_URL, method='POST', json=request)
     # print('rental_result:', rental_result)
     
     # Check the rental result; if a failure, send it to the error microservice.
