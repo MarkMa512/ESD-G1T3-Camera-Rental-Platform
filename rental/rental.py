@@ -6,7 +6,6 @@ from flask_cors import CORS
 app = Flask(__name__) 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 CORS(app)
 
@@ -68,12 +67,14 @@ def get_all():
  
 @app.route("/rental/<string:rental_id>") 
 def find_by_rental_id(rental_id):
-    rental = Rental.query.filter_by(rental_id=rental_id).first() 
-    if rental:
+    rental = Rental.query.filter_by(rental_id=rental_id).all() 
+    if len(rental):
         return jsonify(
             {
                 "code": 200,
-                "data": rental.json()
+                "data": {
+						"rentals": [r.json() for r in rental] 
+					}
             }
         )
     return jsonify(
@@ -176,4 +177,4 @@ def delete_book(rental_id):
 
 
 if __name__ == '__main__':
-    app.run(host ="0.0.0.0", port=5000, debug=True) 
+    app.run(port=5000, debug=True) 

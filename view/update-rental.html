@@ -1,6 +1,6 @@
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-    sessionStorage.setItem("User_ID","1");
+    sessionStorage.setItem("User_ID","0");
 </script>
 <!DOCTYPE html>
 <html>
@@ -85,7 +85,7 @@
 
             //Get form data
             var owner = sessionStorage.getItem("User_ID")
-            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ owner;
+            var serviceURL = "http://localhost:5000/rental"
 
             try {
                     const response =
@@ -95,24 +95,28 @@
                     const data = await response.json();
 
                     if (response.status === 200) {
-                        var rentals = data.data;
+                        var rentals = data.data.rentals;
                         console.log(rentals);
-                        end_date = new Date(rentals.rent_end_date)
+
+                        for (r of rentals){
+                            if(r.owner_id == sessionStorage.getItem("User_ID")){
+                            console.log(r)
+                        end_date = new Date(r.rent_end_date)
                         end_date = end_date.toDateString()
-                        start_date = new Date(rentals.rent_start_date)
+                        start_date = new Date(r.rent_start_date)
                         start_date = start_date.toDateString()
 
-                       row ="<td>" + rentals.listing_id + "</td>" +
-                                "<td> <input type='hidden' id='rental_id' value="+ rentals.rental_id + ">" + rentals.rental_id + "</td>" +
+                       row ="<tr><td>" + r.listing_id + "</td>" +
+                                "<td> <input type='hidden' id='rental_id' value="+ r.rental_id + ">" + r.rental_id + "</td>" +
                                 "<td>" +start_date + "</td>" +
                                 "<td>" + end_date + "</td>" +
-                                "<td> $" + rentals.total_price + "</td>";
+                                "<td> $" + r.total_price + "</td>";
 
                         row += "<td> <select class='form-select' id='status' aria-label='Default select example'>";
 
                         var statuses = ["Pending","Approved","Delivered", "Returned"]
                         for(i=0; i<statuses.length ; i++){
-                            if(statuses[i] != rentals.rental_status){
+                            if(statuses[i] != r.rental_status){
                                 row += "<option value=" + statuses[i] + ">" + statuses[i] + "</option>"
                             } 
                             else{
@@ -120,11 +124,12 @@
                             }
                         }
                         row += "</select> </td>"
-                        row += "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger' value ='"+ rentals.rental_id + "'> Delete </button> </td>"
+                        row += "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
 
                         // add all the rows to the table
                         $('#rentalTable').append(row);
-
+                        }
+                    }
                     } else if (response.status == 404) {
                         // No books
                         showError(result.message);
@@ -142,27 +147,28 @@
             } // error
         });
 
-        function onDelete(){
+        async function onDelete(){
 
             //Get form data
             var rental_id = $("#delete").val();
             console.log(rental_id)
 
-            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
             
             try {
-                const response =
+                const response = await 
                     fetch(
                         serviceURL,{method: 'DELETE',
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({rental_id:rental_id})
 
             });
-                const data = response.json();
+                const data = response;
                 if (response.ok) {
                     // open up ok message
                     message = document.getElementById("message")
                     message.style.display = "block";
+                    location.reload()
                     return false;
 
                 } else {
@@ -189,14 +195,14 @@
             console.log(rental_id)
             console.log(rental_status)
 
-            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
             
             try {
                 const response =
                     await fetch(
                         serviceURL,{method: 'put',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({rental_status:rental_status})
+                        body: JSON.stringify({rental_id:rental_id, rental_status:rental_status})
 
             });
                 const data = await response.json();
