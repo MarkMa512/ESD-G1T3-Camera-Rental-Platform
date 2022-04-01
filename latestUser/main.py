@@ -1,9 +1,9 @@
 from pyrebase import pyrebase
-from flask import Flask, flash, redirect, render_template, request, session, abort, url_for
+from flask import Flask, flash, redirect, render_template, request, session, abort, url_for, jsonify
 
 app = Flask(__name__)       #Initialze flask constructor
 
-#Add your own details
+#Firebase configuration
 config = {
 
   "apiKey": "AIzaSyA79Qipw4RifjZ6bvBxdH59wwFrK3pwmjg",
@@ -77,7 +77,7 @@ def result():
             return redirect(url_for('login'))
 
 #If someone clicks on register, they are redirected to /register
-@app.route("/register",methods=['POST','GET'])
+@app.route("/register",methods=['POST', 'GET'])
 def register():
     if request.method == "POST":        #Only listen to POST
         result = request.form           #Get the data submitted
@@ -107,6 +107,10 @@ def register():
         except:
             #If there is any error, redirect to register
             return redirect(url_for('register'))
+#            return jsonify({
+#                "code":500,
+#                "message":"Error detected when adding user."
+#            }), 500
     else:
         if person["is_logged_in"] == True:
             return redirect(url_for('welcome'))
@@ -119,6 +123,33 @@ def user_info():
     user=auth.get_account_info(token)
     print(user)
     return render_template('welcome.html')
+
+# Retrieve all users
+@app.route('/user')
+def get_all():
+    users=db.child('users').get()
+    if len(users):
+        return users
+    return jsonify(
+            {
+                "code":404,
+                "message":"No user for now."
+            }
+        ),404
+
+# Find user by id
+@app.route('/user/<string:uid>')
+def find_user(uid):
+    user=db.child("users").child(uid).get()
+    if user:
+        return user.val()
+    return jsonify(
+            {
+                "code": 404,
+                "message": "User not found"
+            }
+        ), 404
+
 
 if __name__ == "__main__":
     app.run(debug=True)
