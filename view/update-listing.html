@@ -160,7 +160,7 @@
                     fetch(
                         serviceURL,{method: 'DELETE',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({rental_id:rental_id})
+                        body: JSON.stringify({listing_id:listing_id})
 
             });
                 const data = response;
@@ -202,7 +202,7 @@
                     await fetch(
                         serviceURL,{method: 'put',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({rental_id:rental_id, rental_status:rental_status})
+                        body: JSON.stringify({listing_id:listing_id})
 
             });
                 const data = await response.json();
@@ -211,7 +211,6 @@
                 if (response.ok) {
                     // open up ok message
                     message = document.getElementById("message")
-                    message.style.display = "block";
                     return false;
 
                 } else {
