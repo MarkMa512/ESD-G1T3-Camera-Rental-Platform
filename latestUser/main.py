@@ -1,3 +1,4 @@
+from json import dumps
 from pyrebase import pyrebase
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for, jsonify
 
@@ -107,10 +108,11 @@ def register():
         except:
             #If there is any error, redirect to register
             return redirect(url_for('register'))
-#            return jsonify({
-#                "code":500,
-#                "message":"Error detected when adding user."
-#            }), 500
+            # return dumps(result)
+            #return jsonify({
+            #    "code":500,
+            #    "message":"Error detected when adding user."
+            #}), 500
     else:
         if person["is_logged_in"] == True:
             return redirect(url_for('welcome'))
@@ -138,17 +140,17 @@ def get_all():
         ),404
 
 # Find user by id
-@app.route('/user/<string:uid>')
-def find_user(uid):
-    user=db.child("users").child(uid).get()
-    if user:
-        return user.val()
-    return jsonify(
-            {
-                "code": 404,
-                "message": "User not found"
-            }
-        ), 404
+#@app.route('/user/<string:uid>')
+#def find_user(uid):
+#    user=db.child("users").child(uid).get()
+#    if user:
+#        return user.val()
+#    return jsonify(
+#            {
+#                "code": 404,
+#                "message": "User not found"
+#            }
+#        ), 404
 
 
 if __name__ == "__main__":
