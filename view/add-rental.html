@@ -1,3 +1,7 @@
+<script>
+    window.sessionStorage;  // <!-- this is to activate session storage-->
+    sessionStorage.setItem("User_ID","1");
+</script>
 <!DOCTYPE html>
 <html>
 
@@ -36,19 +40,23 @@
     <h1 class="display-4 m-4 container mx-auto">Add a rental</h1>
     
     <form id='addRentalForm' class="p-4 container">
-        <div class="form-group">
+        <div class="form-group" >
             <label for="owner">Owner</label>
-            <input type="text" class="form-control " id="owner_id" placeholder="">
+            <input type="hidden" class="form-control " id="owner_id" placeholder="">
         </div>
+        <!-- this part should not be a form input but passed into using the complex microservce -->
 
         <div class="form-group">
             <label for="listing">Listing ID</label>
             <input type="text" class="form-control" id="listing_id" placeholder="">
         </div>
+        <!-- this part should not be a form input but passed into using the complex microservce -->
+
         <div class="form-group">
             <label for="renter">Renter</label>
             <input type="text" class="form-control" id="renter" placeholder="">
         </div>
+        <!-- this part should not be a form input but passed into using the complex microservce -->
         <div class="form-group">
             <label for="rent_start_date">Renter start date </label>
             <input type="date" class="form-control" id="rent_start_date" placeholder="">
