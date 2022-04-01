@@ -162,7 +162,13 @@
                         serviceURL, {
                         method: 'PUT',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({listing_id:list_id,availabiltity:availabiltity, brand:brand, daily_rate:daily_rate, image_url:image, listing_description:description, model:model, owner_id:own_id,price:price})
+                        body: JSON.stringify({listing_id:list_id,
+                            availabiltity:availabiltity, 
+                            brand:brand, 
+                            daily_rate:daily_rate, 
+                            listing_description:description, 
+                            model:model,
+                            price:price})
                     });
                 const data = await response.json();
 
@@ -182,6 +188,7 @@
 
             } // error
         });
+
     </script>
 
     <!-- Bootstrap Javascript -->

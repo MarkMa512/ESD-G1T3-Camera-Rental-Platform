@@ -82,6 +82,7 @@
                     <th>Rental Rate</th>
                     <th>Availability</th>
                     <th>Update</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
         	<tbody id="ListingTable"></tbody>
@@ -139,7 +140,8 @@
                                 "<td>" + lists.brand + "</td>" +
                                 "<td> $" + lists.daily_rate + " /day</td>" +
                                 "<td>" + availabiltity + "</td>"+
-                                "<td><a href='update-listing.html'"+lists.listing_id+">Update Listing</a></td>" ;
+                                "<td><a href='update-listing.html'"+lists.listing_id+">Update Listing</a></td>"+
+                                "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ lists.listing_id+ "'> Delete </button> </td></tr>";
                        rows += "<tr>" + eachRow + "</tr>";
                        //sessionStorage.setItem("listing_id",lists.listing_id);
                         }
@@ -160,6 +162,44 @@
                     showError('There is a problem retrieving Listing data, please try again later.<br />' + error);
                 } // error
         });
+
+        async function onDelete(){
+
+          //Get form data
+          var rental_id = $("#delete").val();
+          console.log(rental_id)
+
+          var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
+          
+          try {
+              const response = await 
+                  fetch(
+                      serviceURL,{method: 'DELETE',
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({rental_id:rental_id})
+
+          });
+              const data = response;
+              if (response.ok) {
+                  // open up ok message
+                  message = document.getElementById("message")
+                  message.style.display = "block";
+                  location.reload()
+                  return false;
+
+              } else {
+                  console.log(data);
+                  showError(data.message);
+              }
+
+          } catch (error) {
+              // Errors when calling the service; such as network error, 
+              // service offline, etc
+              showError
+                  ("There is a problem adding this update, please try again later. " + error);
+
+          } // error
+      };
     </script>
     
     <!-- Bootstrap Javascript; at the end of the <body> -->
