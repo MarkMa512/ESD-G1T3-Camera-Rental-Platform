@@ -1,3 +1,4 @@
+import traceback
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
@@ -120,8 +121,9 @@ def create_list():
 
 @app.route("/listing/<string:listing_id>", methods=['PUT'])
 def update_listing(listing_id):
+    listing= Listing.query.filter_by(listing_id=listing_id).first()
     try:
-        listing= Listing.query.filter_by(listing_id=listing_id).first()
+        
         if not listing:
             return jsonify(
                 {
@@ -145,15 +147,16 @@ def update_listing(listing_id):
                 }
             ), 200
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "listing_id": listing_id
-                },
-                "message": "An error occurred while updating the listing. " + str(e)
-            }
-        ), 500
+        traceback.format_exc()
+        # return jsonify(
+        #     {
+        #         "code": 500,
+        #         "data": {
+        #             "listing_id": listing_id
+        #         },
+        #         "message": "An error occurred while updating the listing. " + str(e)
+        #     }
+        # ), 500
 
 @app.route("/listing/<string:listing_id>", methods=['DELETE'])
 def delete_listing(listing_id):

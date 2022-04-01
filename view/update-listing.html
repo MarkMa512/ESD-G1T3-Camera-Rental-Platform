@@ -2,6 +2,7 @@
 <script>
     window.sessionStorage; 
     sessionStorage.setItem("listing_id","1");
+    sessionStorage.setItem("owner_id","1");
 </script>
 <html>
 
@@ -37,33 +38,31 @@
 
 <body>
     <h1 class="display-4 m-4 container mx-auto">Update a Listing</h1>
-    
-    <form id='addListForm' class="p-4 container">
-        <div class="form-group">
-            <label for="model">Model</label>
-            <input type="text" class="form-control" id="model" placeholder="e.g. Nikon Z 7 Mirrorless Digital Camera with 24-70mm Lens and FTZ Adapter">
-        </div>
-        <div class="form-group">
-            <label for="description">Description</label><br />
-            <input type="text" class="form-control" id="listing_description" placeholder="e.g. Bought in 2006, my favourite lens/camera">
-        </div>
-        <div class="form-group">
-            <label for="brand">Brand</label>
-            <input type="text" class="form-control" id="brand" placeholder="e.g. Canon">
-        </div>
-        <div class="form-group">
-            <label for="price">Price ($)</label>
-            <input type="text" class="form-control" id="price" placeholder="e.g. 4195.00">
-        </div>
-        <div class="form-group">
-            <label for="daily_rate">Daily Rate ($/Day)</label>
-            <input type="text" class="form-control" id="daily_rate" placeholder="e.g. 15">
-        </div>
+         
+    <div id="main-container" class="container">
+        <form id='submitListForm'>
+        <h1 class="display-4">Listing</h1>
+        <table class='table table-striped border-1'>
+            <thead class='table-dark'>
+                <tr>
+                    <th>Image</th>
+                    <th>Model</th>
+                    <th>Description</th>
+                    <th>Brand</th>
+                    <th>Rental Rate</th>
+                    <th>Availability</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+        	<tbody id="ListingTable"></tbody>
+        </table>
         <button type="submit" class="btn btn-primary mt-2">Submit</button>
-    </form>
+        </form>
+    </div>
+  
     <label id="error" class="text-danger"></label>
     <script>
-
+        list_id=sessionStorage.getItem("listing_id");
         console.log(list_id);
         // Helper function to display error message
         function showError(message) {
@@ -81,7 +80,8 @@
         $(async() => {           
             // Change serviceURL to your own
             var serviceURL = "http://127.0.0.1:5000/listing/"+list_id;
-     
+
+            console.log(serviceURL);
             try {
                 const response =
                  await fetch(
@@ -90,28 +90,30 @@
                 const result = await response.json();
                  if (response.status === 200) {
                     // success case
-                    var listings = result.data.listings;
+                    var listings = result.data;
                     console.log(listings); //the array is in books within data of 
                                                    // the returned result
                     // for loop to setup all table rows with obtained book data
                     var rows = "";
                     var availabiltity="";
-                    for (const lists of listings) {
-                        if(lists.availabiltity == true){
+                  
+                        if(listings.availabiltity == true){
                             availabiltity = "Available"
                         }
                         else
                         {
                             availabiltity = "Not Available"
                         }
-                       eachRow ="<td><img width='150' height='100' src='" + lists.image_url + "'></td>" +
-                                "<td>" + lists.model + "</td>" +
-                                "<td>" + lists.brand + "</td>" +
-                                "<td> $" + lists.daily_rate + " /day</td>" +
-                                "<td>" + availabiltity + "</td>"+
-                                "<td><a href='update-listing.html'>Update Listing</a></td>" ;
+
+                        eachRow ="<td><img width='150' height='100' id='image_url' src='" + listings.image_url + "'></td>" +
+                        "<td><input type='text' class='form-control' id='model' value='" + listings.model + "'</td>" +
+                        "<td><input type='text' class='form-control' id='listing_description' value='" + listings.listing_description + "'</td>" +
+                        "<td><input type='text' class='form-control' id='brand' value='" + listings.brand + "'</td>" +
+                        "<td><input type='text' class='form-control' id='daily_rate' value='" + listings.daily_rate + "'</td>"+
+                        "<td><input type='text' class='form-control' id='availabiltity' value='" + listings.availabiltity + "'</td>"
+                        + "<td><input type='text' class='form-control' id='price' value='" + listings.price + "'</td>";
                        rows += "<tr>" + eachRow + "</tr>";
-                    }
+                    
                         // add all the rows to the table
                         $('#ListingTable').append(rows);
                     } else if (response.status == 404) {
@@ -126,6 +128,59 @@
                     // service offline, etc
                     showError('There is a problem retrieving Listing data, please try again later.<br />' + error);
                 } // error
+        });
+
+        $("#submitListForm").submit(async (event) => {
+            //Prevents screen from refreshing when submitting
+            event.preventDefault();
+
+            var serviceURL = "http://127.0.0.1:5000/listing/"+list_id;
+
+            //Get form data
+            var description = $('#listing_description').val();
+            var image = $('#image_url').val();
+            var brand = $('#brand').val();
+            var model = $('#model').val();
+            var daily_rate = parseFloat($("#daily_rate").val());
+            var price = parseFloat($("#price").val());
+            var availabiltity = $("#availabiltity").val();
+
+            if(availabiltity == true){
+                availabiltity = 1
+            }
+            else
+            {
+                availabiltity = 0
+            }
+
+            own_id=sessionStorage.getItem("owner_id");
+            console.log(own_id);
+            
+            try {
+                const response =
+                    await fetch(
+                        serviceURL, {
+                        method: 'PUT',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({listing_id:list_id,availabiltity:availabiltity, brand:brand, daily_rate:daily_rate, image_url:image, listing_description:description, model:model, owner_id:own_id,price:price})
+                    });
+                const data = await response.json();
+
+                if (response.ok) {
+                    // relocate to home page
+                    window.location.replace("index.html");
+                    return false;
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this listing, please try again later. " + error);
+
+            } // error
         });
     </script>
 
