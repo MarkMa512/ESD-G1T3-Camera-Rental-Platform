@@ -25,15 +25,16 @@ class Listing(db.Model):
     listing_description = db.Column(db.String(1023), nullable=False)
     daily_rate = db.Column(db.Float(precision=2), nullable=False)
 
-    # def __init__(self, owner_id, brand, model, price, image_url, availabiltity, listing_description, daily_rate):
-    #     self.owner_id = owner_id
-    #     self.brand = brand
-    #     self.model = model
-    #     self.price = price
-    #     self.image_url = image_url
-    #     self.availabiltity = availabiltity
-    #     self.listing_description = listing_description
-    #     self.daily_rate = daily_rate
+    def __init__(self, listing_id,owner_id, brand, model, price, image_url,  availabiltity, listing_description, daily_rate):
+        self.owner_id = owner_id
+        self.listing_id=listing_id
+        self.brand = brand
+        self.model = model
+        self.price = price
+        self.image_url = image_url
+        self. availabiltity =  availabiltity
+        self.listing_description = listing_description
+        self.daily_rate = daily_rate
 
     def json(self):
         return{
