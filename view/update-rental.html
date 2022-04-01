@@ -1,6 +1,6 @@
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-    sessionStorage.setItem("User_ID","0");
+    sessionStorage.setItem("User_ID","1");
 </script>
 <!DOCTYPE html>
 <html>
@@ -85,7 +85,7 @@
 
             //Get form data
             var owner = sessionStorage.getItem("User_ID")
-            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ owner;
+            var serviceURL = "http://localhost:5000/rental"
 
             try {
                     const response =
@@ -98,8 +98,8 @@
                         var rentals = data.data.rentals;
                         console.log(rentals);
 
-
                         for (r of rentals){
+                            if(r.owner_id == sessionStorage.getItem("User_ID")){
                             console.log(r)
                         end_date = new Date(r.rent_end_date)
                         end_date = end_date.toDateString()
@@ -129,7 +129,7 @@
                         // add all the rows to the table
                         $('#rentalTable').append(row);
                         }
-
+                    }
                     } else if (response.status == 404) {
                         // No books
                         showError(result.message);
@@ -153,7 +153,7 @@
             var rental_id = $("#delete").val();
             console.log(rental_id)
 
-            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
             
             try {
                 const response = await 
@@ -195,7 +195,7 @@
             console.log(rental_id)
             console.log(rental_status)
 
-            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
             
             try {
                 const response =
