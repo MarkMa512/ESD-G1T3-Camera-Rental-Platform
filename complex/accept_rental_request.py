@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import json
 
 import os, sys
 
@@ -61,6 +62,8 @@ def processAcceptRequest(request):
 
         # Inform the error microservice
         print('\n\n-----Invoking error microservice as request fails-----')
+        
+        ##### do amqp instead??
         invoke_http(error_URL, method="POST", json=rental_result)
         # - reply from the invocation is not used; 
         # continue even if this invocation fails
@@ -75,9 +78,16 @@ def processAcceptRequest(request):
             }
     
     # 2. Invoke listing microservice
+    ###   Get listing_ID from rental_result? then invoke listing_url that has listing_ID appended behind..?
+
     print('\n-----Invoking listing microservice-----')
     listing_result = invoke_http(listing_URL, method='POST', json=listing)
-    # print('listing_result:', listing_result)
+
+    #### Get specific values from listing JSON 
+    listing_result = json.loads()
+    details = 
+
+    print('listing_result:', listing_result)
     
     # Check the listing result; if a failure, send it to the error microservice.
     code = listing_result["code"]
@@ -99,7 +109,40 @@ def processAcceptRequest(request):
             }
 
 
-    # 3. Invoke user microservice
+
+    #### Update rental status
+
+    #### Update listing availability 
+
+    ### activity log??
+
+
+    ##### Invoke user microservice; unedited 
+    print('\n-----Invoking rental microservice-----')
+    request_result = invoke_http(rental_URL, method='POST', json=rental)
+    # print('rental_result:', rental_result)
+    
+    # Check the rental result; if a failure, send it to the error microservice.
+    code = rental_result["code"]
+    if code not in range(200, 300):
+
+        # Inform the error microservice
+        print('\n\n-----Invoking error microservice as request fails-----')
+        
+        ##### do amqp instead??
+        invoke_http(error_URL, method="POST", json=rental_result)
+        # - reply from the invocation is not used; 
+        # continue even if this invocation fails
+        print("Rental request status ({:d}) sent to the error microservice:".format(
+        code), rental_result)
+
+        # 7. Return error
+        return {
+                "code": 500,
+                "data": {"rental_result": rental_result},
+                "message": "Rental details retrival failure sent for error handling."
+            }
+    
 
 
 
@@ -107,6 +150,8 @@ def processAcceptRequest(request):
 
 
 
+
+    ### unedited
 
     # Send new order to shipping
     # Invoke the shipping record microservice
