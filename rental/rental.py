@@ -66,14 +66,16 @@ def get_all():
 		), 404
 
  
-@app.route("/rental/<string:rental_id>") 
-def find_by_rental_id(rental_id):
-    rental = Rental.query.filter_by(rental_id=rental_id).first() 
-    if rental:
+@app.route("/rental/<string:owner_id>") 
+def find_by_owner_id(owner_id):
+    rental = Rental.query.filter_by(owner_id=owner_id).all() 
+    if len(rental):
         return jsonify(
             {
                 "code": 200,
-                "data": rental.json()
+                "data": {
+						"rentals": [r.json() for r in rental] 
+					}
             }
         )
     return jsonify(
