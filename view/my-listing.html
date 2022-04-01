@@ -151,7 +151,7 @@
         // - using await requires the function that calls it to be async
         $(async() => {           
             // Change serviceURL to your own
-            var serviceURL = "http://127.0.0.1:5000/listing";
+            var serviceURL = "http://localhost:5000/listing";
      
             try {
                 const response =
@@ -182,10 +182,10 @@
                                 "<td> $" + lists.daily_rate + " /day</td>" +
                                 "<td>" + availabiltity + "</td>"+
                                 "<td><a href='update-listing.html'"+lists.listing_id+">Update Listing</a></td>"+
-                                "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ 
+                                "<td> <button onClick ='onDelete()' id ='deletebutton' type='button' class='btn btn-danger btn-default active' value ='"+ 
                                 lists.listing_id+ "'> Delete </button> </td></tr>";
                        rows += "<tr>" + eachRow + "</tr>";
-                       //sessionStorage.setItem("listing_id",lists.listing_id);
+          
                         }
                     }
                 
