@@ -155,5 +155,33 @@ def update_listing(listing_id):
             }
         ), 500
 
+@app.route("/listing/<string:listing_id>", methods=['DELETE'])
+def delete_listing(listing_id):
+    listing = Listing.query.filter_by(listing_id=listing_id).first()
+    if listing:
+        db.session.delete(listing)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "listing_id": listing_id
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "listing_id": listing_id
+            },
+            "message": "Listing not found."
+        }
+    ), 404
+
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

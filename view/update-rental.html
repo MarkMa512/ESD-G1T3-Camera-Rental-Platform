@@ -39,11 +39,6 @@
 <body>
     <h1 class="display-4 m-4 container mx-auto">Update Rental Status</h1>
 
-    <form id='SearchRental' class="p-4 container">
-
-        <button type="submit" class="btn btn-primary mt-2">Retrieve Rentals</button>
-    </form>
-
     <div id="message" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully updated rental status.</div>
 
     <div id="results">
@@ -67,6 +62,8 @@
         </form>
     </div>
 
+    <form id="delete" method="GET"></form>
+
 
     <label id="error" class="text-danger"></label>
     <script>
@@ -81,13 +78,14 @@
             $('#error').text(message);
             $('#error').show();
             $('#status').hide();
+            $('#delete').hide();
         }
 
         $(async (event) => {
 
             //Get form data
             var owner = sessionStorage.getItem("User_ID")
-            var serviceURL = "http://192.168.1.227:5000/rental" +"/"+ owner;
+            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ owner;
 
             try {
                     const response =
@@ -122,7 +120,7 @@
                             }
                         }
                         row += "</select> </td>"
-                        row += "<td> <button onclick = 'dothis' id = 'delete' type='button' class='btn btn-danger' value ='"+ rentals.rental_id + "''> Delete </button> </td>"
+                        row += "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger' value ='"+ rentals.rental_id + "'> Delete </button> </td>"
 
                         // add all the rows to the table
                         $('#rentalTable').append(row);
@@ -144,9 +142,42 @@
             } // error
         });
 
-        $("#deletee").click(async(event) =>{
-            console.log("hi")
-        })
+        function onDelete(){
+
+            //Get form data
+            var rental_id = $("#delete").val();
+            console.log(rental_id)
+
+            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
+            
+            try {
+                const response =
+                    fetch(
+                        serviceURL,{method: 'DELETE',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({rental_id:rental_id})
+
+            });
+                const data = response.json();
+                if (response.ok) {
+                    // open up ok message
+                    message = document.getElementById("message")
+                    message.style.display = "block";
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+        };
 
         $("#status").submit(async (event) => {
             //Prevents screen from refreshing when submitting
@@ -158,7 +189,7 @@
             console.log(rental_id)
             console.log(rental_status)
 
-            var serviceURL = "http://192.168.1.227:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://192.168.18.17:5000/rental" +"/"+ rental_id;
             
             try {
                 const response =
@@ -190,10 +221,6 @@
 
             } // error
         });
-
-        function dothis(){
-            console.log("hi")
-        }
 
 
     </script>
