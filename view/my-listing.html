@@ -166,17 +166,17 @@
         async function onDelete(){
 
           //Get form data
-          var rental_id = $("#delete").val();
-          console.log(rental_id)
+          var listing_id = $("#delete").val();
+          console.log(listing_id)
 
-          var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
+          var serviceURL = "http://localhost:5000/listing" +"/"+ listing_id;
           
           try {
               const response = await 
                   fetch(
                       serviceURL,{method: 'DELETE',
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({rental_id:rental_id})
+                      body: JSON.stringify({listing_id:listing_id})
 
           });
               const data = response;

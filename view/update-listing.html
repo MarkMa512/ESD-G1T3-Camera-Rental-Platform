@@ -1,17 +1,17 @@
-<!DOCTYPE html>
 <script>
-    window.sessionStorage; 
-    sessionStorage.setItem("listing_id","1");
-    sessionStorage.setItem("owner_id","1");
+    window.sessionStorage;  // <!-- this is to activate session storage-->
+    sessionStorage.setItem("User_ID","0");
 </script>
+<!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
+    
 
-    <title>Update a Listing</title>
+    <title>Update rental Status</title>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -37,85 +37,99 @@
 </head>
 
 <body>
-    <h1 class="display-4 m-4 container mx-auto">Update a Listing</h1>
-         
-    <div id="main-container" class="container">
-        <form id='submitListForm'>
-        <h1 class="display-4">Listing</h1>
-        <table class='table table-striped border-1'>
-            <thead class='table-dark'>
-                <tr>
-                    <th>Image</th>
-                    <th>Model</th>
-                    <th>Description</th>
-                    <th>Brand</th>
-                    <th>Rental Rate</th>
-                    <th>Availability</th>
-                    <th>Price</th>
-                </tr>
+    <h1 class="display-4 m-4 container mx-auto">Update Rental Status</h1>
+
+    <div id="message" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully updated rental status.</div>
+
+    <div id="results">
+        <table id="rentalTable" class='table table-striped border-1' id='rental-list' >
+            <thead class='border-1'>
+                    <th>Listing ID</th>
+                    <th>Owner ID</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Total rent price</th>
+                    <th>Status</th>
+                    <th> </th>
+
             </thead>
-        	<tbody id="ListingTable"></tbody>
         </table>
-        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </div>
+
+    <div id="results">
+        <form id="status" method="GET">
+            <input type="submit" value="Confirm">
         </form>
     </div>
-  
+
+    <form id="delete" method="GET"></form>
+
+
     <label id="error" class="text-danger"></label>
     <script>
-        list_id=sessionStorage.getItem("listing_id");
-        console.log(list_id);
+
+
+
+
         // Helper function to display error message
         function showError(message) {
-            // Hide the table and button in the event of error
-            $('#ListingTable').hide();
-            $('#addListingBtn').hide();
-     
-            // Display an error under the main container
-            $('#main-container')
-                .append("<label>"+message+"</label>");
+            // Display an error under the the predefined label with error as the id
+            $("#results").hide();
+            $('#error').text(message);
+            $('#error').show();
+            $('#status').hide();
+            $('#delete').hide();
         }
-     
-        // anonymous async function 
-        // - using await requires the function that calls it to be async
-        $(async() => {           
-            // Change serviceURL to your own
-            var serviceURL = "http://127.0.0.1:5000/listing/"+list_id;
 
-            console.log(serviceURL);
+        $(async (event) => {
+
+            //Get form data
+            var owner = sessionStorage.getItem("User_ID")
+            var serviceURL = "http://localhost:5000/rental"
+
             try {
-                const response =
-                 await fetch(
-                   serviceURL, { method: 'GET' }
-                );
-                const result = await response.json();
-                 if (response.status === 200) {
-                    // success case
-                    var listings = result.data;
-                    console.log(listings); //the array is in books within data of 
-                                                   // the returned result
-                    // for loop to setup all table rows with obtained book data
-                    var rows = "";
-                    var availabiltity="";
-                  
-                        if(listings.availabiltity == true){
-                            availabiltity = "Available"
-                        }
-                        else
-                        {
-                            availabiltity = "Not Available"
-                        }
+                    const response =
+                        await fetch(
+                            serviceURL, { method: 'GET' }
+                        );
+                    const data = await response.json();
 
-                        eachRow ="<td><img width='150' height='100' id='image_url' src='" + listings.image_url + "'></td>" +
-                        "<td><input type='text' class='form-control' id='model' value='" + listings.model + "'</td>" +
-                        "<td><input type='text' class='form-control' id='listing_description' value='" + listings.listing_description + "'</td>" +
-                        "<td><input type='text' class='form-control' id='brand' value='" + listings.brand + "'</td>" +
-                        "<td><input type='text' class='form-control' id='daily_rate' value='" + listings.daily_rate + "'</td>"+
-                        "<td><input type='text' class='form-control' id='availabiltity' value='" + listings.availabiltity + "'</td>"
-                        + "<td><input type='text' class='form-control' id='price' value='" + listings.price + "'</td>";
-                       rows += "<tr>" + eachRow + "</tr>";
-                    
-                        // add all the rows to the table
-                        $('#ListingTable').append(rows);
+                    if (response.status === 200) {
+                        var rentals = data.data.rentals;
+                        console.log(rentals);
+
+                        for (r of rentals){
+                            if(r.owner_id == sessionStorage.getItem("User_ID")){
+                                console.log(r)
+                                end_date = new Date(r.rent_end_date)
+                                end_date = end_date.toDateString()
+                                start_date = new Date(r.rent_start_date)
+                                start_date = start_date.toDateString()
+
+                                row ="<tr><td>" + r.listing_id + "</td>" +
+                                        "<td> <input type='hidden' id='rental_id' value="+ r.rental_id + ">" + r.rental_id + "</td>" +
+                                        "<td>" +start_date + "</td>" +
+                                        "<td>" + end_date + "</td>" +
+                                        "<td> $" + r.total_price + "</td>";
+
+                                row += "<td> <select class='form-select'"+ "id='status' aria-label='Default select example'>";
+
+                                var statuses = ["Pending","Approved","Delivered", "Returned"]
+                                for(i=0; i<statuses.length ; i++){
+                                    if(statuses[i] != r.rental_status){
+                                        row += "<option value=" + statuses[i] + ">" + statuses[i] + "</option>"
+                                    } 
+                                    else{
+                                        row += "<option selected>" + statuses[i]+ "</option>"
+                                    }
+                                }
+                                row += "</select> </td>"
+                                row += "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
+
+                                // add all the rows to the table
+                                $('#rentalTable').append(row);
+                            }
+                        }
                     } else if (response.status == 404) {
                         // No books
                         showError(result.message);
@@ -123,71 +137,97 @@
                         // unexpected outcome, throw the error
                         throw response.status;
                     }
-                } catch (error) {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    showError('There is a problem retrieving Listing data, please try again later.<br />' + error);
-                } // error
-        });
-
-        $("#submitListForm").submit(async (event) => {
-            //Prevents screen from refreshing when submitting
-            event.preventDefault();
-
-            var serviceURL = "http://127.0.0.1:5000/listing/"+list_id;
-
-            //Get form data
-            var description = $('#listing_description').val();
-            var image = $('#image_url').val();
-            var brand = $('#brand').val();
-            var model = $('#model').val();
-            var daily_rate = parseFloat($("#daily_rate").val());
-            var price = parseFloat($("#price").val());
-            var availabiltity = $("#availabiltity").val();
-
-            if(availabiltity == true){
-                availabiltity = 1
-            }
-            else
-            {
-                availabiltity = 0
-            }
-
-            own_id=sessionStorage.getItem("owner_id");
-            console.log(own_id);
-            
-            try {
-                const response =
-                    await fetch(
-                        serviceURL, {
-                        method: 'PUT',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({listing_id:list_id,
-                            availabiltity:availabiltity, 
-                            brand:brand, 
-                            daily_rate:daily_rate, 
-                            listing_description:description, 
-                            model:model,
-                            price:price})
-                    });
-                const data = await response.json();
-
-                if (response.ok) {
-                    // relocate to home page
-                    window.location.replace("index.html");
-                    return false;
-                } else {
-                    console.log(data);
-                    showError(data.message);
-                }
+                
             } catch (error) {
                 // Errors when calling the service; such as network error, 
                 // service offline, etc
                 showError
-                    ("There is a problem adding this listing, please try again later. " + error);
+                    ("There are no rental request, please try again later. " + error);
 
             } // error
         });
+
+        async function onDelete(){
+
+            //Get form data
+            var rental_id = $("#delete").val();
+            console.log(rental_id)
+
+            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
+            
+            try {
+                const response = await 
+                    fetch(
+                        serviceURL,{method: 'DELETE',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({rental_id:rental_id})
+
+            });
+                const data = response;
+                if (response.ok) {
+                    // open up ok message
+                    message = document.getElementById("message")
+                    location.reload()
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+        };
+
+        $("#status").submit(async (event) => {
+            //Prevents screen from refreshing when submitting
+            event.preventDefault();
+
+            //Get form data
+            var rental_id = $('#rental_id').val()
+            var rental_status = $('#status').val()
+            console.log(rental_id)
+            console.log(rental_status)
+            
+
+            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
+            
+            try {
+                const response =
+                    await fetch(
+                        serviceURL,{method: 'put',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({rental_id:rental_id, rental_status:rental_status})
+
+            });
+                const data = await response.json();
+
+
+                if (response.ok) {
+                    // open up ok message
+                    message = document.getElementById("message")
+                    message.style.display = "block";
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+        });
+
 
     </script>
 
@@ -197,5 +237,6 @@
         crossorigin='anonymous'></script>
 
 </body>
+
 
 </html>
