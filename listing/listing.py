@@ -5,7 +5,7 @@ from os import environ
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/user_listing'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/user_listing'
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -124,42 +124,36 @@ def create_list():
 
 @app.route("/listing/<string:listing_id>", methods=['PUT'])
 def update_listing(listing_id):
-
-    try:
-        listing = Listing.query.filter_by(listing_id=listing_id).first()
-
-        if not listing:
-            return jsonify(
-                {
-                    "code": 404,
-                    "data": {
-                        "listing_id": listing_id
-                    },
-                    "message": "Listing not found."
-                }
-            ), 404
-
-        # update status
+    list = Listing.query.filter_by(listing_id=listing_id).first()
+    if list:
         data = request.get_json()
-        if data['listing_status']:
-            listing.status = data['listing_status']
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": listing.json()
-                }
-            ), 200
-    except Exception as e:
+        if data['brand']:
+            list.title = data['brand']
+        if data['model']:
+            list.price = data['model']
+        if data['listing_id']:
+            list.listing_id = data['listing_id'] 
+        if data['daily_rate']:
+            list.daily_rate = data['daily_rate']
+        if data['listing_description']:
+            list.listing_description = data['listing_description']  
+        
+        db.session.commit()
         return jsonify(
             {
-                "code": 500,
-                "data": {
-                    "listing_id": listing_id
-                },
-                "message": "An error occurred while updating the listing. " + str(e)
+                "code": 200,
+                "data": list.json()
             }
-        ), 500
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "listing_id": listing_id
+            },
+            "message": "Book not found."
+        }
+    ), 404
 
 
 @app.route("/listing/<string:listing_id>", methods=['DELETE'])

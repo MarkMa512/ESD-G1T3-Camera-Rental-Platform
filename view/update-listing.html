@@ -1,6 +1,6 @@
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-    sessionStorage.setItem("User_ID","0");
+    sessionStorage.setItem("User_ID","peter@gmail.com");
 </script>
 <!DOCTYPE html>
 <html>
@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width">
     
 
-    <title>Update rental Status</title>
+    <title>Update listing</title>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -37,35 +37,33 @@
 </head>
 
 <body>
-    <h1 class="display-4 m-4 container mx-auto">Update Rental Status</h1>
+    <h1 class="display-4 m-4 container mx-auto">Update Listing</h1>
 
-    <div id="message" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully updated rental status.</div>
+    <div id="message" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully updated listing.</div>
 
     <div id="results">
         <table id="rentalTable" class='table table-striped border-1' id='rental-list' >
             <thead class='border-1'>
+                <th>Image</th>
                     <th>Listing ID</th>
-                    <th>Owner ID</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Total rent price</th>
-                    <th>Status</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Daily Rate</th>
+                    <th>Description</th>
+                    <th>Availability</th>
                     <th> </th>
 
             </thead>
         </table>
     </div>
 
-    <div id="results">
-        <form id="status" method="GET">
-            <input type="submit" value="Confirm">
-        </form>
-    </div>
 
-    <form id="delete" method="GET"></form>
+    <form id="update" method="GET"></form>
 
 
     <label id="error" class="text-danger"></label>
+
     <script>
 
 
@@ -95,36 +93,29 @@
                     const data = await response.json();
 
                     if (response.status === 200) {
-                        var rentals = data.data.rentals;
-                        console.log(rentals);
+                        var listings = data.data.listings;
 
-                        for (r of rentals){
+                        var avai ="";
+                        for (r of listings){
+                            if(r.availabiltity==true){
+                                avai="Available";
+                            }
+                            else{
+                                avai="Not Available";
+                            }
+
                             if(r.owner_id == sessionStorage.getItem("User_ID")){
-                                console.log(r)
-                                end_date = new Date(r.rent_end_date)
-                                end_date = end_date.toDateString()
-                                start_date = new Date(r.rent_start_date)
-                                start_date = start_date.toDateString()
 
-                                row ="<tr><td>" + r.listing_id + "</td>" +
-                                        "<td> <input type='hidden' id='rental_id' value="+ r.rental_id + ">" + r.rental_id + "</td>" +
-                                        "<td>" +start_date + "</td>" +
-                                        "<td>" + end_date + "</td>" +
-                                        "<td> $" + r.total_price + "</td>";
-
-                                row += "<td> <select class='form-select'"+ "id='status' aria-label='Default select example'>";
-
-                                var statuses = ["Pending","Approved","Delivered", "Returned"]
-                                for(i=0; i<statuses.length ; i++){
-                                    if(statuses[i] != r.rental_status){
-                                        row += "<option value=" + statuses[i] + ">" + statuses[i] + "</option>"
-                                    } 
-                                    else{
-                                        row += "<option selected>" + statuses[i]+ "</option>"
-                                    }
-                                }
-                                row += "</select> </td>"
-                                row += "<td> <button onClick ='onDelete()' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
+                                row ="<tr><td><img width=150 height=130 src='" + r.image_url + "'></td>"  +
+                                        "<td> <input type='text' id='list_id' value='" + r.listing_id+ "' readonly></td>" +
+                                        "<td><input type='text' id='brand' value='" + r.brand + "'></td>" +
+                                        "<td><input type='text' id='model' value='" + r.model + "'></td>" +
+                                        "<td><input type='text' id='price' value='" + r.price + "'></td>" +
+                                        "<td><input type='text' id='price' value='" + r.daily_rate + "'></td>" +
+                                        "<td><input type='text' id='description' value='" + r.listing_description + "'></td>" +
+                                        "<td>" + avai + "</td>"+
+                                        "<td> <button onClick ='onUpdate("+r.listing_id+")' id ='updatebutton" + r.listing_id + "'  "
+                                            + "type='button' class='btn btn-danger btn-default active' value =' "+ r.listing_id+ " '> Update </button> </td>"; 
 
                                 // add all the rows to the table
                                 $('#rentalTable').append(row);
@@ -147,62 +138,35 @@
             } // error
         });
 
-        async function onDelete(){
-
-            //Get form data
-            var rental_id = $("#delete").val();
-            console.log(rental_id)
-
-            var serviceURL = "http://localhost:5304/listing" +"/"+ rental_id;
-            
-            try {
-                const response = await 
-                    fetch(
-                        serviceURL,{method: 'DELETE',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({listing_id:listing_id})
-
-            });
-                const data = response;
-                if (response.ok) {
-                    // open up ok message
-                    message = document.getElementById("message")
-                    location.reload()
-                    return false;
-
-                } else {
-                    console.log(data);
-                    showError(data.message);
-                }
-
-            } catch (error) {
-                // Errors when calling the service; such as network error, 
-                // service offline, etc
-                showError
-                    ("There is a problem adding this update, please try again later. " + error);
-
-            } // error
-        };
-
-        $("#status").submit(async (event) => {
+        async function onUpdate(x) {
             //Prevents screen from refreshing when submitting
             event.preventDefault();
 
             //Get form data
-            var rental_id = $('#rental_id').val()
-            var rental_status = $('#status').val()
-            console.log(rental_id)
-            console.log(rental_status)
+            var listing_id = $('#list_id').val();
+            var brand = $('#brand').val();
+            var model = $('#model').val();
+            var price = parseFloat($('#price').val());
+            var daily_rate = parseFloat($("#daily_rate").val());
+            var listing_description = $('#description').val();
+
             
 
-            var serviceURL = "http://localhost:5304/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5304/listing" +"/"+ listing_id;
             
             try {
                 const response =
                     await fetch(
-                        serviceURL,{method: 'put',
+                        serviceURL,{method: 'PUT',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({listing_id:listing_id})
+                        body: JSON.stringify(
+                            {listing_id:listing_id,
+                            brand:brand,
+                            model:model,
+                            price:price, 
+                            daily_rate:daily_rate, 
+                            listing_description:listing_description
+                        })
 
             });
                 const data = await response.json();
@@ -225,7 +189,7 @@
                     ("There is a problem adding this update, please try again later. " + error);
 
             } // error
-        });
+        };
 
 
     </script>
