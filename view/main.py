@@ -1,5 +1,3 @@
-import email
-from json import dumps
 import traceback
 from pyrebase import pyrebase
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for, jsonify
@@ -37,22 +35,17 @@ def login():
 def signup():
     return render_template("signup.html")
 
-#Welcome page
-@app.route("/welcome")
-def welcome():
+#Index page
+@app.route("/index")
+def home():
     if person["is_logged_in"] == True:
-        return render_template("welcome.html", email = person["email"], name = person["name"],uid=person['uid'])
+        return render_template("index.html", email = person["email"], name = person["name"])
     else:
         return redirect(url_for('login'))
 
-@app.route('/logout')
-def logout():
-    person['is_logged_in']=False
-    return redirect(url_for('signup'))
-
 #If someone clicks on login, they are redirected to /result
-@app.route("/result", methods = ["POST", "GET"])
-def result():
+@app.route("/home", methods = ["POST", "GET"])
+def signin():
     if request.method == "POST":        #Only if data has been posted
         result = request.form           #Get the data
         email = result["email"]
@@ -68,14 +61,14 @@ def result():
             #Get the name of the user
             data = db.child("users").get()
             person["name"] = data.val()[person["uid"]]["name"]
-            #Redirect to welcome page
-            return redirect(url_for('welcome'))
+            #Redirect to index page
+            return render_template("index.html", email = person["email"], name = person["name"])
         except:
             #If there is any error, redirect back to login
             return redirect(url_for('login'))
     else:
         if person["is_logged_in"] == True:
-            return redirect(url_for('welcome'))
+            return render_template("index.html", email = person["email"], name = person["name"])
         else:
             return redirect(url_for('login'))
 
@@ -103,17 +96,18 @@ def register():
             person['address']=addr
             person['phone']=phone
             #Append data to the firebase realtime database
-            data = {"name": name, "email": email, 'address':addr,'phone':phone,'user_id':user['localId']}
+            data = {"name": name, "email": email, 'address':addr,'phone':phone}
             db.child("users").child(user["localId"]).set(data)
-            #Go to welcome page
-            return redirect(url_for('welcome'))
+            #Go to index page
+            return render_template("index.html", email = person["email"], name = person["name"])
+
         except:
             traceback.print_exc
-            dumps(result)
+            # dumps(result)
             
     else:
         if person["is_logged_in"] == True:
-            return redirect(url_for('welcome'))
+            return render_template("index.html", email = person["email"], name = person["name"])
         else:
             return redirect(url_for('register'))
 
@@ -136,7 +130,7 @@ def find_user(email):
             }
         ), 404
 
-# Retrieve user's phone (must use Peter's email)
+# Retrieve user's phone
 @app.route('/userphone/<string:email>')
 def get_phone(email):
     user_id=person['uid']
@@ -149,7 +143,6 @@ def get_phone(email):
                 "message": "User not found"
             }
         ), 404
-
 
 if __name__ == "__main__":
     app.run(port=5303,debug=True)
