@@ -1,4 +1,3 @@
-# credit: https://www.youtube.com/watch?v=zMhmZ_ePGiM&t=345s
 from flask import Flask, request, Response
 from werkzeug.utils import secure_filename
 from flask import redirect
@@ -31,7 +30,7 @@ def upload():
     img = Img(img=pic.read(), name=filename, mimetype=mimetype)
     db.session.add(img)
     db.session.commit()
-    return redirect("http://localhost:5500/view/")
+    return redirect("http://localhost:5303/home")
 
 
 @app.route('/<int:id>')
@@ -40,6 +39,14 @@ def get_img(id):
     if not img:
         return 'Img Not Found!', 404
 
+    return Response(img.img, mimetype=img.mimetype)
+
+
+@app.route('/latest')
+def get_latest():
+    img = Img.query.order_by(Img.id.desc()).first()
+    if not img:
+        return 'Img Not Found!', 404
     return Response(img.img, mimetype=img.mimetype)
 
 
