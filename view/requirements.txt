@@ -1,0 +1,4 @@
+pyrebase4
+Flask==2.0.2
+traceback
+Flask-Cors==3.0.10

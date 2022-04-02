@@ -10,11 +10,11 @@ from invokes import invoke_http
 app = Flask(__name__)
 CORS(app)
 
-rental_URL = "http://localhost:5000/rental"
-listing_URL = "http://localhost:5001/listing"
-user_url = "http://localhost:5002/user"         # check port num
-# activity_log_URL = "http://localhost:5003/activity_log"
-# error_URL = "http://localhost:5004/error"
+rental_URL = "http://localhost:5305/rental"
+listing_URL = "http://localhost:5304/listing"
+user_url = "http://localhost:5303/user"         # check port num
+activity_log_URL = "http://localhost:5003/activity_log"
+error_URL = "http://localhost:5004/error"
 
 
 @app.route("/accept_request", methods=['POST'])
