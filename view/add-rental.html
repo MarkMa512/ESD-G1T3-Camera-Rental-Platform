@@ -1,5 +1,6 @@
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
+    var renter_id = sessionStorage.setItem("user_id","jiayilik@gmail.com");
 </script>
 <!DOCTYPE html>
 <html>
@@ -75,7 +76,7 @@
               </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" onclick="location.href = 'index.html';" >Confirm</button>
+              <button type="button" class="btn btn-primary" onclick="location.href = 'templates/index.html';" >Confirm</button>
             </div>
           </div>
         </div>
@@ -128,14 +129,29 @@
 
                         if(response.ok){
                             console.log("YES")
-                            return false
-                        }
+                            $('#myModal').modal('show');
+
+                            listing_id = sessionStorage.getItem("listingidthatyouwanttorent")
+                            renter_id = sessionStorage.getItem("user_id")
+
+                            console.log(listing_id)
+                            console.log(renter_id)
+                            var serviceURL = "http://127.0.0.1:5301/requestedEmail";
+                            try{
+                            const response = await fetch(serviceURL, {
+                               method: "POST",
+                               headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({listing_id:listing_id, email:renter_id})
+                            });
+
+                            }catch(error){
+                                showError("There is a problem", +error)
+                            }}
 
                         else{
                             console.log(data)
                         }
 
-                    
                         }
                         catch(error){
                             showError("There is a problem", +error)
