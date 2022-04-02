@@ -118,7 +118,7 @@ def processPlaceRental(rental):
     """
     list_id = rental['listing_id']
     print("list_id is: " + list_id)
-    owner_id = rental['renter_id']
+    owner_id = rental['owner_id'] #put as renter_id if you want to test -> setItems as ur email in add-rental
     print("owner_id" + owner_id)
     # owner_phone_number = invoke_http(user_url+owner_id, 'POST', listing)
     owner_phone_number = "+6592385972"
