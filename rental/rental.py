@@ -22,8 +22,7 @@ class Rental(db.Model):
 
 
  
-    def __init__(self, rental_id,listing_id,owner_id, renter_id, rent_start_date, rent_end_date, total_price, rental_status): # constructor in an object oriented approach
-        self.rental_id=rental_id
+    def __init__(self, listing_id,owner_id, renter_id, rent_start_date, rent_end_date, total_price, rental_status): # constructor in an object oriented approach
         self.owner_id = owner_id
         self.listing_id = listing_id
         self.renter_id = renter_id

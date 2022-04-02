@@ -2,7 +2,7 @@
 
 <script>
   window.sessionStorage;  // <!-- this is to activate session storage-->
-  sessionStorage.getItem("listing_id");
+  sessionStorage.setItem("user_id", "peter@gmail.com");
 </script>
 <html>
 
@@ -140,7 +140,7 @@
                 "<td>" + lists.brand + "</td>" +
                 "<td> $" + lists.daily_rate + " /day</td>" +
                 "<td>" + availabiltity + "</td>"+
-                "<td><button type='button' class='btn btn-success btn-default active' onClick='OnRental'>Rent This</button></td>";
+                "<td> <button onclick ='onRent("+ lists.listing_id +")' id ='requestrent' type='button' class='btn btn-success btn-default active' value ='"+ lists.listing_id + "'> Rent This </button> </td></tr>"
               rows += "<tr>" + eachRow + "</tr>";
             }
           }
@@ -159,6 +159,51 @@
         showError('There is a problem retrieving Listing data, please try again later.<br />' + error);
       } // error
     });
+
+     async function onDelete(rental_value){
+
+            //Get form data
+            var rental_id = rental_value;
+            console.log(rental_id);
+
+
+
+            var serviceURL = "http://localhost:5305/rental" +"/"+ rental_id;
+            
+            try {
+                const response = await 
+                    fetch(
+                        serviceURL,{method: 'DELETE',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({rental_id:rental_id})
+
+            });
+                const data = response;
+                if (response.ok) {
+                    // open up ok message
+                    location.reload()
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+        };
+
+        async function onRent(x){
+
+          listing_id = x;
+          sessionStorage.setItem("listingidthatyouwanttorent", listing_id);
+          window.location.replace("../add-rental.html");
+          };
   </script>
 
   <!-- Bootstrap Javascript; at the end of the <body> -->
