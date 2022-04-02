@@ -83,11 +83,17 @@ def processAcceptRequest(listing,rental):
 
     print('\n-----Invoking rental microservice-----')
     rental_result = invoke_http(rental_URL, method='POST', json=rental)
-    print('rental_result:', rental_result)
+    rental_update = json.dumps(rental_result)
+    # Update rental_status
+    rental_update.update({"rental_status": "Accepted"})
+    print('rental_result:', rental_update)
 
     print('\n-----Invoking listing microservice-----')
     listing_result = invoke_http(listing_URL, method='POST', json=listing)
-    print('listing_result:', listing_result)
+    listing_update = json.dumps(listing_result)
+    # Update listing availability
+    listing_update.update({"availability": False})
+    print('listing_result:', listing_update)
     
     
     

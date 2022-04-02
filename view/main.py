@@ -1,6 +1,8 @@
 import traceback
 from pyrebase import pyrebase
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for, jsonify
+# from flask_session import Session
+# from firebase_admin import credentials
 
 app = Flask(__name__)       #Initialze flask constructor
 
@@ -14,10 +16,12 @@ config = {
   "storageBucket": "camera-rental-27d28.appspot.com",
   "messagingSenderId": "198594507826",
   "appId": "1:198594507826:web:b5e046244e00397357f82b",
-  "measurementId": "G-71JZ1N6ZPH"
+  "measurementId": "G-71JZ1N6ZPH",
+
 }
 
 #initialize firebase
+# app.secret_key='YdeGnJFEFp2Cc5v7L8wYy3D4bwZTTeDwQpOkuum9'
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
@@ -50,14 +54,21 @@ def signin():
         result = request.form           #Get the data
         email = result["email"]
         password = result["pass"]
+
         try:
             #Try signing in the user with the given information
             user = auth.sign_in_with_email_and_password(email, password)
+            # user=auth.refresh(user['refreshToken'])
+            # user_id=user['idToken']
+            # session['usr']=user_id
+
             #Insert the user data in the global person
             global person
             person["is_logged_in"] = True
             person["email"] = user["email"]
             person["uid"] = user["localId"]
+            # print(session['usr'])
+
             #Get the name of the user
             data = db.child("users").get()
             person["name"] = data.val()[person["uid"]]["name"]
@@ -68,6 +79,7 @@ def signin():
             return redirect(url_for('login'))
     else:
         if person["is_logged_in"] == True:
+           
             return render_template("index.html", email = person["email"], name = person["name"])
         else:
             return redirect(url_for('login'))
@@ -87,6 +99,10 @@ def register():
             auth.create_user_with_email_and_password(email, password)
             #Login the user
             user = auth.sign_in_with_email_and_password(email, password)
+            # user=auth.refresh(user['refreshToken'])
+            # user_id=user['idToken']
+            # session['usr']=user_id
+
             #Add data to global person
             global person
             person["is_logged_in"] = True

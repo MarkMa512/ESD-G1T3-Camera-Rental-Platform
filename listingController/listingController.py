@@ -6,7 +6,7 @@ import sys
 import json
 
 import pika
-import amqp_setup
+# import amqp_setup
 
 import requests
 from complex.invokes import invoke_http
@@ -14,12 +14,22 @@ from complex.invokes import invoke_http
 app = Flask(__name__)
 CORS(app)
 
+"""
+For localhost testing:
+"""
+email_url = "http://localhost:5301/email"
+image_url = "http://localhost:5302/image"
+sms_url = "http://localhost:5306/sms"
+listing_url = "http://localhost:5304/"
 
-user_url = 'http://user-management:5111/user'# URL used to retrieve User information
-listing_url = "http://localhost:5100/" # URL used to send listing information
-image_url = "http://localhost:5000/"  # URL used to retrieve images
-sms_url = "http://localhost:5200/"  # URL used to send SMS
-email_url = "http://localhost:5200/"  # URL used to send email
+"""
+for docker deployment
+"""
+# email_url = os.environ.get('EMAIL_URL')
+# image_url = os.environ.get('IMAGE_URL')
+# user_url = os.environ.get('USER_URL')
+# sms_url = os.environ.get('SMS_URL')
+# list_url = os.environ.get('LIST_URL')
 
 
 @app.route("/createListing", methods=['POST'])
