@@ -41,7 +41,7 @@ def signup():
 @app.route("/welcome")
 def welcome():
     if person["is_logged_in"] == True:
-        return render_template("welcome.html", email = person["email"], name = person["name"])
+        return render_template("welcome.html", email = person["email"], name = person["name"],uid=person['uid'])
     else:
         return redirect(url_for('login'))
 
@@ -103,15 +103,17 @@ def register():
             person['address']=addr
             person['phone']=phone
             #Append data to the firebase realtime database
-            data = {"name": name, "email": email, 'address':addr,'phone':phone}
+            data = {"name": name, "email": email, 'address':addr,'phone':phone,'user_id':user['localId']}
             db.child("users").child(user["localId"]).set(data)
             #Go to welcome page
             return redirect(url_for('welcome'))
         except :
-            traceback.print_exc()
+            traceback.print_exc
+            dumps(result)
+            # return render_template('signup.html',error=errorMsgp)
             #If there is any error, redirect to register
             # return redirect(url_for('register'))
-            dumps(result)
+           
             #return jsonify({
             #    "code":500,
             #    "message":"Error detected when adding user."
@@ -122,25 +124,18 @@ def register():
         else:
             return redirect(url_for('register'))
 
-@app.route('/user_info')
-def user_info():
-    token=session['user']
-    user=auth.get_account_info(token)
-    print(user)
-    return render_template('welcome.html')
+# @app.route('/user_info')
+# def user_info():
+#     token=session['user']
+#     user=auth.get_account_info(token)
+#     print(user)
+#     return render_template('welcome.html')
 
 # Retrieve all users
 @app.route('/user')
 def get_all():
     users=db.child('users').get()
-    if len(users):
-        return users
-    return jsonify(
-            {
-                "code":404,
-                "message":"No user for now."
-            }
-        ),404
+    return users.val()
 
 # Find user by email
 @app.route('/user/<string:email>')
@@ -158,9 +153,13 @@ def find_user(email):
 # Retrieve user's phone (must use Peter's email)
 @app.route('/userphone/<string:email>')
 def get_phone(email):
+    user_id=person['uid']
     result=dict(db.child("users").order_by_child('email').equal_to(email).get().val())
+    # phoneNum=db.child('users').order_by_key().equal_to(user_id).get().val()
+    # return phoneNum
+    # return result
     if result: 
-        return result['U0aVbUvpdrUd675gbdVMXqeSjDf1']['phone']
+        return result[user_id]['phone']
     return jsonify(
             {
                 "code": 404,
