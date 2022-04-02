@@ -128,9 +128,11 @@ def update_listing(listing_id):
     if list:
         data = request.get_json()
         if data['brand']:
-            list.title = data['brand']
+            list.brand = data['brand']
         if data['model']:
-            list.price = data['model']
+            list.model = data['model']
+        if data['price']:
+            list.price = data['price']
         if data['listing_id']:
             list.listing_id = data['listing_id'] 
         if data['daily_rate']:

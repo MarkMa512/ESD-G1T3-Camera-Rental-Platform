@@ -165,8 +165,7 @@
                             model:model,
                             price:price, 
                             daily_rate:daily_rate, 
-                            listing_description:listing_description
-                        })
+                            listing_description:listing_description})
 
             });
                 const data = await response.json();
@@ -174,6 +173,8 @@
 
                 if (response.ok) {
                     // open up ok message
+                    console.log(response);
+                    window.location.replace("my-listing.html");
                     message = document.getElementById("message")
                     return false;
 
