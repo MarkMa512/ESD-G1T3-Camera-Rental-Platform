@@ -11,6 +11,7 @@ CORS(app)
 
 rental_URL = "http://localhost:5305/rental"
 listing_URL = "http://localhost:5304/listing"
+email_url = "http://localhost:5301/requestedEmail"
 
 
 
@@ -111,6 +112,64 @@ def processPlaceRental(rental):
 #             },
 #             "message": "Simulated shipping record error sent for error handling."
 #         }
+    """
+    invoke method to get user phone number
+    """
+    list_id = rental['listing_id']
+    print("list_id is: " + list_id)
+    owner_id = rental['renter_id']
+    print("owner_id" + owner_id)
+    # owner_phone_number = invoke_http(user_url+owner_id, 'POST', listing)
+    owner_phone_number = "+6593835210"
+    data_pack = {"listing_id": list_id,
+                 "email": owner_id, "phone": owner_phone_number}
+    print(data_pack)
+
+    """
+    5. Invoke email microservice to send email to owner
+    """
+    # print('\n\n-----Invoking email microservice-----')
+
+    email_sending_result = invoke_http(
+        email_url, method="POST", json=data_pack)
+    print("email_sending_result:", email_sending_result, '\n')
+
+    sms_sending_result = invoke_http(
+    sms_url, method="POST", json=data_pack)
+    print("sms_sending_result:", sms_sending_result, '\n')
+
+    # Check the email sent result;
+    # if a failure, send it to the error microservice.
+    # code = email_send_result["code"]
+    # if code not in range(200, 300):
+    #     # Inform the error microservice
+    #     print('\n\n-----Publishing the (email error) message with routing_key=email.error-----')
+
+    #     # invoke_http(error_URL, method="POST", json=shipping_result)
+    #     message = json.dumps(email_send_result)
+    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.error",
+    #                                      body=message, properties=pika.BasicProperties(delivery_mode=2))
+
+    #     print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
+    #         code), email_send_result)
+
+    #     # 7. Return error
+    #     return {
+    #         "code": 400,
+    #         "data": {
+    #             "listring_creation_result": create_listing_result,
+    #             "email_sent_result": email_send_result
+    #         },
+    #         "message": ""
+    #     }
+
+    # 5. Invoke sms microservice to send email to owner
+    # print('\n\n-----Invoking sms microservice-----')
+
+    # sms_sending_result = invoke_http(
+    #     sms_url, method="POST", json=data_pack)
+    # print("sms_sending_result:", sms_sending_result, '\n')
+
 
 
     # 7. Return created order, shipping record
