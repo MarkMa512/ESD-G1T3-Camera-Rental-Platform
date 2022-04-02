@@ -22,11 +22,11 @@ def accept_request():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            request = request.get_json()
-            print("\nReceived a rental request in JSON:", request)
+            rentRequest = request.get_json()
+            print("\nReceived a rental request in JSON:", rentRequest)
             # do the actual work
             # Send rental request info {cart items}
-            result = processAcceptRequest(request)
+            result = processAcceptRequest(rentRequest)
             
             return jsonify(result), result["code"]
 
@@ -49,11 +49,11 @@ def accept_request():
     }), 400
 
 
-def processAcceptRequest(request):
+def processAcceptRequest(rentRequest):
     
     # 1. Invoke the rental microservice
     print('\n-----Invoking rental microservice-----')
-    rental_result = invoke_http(rental_URL, method='POST', json=request)
+    rental_result = invoke_http(rental_URL, method='POST', json=rentRequest)
     # print('rental_result:', rental_result)
     
     # Check the rental result; if a failure, send it to the error microservice.
@@ -81,11 +81,11 @@ def processAcceptRequest(request):
     ###   Get listing_ID from rental_result? then invoke listing_url that has listing_ID appended behind..?
 
     print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL, method='POST', json=listing)
+    listing_result = invoke_http(listing_URL, method='POST', json=rentRequest['dats'])
 
     #### Get specific values from listing JSON 
     listing_result = json.loads()
-    details = 
+    # details = 
 
     print('listing_result:', listing_result)
     
@@ -107,8 +107,6 @@ def processAcceptRequest(request):
                 "data": {"listing_result": listing_result},
                 "message": "Listing details retrival failure sent for error handling."
             }
-
-
 
     #### Update rental status
 
