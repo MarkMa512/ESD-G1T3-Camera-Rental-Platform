@@ -29,7 +29,7 @@ def send_requested_email():
     return "success"
 
 
-@app.route("/requestedEmail", methods=['POST'])
+@app.route("/approvedEmail", methods=['POST'])
 def send_approved_email():
     subject = "There your request has been approved"
     body = "Your request" + request.json['listing_id'] + "has been approved"
