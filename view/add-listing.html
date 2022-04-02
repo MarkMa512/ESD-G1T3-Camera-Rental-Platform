@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
+    sessionStorage.setItem("user_id","peter@gmail.com");
 
 </script>
 <html>
@@ -92,16 +93,17 @@
             var serviceURL = "http://127.0.0.1:5304/listing";
 
             //Get form data
-            var owner = $("#owner_id").val();
+            
             var description = $('#listing_description').val();
             var price = parseFloat($('#price').val());
             var availabiltity = true;
             var brand = $('#brand').val();
             var model = $('#model').val();
             var daily_rate = parseFloat($("#daily_rate").val());
-            var image = "localhost:5302/latest";
+            var image = "http://localhost:5302/latest";
 
-
+            owner=sessionStorage.getItem("user_id");
+            
             try {
                 const response =
                     await fetch(
