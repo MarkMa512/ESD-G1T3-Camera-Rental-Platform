@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-  
-  </script>
+
+</script>
 <html>
 
 <head>
@@ -99,7 +99,7 @@
             var brand = $('#brand').val();
             var model = $('#model').val();
             var daily_rate = parseFloat($("#daily_rate").val());
-            var image = "https://cdn-icons.flaticon.com/png/512/2668/premium/2668896.png?token=exp=1648136178~hmac=390c472d50f5f1e9ee518a2c89658b86";
+            var image = "localhost:5302/latest";
 
 
             try {
@@ -108,7 +108,16 @@
                         serviceURL, {
                         method: 'POST',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ availabiltity: availabiltity, brand: brand, daily_rate: daily_rate, image_url: image, listing_description: description, model: model, owner_id: owner, price: price })
+                        body: JSON.stringify({
+                            availabiltity: availabiltity,
+                            brand: brand,
+                            daily_rate: daily_rate,
+                            image_url: image,
+                            listing_description: description,
+                            model: model,
+                            owner_id: owner,
+                            price: price
+                        })
                     });
                 const data = await response.json();
 
