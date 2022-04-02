@@ -12,6 +12,7 @@ CORS(app)
 rental_URL = "http://localhost:5305/rental"
 listing_URL = "http://localhost:5304/listing"
 email_url = "http://localhost:5301/requestedEmail"
+sms_url = "http://localhost:5306/requestedSMS"
 
 
 
@@ -120,7 +121,7 @@ def processPlaceRental(rental):
     owner_id = rental['renter_id']
     print("owner_id" + owner_id)
     # owner_phone_number = invoke_http(user_url+owner_id, 'POST', listing)
-    owner_phone_number = "+6593835210"
+    owner_phone_number = "+6592385972"
     data_pack = {"listing_id": list_id,
                  "email": owner_id, "phone": owner_phone_number}
     print(data_pack)
