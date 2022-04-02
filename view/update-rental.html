@@ -1,6 +1,6 @@
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-    sessionStorage.setItem("user_id" , "peter@gmail.com")
+    sessionStorage.setItem("user_id" , "ningzhi.ma.2018@scis.smu.edu.sg")
 </script>
 <!DOCTYPE html>
 <html>
@@ -113,9 +113,6 @@
     <label id="error" class="text-danger"></label>
     <script>
 
-
-
-
         // Helper function to display error message
         function showError(message) {
             // Display an error under the the predefined label with error as the id
@@ -210,16 +207,15 @@
             var rental_id = rental_value;
             console.log(rental_id);
 
-
-
-            var serviceURL = ""
+            var serviceURL = "http://localhost:5308/accept_rental"
+            var rental_status=''
 
             try {
                 const response = await 
                     fetch(
                         serviceURL,{method: 'POST',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({rental_id:rental_id})
+                        body: JSON.stringify({rental_id:rental_id,renter_id:renter, rent_start_date:rent_start_date, rent_end_date:rent_end_date,listing_id:listing_id, owner_id:owner, price:price,rental_status:'Approved'})
 
             });
                 const data = response;
@@ -248,7 +244,6 @@
             //Get form data
             var rental_id = rental_value;
             console.log(rental_id);
-
 
 
             var serviceURL = "http://localhost:5305/rental" +"/"+ rental_id;

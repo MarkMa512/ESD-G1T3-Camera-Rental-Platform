@@ -13,8 +13,8 @@ CORS(app)
 rental_URL = "http://localhost:5305/rental"
 listing_URL = "http://localhost:5304/listing"
 user_url = "http://localhost:5303/user"         # check port num
-activity_log_URL = "http://localhost:5003/activity_log"
-error_URL = "http://localhost:5004/error"
+# activity_log_URL = "http://localhost:5003/activity_log"
+# error_URL = "http://localhost:5004/error"
 
 
 @app.route("/accept_request", methods=['POST'])
@@ -26,9 +26,20 @@ def accept_request():
             print("\nReceived a rental request in JSON:", rental)
             # do the actual work
             # Send rental request info {cart items}
-            result = getRentalDetails(rental)
-            
-            return jsonify(result), result["code"]
+            # updatedRental = processRentalUpdate(rental)
+            print('\n-----Invoking rental microservice-----')
+            rental_result = invoke_http(rental_URL, method='POST', json=rental)
+            rental_update = json.load(rental_result)
+            # Update rental_status
+            rental_update.update({"rental_status": "Accepted"})
+            updatedStatus=json.dumps(rental_update)
+            print('rental_result:', updatedStatus)
+
+            # Get listingID from rental 
+            listingID = rental_update.get('listing_id')
+            updatedListing=processListingUpdate(listingID)
+
+            return updatedStatus, updatedListing, updatedListing["code"]
 
         except Exception as e:
             # Unexpected error in code
@@ -49,19 +60,49 @@ def accept_request():
     }), 400
 
 
-def getRentalDetails(rental):
+# def processRentalUpdate(rental):
+
+#     print('\n-----Invoking rental microservice-----')
+#     rental_result = invoke_http(rental_URL, method='POST', json=rental)
+#     rental_update = json.load(rental_result)
+#     # Update rental_status
+#     rental_update.update({"rental_status": "Accepted"})
+#     updatedStatus=json.dumps(rental_update)
+#     print('rental_result:', updatedStatus)
+
+#     return{'code':201,
+#         'data':{
+#             'rental_result':updatedStatus,
+#         }}
+
+def processListingUpdate(listingID):
+    print('\n-----Invoking listing microservice-----')
+    listing_result = invoke_http(listing_URL+'/'+listingID, method='POST', json=listing_result["data"])
+    listing_update = json.load(listing_result)
+    # Update listing availability
+    listing_update.update({"availability": False})
+    updatedListing=json.dumps(listing_update)
+    print('listing_result:', updatedListing)
+
+    return{'code':201,
+        'data':{
+            'rental_result':updatedListing,
+        }}
+
+
+# def getRentalDetails(rental):
     
     # 1. Invoke the rental microservice
-    print('\n-----Invoking rental microservice-----')
-    rental_result = invoke_http(rental_URL, method='POST', json=rental)
-    print('rental_result:', rental_result)
+    # print('\n-----Invoking rental microservice-----')
+    # rental_result = invoke_http(rental_URL, method='POST', json=rental)
+    # print('rental_result:', rental_result)
     
     # Check the rental result; if a failure, send it to the error microservice.
-    code = rental_result["code"]
-    if code not in range(200, 300):
+    # code = rental_result["code"]
+    # if code not in range(200, 300):
 
-        # Inform the error microservice
-        print('\n\n-----Invoking error microservice as request fails-----')
+    #     # Inform the error microservice
+    #     print('\n\n-----Invoking error microservice as request fails-----')
         
         ##### do amqp instead??
         # invoke_http(error_URL, method="POST", json=rental_result)
@@ -70,62 +111,26 @@ def getRentalDetails(rental):
         # print("Rental request status ({:d}) sent to the error microservice:".format(code), rental_result)
 
         # 7. Return error
-        return {
-                "code": 500,
-                "data": {"rental_result": rental_result},
-                "message": "Rental details retrival failure sent for error handling."
-            }
+        # return {
+        #         "code": 500,
+        #         "data": {"rental_result": rental_result},
+        #         "message": "Rental details retrival failure sent for error handling."
+        #     }
     
     # 2. Invoke listing microservice
     ###   Get listing_ID from rental_result? then invoke listing_url that has listing_ID appended behind..?
 
-def processAcceptRequest(listing,rental):
 
-    print('\n-----Invoking rental microservice-----')
-    rental_result = invoke_http(rental_URL, method='POST', json=rental)
-    rental_update = json.dumps(rental_result)
-    # Update rental_status
-    rental_update.update({"rental_status": "Accepted"})
-    print('rental_result:', rental_update)
-
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL, method='POST', json=listing)
-    listing_update = json.dumps(listing_result)
-    # Update listing availability
-    listing_update.update({"availability": False})
-    print('listing_result:', listing_update)
     
-    
-    
-    # Check the listing result; if a failure, send it to the error microservice.
-    # code = listing_result["code"]
-    # if code not in range(200, 300):
-
-        # # Inform the error microservice
-        # print('\n\n-----Invoking error microservice as request fails-----')
-        # invoke_http(error_URL, method="POST", json=listing_result)
-        # # - reply from the invocation is not used; 
-        # # continue even if this invocation fails
-        # print("Listing details status ({:d}) sent to the error microservice:".format(
-        # code), listing_result)
-
-        # # 7. Return error
-        # return {
-        #         "code": 500,
-        #         "data": {"listing_result": listing_result},
-        #         "message": "Listing details retrival failure sent for error handling."
-        #     }
-   
-
-
-
-
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
-          " for placing an order...")
-    app.run(host="0.0.0.0", port=5100, debug=True)
+          " for updating listing and rental status...")
+    app.run(port=5308, debug=True)
+
+
+
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program,
