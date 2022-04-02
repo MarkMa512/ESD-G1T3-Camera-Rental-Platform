@@ -1,17 +1,19 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import json
+
+import os
+import sys
+
+import requests
+from invokes import invoke_http
 
 import os
 import sys
 import json
 
 # import pika
-
-""""""
-# import amqp_setup
-
-import requests
-from invokes import invoke_http
+# import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -19,17 +21,16 @@ CORS(app)
 """
 For localhost testing:
 """
-email_url = "http://localhost:5301/email"
-image_url = "http://localhost:5302/image"
-sms_url = "http://localhost:5306/sms"
-listing_url = "http://localhost:5304/"
+email_url = "http://localhost:5301/listedEmail"
+# image_url = "http://localhost:5302/image"
+sms_url = "http://localhost:5306/listedSMS"
+listing_url = "http://localhost:5304/listing"
+user_url = "http://localhost:5303/userphone/"
 
 """
 for docker deployment
 """
 # email_url = os.environ.get('EMAIL_URL')
-# image_url = os.environ.get('IMAGE_URL')
-# user_url = os.environ.get('USER_URL')
 # sms_url = os.environ.get('SMS_URL')
 # list_url = os.environ.get('LIST_URL')
 
@@ -75,6 +76,7 @@ def process_create_listing(listing):
 
     if code not in range(200, 300):
         print('an error has occurred')
+        print(message)
 
         # # invoke_http(error_URL, method="POST", json=order_result)
         # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="listing.error",
@@ -116,12 +118,25 @@ def process_create_listing(listing):
     # continue even if this invocation fails
 
     """
+    invoke method to get user phone number
+    """
+    list_id = listing['listing_description']
+    print("list_id is: " + list_id)
+    owner_id = listing['owner_id']
+    print("owner_id" + owner_id)
+    # owner_phone_number = invoke_http(user_url+owner_id, 'POST', listing)
+    owner_phone_number = "+6592385972"
+    data_pack = {"listing_id": list_id,
+                 "email": owner_id, "phone": owner_phone_number}
+    print(data_pack)
+
+    """
     5. Invoke email microservice to send email to owner
     """
-    print('\n\n-----Invoking email microservice-----')
+    # print('\n\n-----Invoking email microservice-----')
 
     email_sending_result = invoke_http(
-        email_url, method="POST", json=create_listing_result['data'])
+        email_url, method="POST", json=data_pack)
     print("email_sending_result:", email_sending_result, '\n')
 
     # Check the email sent result;
@@ -150,10 +165,10 @@ def process_create_listing(listing):
     #     }
 
     # 5. Invoke sms microservice to send email to owner
-    print('\n\n-----Invoking sms microservice-----')
+    # print('\n\n-----Invoking sms microservice-----')
 
     sms_sending_result = invoke_http(
-        sms_url, method="POST", json=create_listing_result['data'])
+        sms_url, method="POST", json=data_pack)
     print("sms_sending_result:", sms_sending_result, '\n')
 
     # Check the shipping result;
@@ -186,6 +201,21 @@ def process_create_listing(listing):
         "code": 201,
         "data": {
             "create_listing_result": create_listing_result,
-            "email_sent_result": sms_sending_result
+            # "email_sent_result": sms_sending_result
         }
     }
+
+
+# Execute this program if it is run as a main script (not by 'import')
+if __name__ == "__main__":
+    print("This is flask " + os.path.basename(__file__) +
+          " for placing an order...")
+    app.run(port=5309, debug=True)
+    # Notes for the parameters:
+    # - debug=True will reload the program automatically if a change is detected;
+    #   -- it in fact starts two instances of the same flask program,
+    #       and uses one of the instances to monitor the program changes;
+    # - host="0.0.0.0" allows the flask program to accept requests sent from any IP/host (in addition to localhost),
+    #   -- i.e., it gives permissions to hosts with any IP to access the flask program,
+    #   -- as long as the hosts can already reach the machine running the flask program along the network;
+    #   -- it doesn't mean to use http://0.0.0.0 to access the flask program.
