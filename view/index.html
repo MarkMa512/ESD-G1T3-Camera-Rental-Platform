@@ -85,6 +85,7 @@
           <th>Brand</th>
           <th>Rental Rate</th>
           <th>Availability</th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="ListingTable"></tbody>
@@ -137,7 +138,8 @@
                 "<td>" + lists.model + "</td>" +
                 "<td>" + lists.brand + "</td>" +
                 "<td> $" + lists.daily_rate + " /day</td>" +
-                "<td>" + availabiltity + "</td>";
+                "<td>" + availabiltity + "</td>"+
+                "<td><button type='button' class='btn btn-success btn-default active'>Rent This</button></td>";
               rows += "<tr>" + eachRow + "</tr>";
             }
           }
