@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <script>
     window.sessionStorage; 
-    sessionStorage.setItem("user_id","kristi.jauw1708@gmail.com");
+    sessionStorage.setItem("user_id","1");
 </script>
 <html>
 <head>
@@ -138,13 +138,15 @@
                         }
 
                         if(lists.owner_id==user_id){
+    
                        eachRow ="<td><img width='150' height='100' src='" + lists.image_url + "'></td>" +
                                 "<td> " + lists.model + "</td>" +
                                 "<td>" + lists.brand + "</td>" +
                                 "<td> $" + lists.daily_rate + " /day</td>" +
                                 "<td>" + availabiltity + "</td>"+
                                 "<td><a href='update-listing.html'"+lists.listing_id+">Update Listing</a></td>"+
-                                "<td> <button onClick ='onDelete()' id ='deletebutton' type='button' class='btn btn-danger btn-default active' value ='"+ lists.listing_id+ "'> Delete </button> </td>";
+                                "<td> <button onClick ='onDelete("+lists.listing_id+")' id ='deletebutton" + lists.listing_id + "'  "
+                                + "type='button' class='btn btn-danger btn-default active' value =' "+ lists.listing_id+ " '> Delete </button> </td>"; 
                        rows += "<tr>" + eachRow + "</tr>";
                        
                         }
@@ -168,10 +170,9 @@
                 } // error
         });
 
-        async function onDelete(){
-
+        async function onDelete(x){
             //Get form data
-            var listing_id = $("#deletebutton").val();
+            var listing_id = x
             console.log(listing_id)
   
             var serviceURL = "http://localhost:5000/listing/"+listing_id;
