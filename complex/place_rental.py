@@ -30,7 +30,7 @@ def place_rental():
 
             # do the actual work
             # 1. Send order info {cart items}
-            result = processPlaceOrder(rental)
+            result = processPlaceRental(rental)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -54,11 +54,11 @@ def place_rental():
     }), 400
 
 
-def processPlaceOrder(order):
+def processPlaceRental(rental):
     # 2. Send the order info {cart items}
     # Invoke the order microservice
     print('\n-----Invoking rental microservice-----')
-    rental_result = invoke_http(rental_URL, method='POST', json=order)
+    rental_result = invoke_http(rental_URL, method='POST', json=rental)
     print('rental_result:', rental_result)
   
 
@@ -72,21 +72,21 @@ def processPlaceOrder(order):
         print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
 
         # invoke_http(error_URL, method="POST", json=order_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="rental.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         # make message persistent within the matching queues until it is received by some receiver 
         # (the matching queues have to exist and be durable and bound to the exchange)
 
         # - reply from the invocation is not used;
         # continue even if this invocation fails        
-        print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
+        print("\nRental status ({:d}) published to the RabbitMQ Exchange:".format(
             code), rental_result)
 
         # 7. Return error
         return {
             "code": 500,
-            "data": {"order_result": rental_result},
-            "message": "Order creation failure sent for error handling."
+            "data": {"rental_result": rental_result},
+            "message": "Rental creation failure sent for error handling."
         }
 
     # Notice that we are publishing to "Activity Log" only when there is no error in order creation.
@@ -101,61 +101,17 @@ def processPlaceOrder(order):
         print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
 
         # invoke_http(activity_log_URL, method="POST", json=order_result)            
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="rental.info", 
             body=message)
     
     print("\nOrder published to RabbitMQ Exchange.\n")
     # - reply from the invocation is not used;
     # continue even if this invocation fails
-    
-    # 5. Send new order to shipping
-    # Invoke the shipping record microservice
-    print('\n\n-----Invoking shipping_record microservice-----')    
-    
-    shipping_result = invoke_http(
-        shipping_record_URL, method="POST", json=order_result['data'])
-    print("shipping_result:", shipping_result, '\n')
-
-    # Check the shipping result;
-    # if a failure, send it to the error microservice.
-    code = shipping_result["code"]
-    if code not in range(200, 300):
-        # Inform the error microservice
-        #print('\n\n-----Invoking error microservice as shipping fails-----')
-        print('\n\n-----Publishing the (shipping error) message with routing_key=shipping.error-----')
-
-        # invoke_http(error_URL, method="POST", json=shipping_result)
-        message = json.dumps(shipping_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="shipping.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
-        print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), shipping_result)
-
-        # 7. Return error
-        return {
-            "code": 400,
-            "data": {
-                "order_result": order_result,
-                "shipping_result": shipping_result
-            },
-            "message": "Simulated shipping record error sent for error handling."
-        }
-
-    # 7. Return created order, shipping record
-    return {
-        "code": 201,
-        "data": {
-            "order_result": order_result,
-            "shipping_result": shipping_result
-        }
-    }
-
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for placing an order...")
-    app.run(host="0.0.0.0", port=5100, debug=True)
+    app.run(port=5100, debug=True)
     # Notes for the parameters: 
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program, and uses one of the instances to monitor the program changes;
