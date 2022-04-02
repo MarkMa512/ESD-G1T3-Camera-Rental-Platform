@@ -1,0 +1,235 @@
+version: "3.8"
+
+volumes:
+  rabbitmq_data:
+
+services:
+
+  ###################################
+  #Order of start: 
+  # Database
+  # User
+  # Image: 
+  # Listing:
+  # Rental:
+  # SMS
+  # Email
+  # RabbitMQ 
+  # Activity 
+  # Error 
+  # create-listing 
+  # make-rental-request 
+  # accept-rental-request 
+  ###################################
+
+
+  #######################################################
+  # User: The User microservice
+  #######################################################
+  order:
+    build:
+      context: ./user/
+      dockerfile: user.Dockerfile
+    image: <markma512>/user:esdproject
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/order
+      PYTHONUNBUFFERED: 1
+
+  #######################################################
+  # Image: The Image microservice
+  #######################################################
+  image:
+    build:
+      context: ./image/
+      dockerfile: image.Dockerfile
+    image: <markma512>/image:esdproject
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+
+  #######################################################
+  # Listing: The Listing microservice
+  #######################################################
+  listing:
+    build:
+      context: ./listing/
+      dockerfile: listing.Dockerfile
+    image: <markma512>/listing:esdproject
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+
+  #######################################################
+  # Rental: The Rental microservice
+  #######################################################
+  rental:
+    build:
+      context: ./rental/
+      dockerfile: rental.Dockerfile
+    image: <markma512>/rental:esdproject
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+
+  #######################################################
+  # Email: The Email microservice
+  #######################################################
+  email:
+    build:
+      context: ./email/
+      dockerfile: email.Dockerfile
+    image: <markma512>/email:esdproject
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+
+  #######################################################
+  # SMS: The SMS microservice
+  #######################################################
+  sms:
+    build:
+      context: ./sms/
+      dockerfile: sms.Dockerfile
+    image: <markma512>/sms:esdproject
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esdproject-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  #################################################
+  # Activity Log: The Activity Log microservice
+  #################################################
+  activity_log:
+    build:
+      context: ./activity/
+      dockerfile: activity_log.Dockerfile
+    image: <markma512>/activity_log:esdproject
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+
+  ###################################
+  # Error: The Error microservice
+  ###################################
+  error:
+    build:
+      context: ./error/
+      dockerfile: error.Dockerfile
+    image: <markma512>/error:esdproject
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+
+  ###############################################
+  # create-listing 
+  # make-rental-request 
+  # accept-rental-request 
+  ###############################################
+  create_listing:
+    build:
+      context: ./create_listing/
+      dockerfile: create_listing.Dockerfile
+    image: <markma512>/place_order:esdproject
+    restart: always
+    depends_on:
+      - image
+      - listing
+      - activity_log
+      - error
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      order_URL: http://order:5001/order
+      shipping_record_URL: http://shipping_record:5002/shipping_record
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5100:5100"
+
+  ###############################################
+  # create-listing 
+  # make-rental-request 
+  # accept-rental-request 
+  ###############################################
+  place_rental:
+    build:
+      context: ./create_listing/
+      dockerfile: create_listing.Dockerfile
+    image: <markma512>/place_order:esdproject
+    restart: always
+    depends_on:
+      - image
+      - listing
+      - activity_log
+      - error
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      order_URL: http://order:5001/order
+      shipping_record_URL: http://shipping_record:5002/shipping_record
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5100:5100"
+
+  ###############################################
+  # create-listing 
+  # make-rental-request 
+  # accept-rental-request 
+  ###############################################
+  accept_rental:
+    build:
+      context: ./create_listing/
+      dockerfile: create_listing.Dockerfile
+    image: <markma512>/place_order:esdproject
+    restart: always
+    depends_on:
+      - image
+      - listing
+      - activity_log
+      - error
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      order_URL: http://order:5001/order
+      shipping_record_URL: http://shipping_record:5002/shipping_record
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5100:5100"
+
+  ##################################
+  # Book: The Book microservice
+  ##################################
+  book:
+    build:
+      context: ./
+      dockerfile: book.Dockerfile
+    image: <markma512>/book:esdproject
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/book
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5000:5000"
