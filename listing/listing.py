@@ -125,22 +125,29 @@ def create_list():
 @app.route("/listing/<string:listing_id>", methods=['PUT'])
 def update_listing(listing_id):
     list = Listing.query.filter_by(listing_id=listing_id).first()
+    
     if list:
         data = request.get_json()
         if data['brand']:
             list.brand = data['brand']
+
         if data['model']:
             list.model = data['model']
+
         if data['price']:
             list.price = data['price']
+
         if data['listing_id']:
             list.listing_id = data['listing_id'] 
+
         if data['daily_rate']:
             list.daily_rate = data['daily_rate']
+
         if data['listing_description']:
             list.listing_description = data['listing_description']  
         
         db.session.commit()
+
         return jsonify(
             {
                 "code": 200,
