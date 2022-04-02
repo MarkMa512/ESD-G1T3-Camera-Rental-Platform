@@ -77,7 +77,7 @@ services:
   #######################################################
   email:
     build:
-      context: ./email/
+      context: ./emailNotification/
       dockerfile: email.Dockerfile
     image: <markma512>/email:esdproject
     restart: always
@@ -89,7 +89,7 @@ services:
   #######################################################
   sms:
     build:
-      context: ./sms/
+      context: ./smsNotification/
       dockerfile: sms.Dockerfile
     image: <markma512>/sms:esdproject
     restart: always
