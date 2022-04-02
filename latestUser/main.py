@@ -107,29 +107,15 @@ def register():
             db.child("users").child(user["localId"]).set(data)
             #Go to welcome page
             return redirect(url_for('welcome'))
-        except :
+        except:
             traceback.print_exc
             dumps(result)
-            # return render_template('signup.html',error=errorMsgp)
-            #If there is any error, redirect to register
-            # return redirect(url_for('register'))
-           
-            #return jsonify({
-            #    "code":500,
-            #    "message":"Error detected when adding user."
-            #}), 500
+            
     else:
         if person["is_logged_in"] == True:
             return redirect(url_for('welcome'))
         else:
             return redirect(url_for('register'))
-
-# @app.route('/user_info')
-# def user_info():
-#     token=session['user']
-#     user=auth.get_account_info(token)
-#     print(user)
-#     return render_template('welcome.html')
 
 # Retrieve all users
 @app.route('/user')
@@ -155,9 +141,6 @@ def find_user(email):
 def get_phone(email):
     user_id=person['uid']
     result=dict(db.child("users").order_by_child('email').equal_to(email).get().val())
-    # phoneNum=db.child('users').order_by_key().equal_to(user_id).get().val()
-    # return phoneNum
-    # return result
     if result: 
         return result[user_id]['phone']
     return jsonify(
