@@ -85,7 +85,7 @@
 
             //Get form data
             var owner = sessionStorage.getItem("User_ID")
-            var serviceURL = "http://localhost:5000/listing"
+            var serviceURL = "http://localhost:5304/listing"
 
             try {
                     const response =
@@ -153,7 +153,7 @@
             var rental_id = $("#delete").val();
             console.log(rental_id)
 
-            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5304/listing" +"/"+ rental_id;
             
             try {
                 const response = await 
@@ -195,7 +195,7 @@
             console.log(rental_status)
             
 
-            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5304/rental" +"/"+ rental_id;
             
             try {
                 const response =

@@ -44,4 +44,4 @@ def get_img(id):
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5100, debug=True)
+    app.run(host='localhost', port=5302, debug=True)

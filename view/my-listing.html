@@ -113,7 +113,7 @@
         // - using await requires the function that calls it to be async
         $(async(event) => {           
             // Change serviceURL to your own
-            var serviceURL = "http://localhost:5000/listing";
+            var serviceURL = "http://localhost:5304/listing";
      
             try {
                 const response =
@@ -175,7 +175,7 @@
             var listing_id = x
             console.log(listing_id)
   
-            var serviceURL = "http://localhost:5000/listing/"+listing_id;
+            var serviceURL = "http://localhost:5304/listing/"+listing_id;
             
             try {
                 const response = await 

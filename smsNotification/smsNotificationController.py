@@ -31,4 +31,4 @@ def send_approved_sms():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=5306,debug=True)

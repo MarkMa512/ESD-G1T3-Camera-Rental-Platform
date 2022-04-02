@@ -130,7 +130,7 @@
 
             //Get form data
             var owner = sessionStorage.getItem("User_ID")
-            var serviceURL = "http://localhost:5000/rental"
+            var serviceURL = "http://localhost:5305/rental"
 
             try {
                     const response =
@@ -200,7 +200,7 @@
 
 
 
-            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5305/rental" +"/"+ rental_id;
             
             try {
                 const response = await 
@@ -242,7 +242,7 @@
             console.log(rental_status)
             
 
-            var serviceURL = "http://localhost:5000/rental" +"/"+ rental_id;
+            var serviceURL = "http://localhost:5305/rental" +"/"+ rental_id;
             
             try {
                 const response =
