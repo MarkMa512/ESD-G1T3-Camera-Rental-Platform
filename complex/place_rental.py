@@ -14,8 +14,8 @@ app = Flask(__name__)
 CORS(app)
 
 #book_URL = "http://localhost:5000/book"
-rental_URL = "http://localhost:5000/rental"
-listing_URL = "http://localhost:5001/listing"
+rental_URL = "http://localhost:5305/rental"
+listing_URL = "http://localhost:5304/listing"
 #activity_log_URL = "http://localhost:5003/activity_log"
 #error_URL = "http://localhost:5004/error"
 

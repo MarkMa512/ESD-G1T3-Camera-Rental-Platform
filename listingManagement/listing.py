@@ -6,6 +6,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/user_listing'
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -125,7 +126,7 @@ def create_list():
 def update_listing(listing_id):
 
     try:
-        listing= Listing.query.filter_by(listing_id=listing_id).first() 
+        listing = Listing.query.filter_by(listing_id=listing_id).first()
 
         if not listing:
             return jsonify(
@@ -150,15 +151,15 @@ def update_listing(listing_id):
                 }
             ), 200
     except Exception as e:
-         return jsonify(
-                {
-                    "code": 500,
-                    "data": {
-                        "listing_id": listing_id
-                    },
-                    "message": "An error occurred while updating the listing. " + str(e)
-                }
-            ), 500
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "listing_id": listing_id
+                },
+                "message": "An error occurred while updating the listing. " + str(e)
+            }
+        ), 500
 
 
 @app.route("/listing/<string:listing_id>", methods=['DELETE'])

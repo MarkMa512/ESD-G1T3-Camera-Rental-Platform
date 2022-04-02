@@ -1,6 +1,6 @@
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-    sessionStorage.setItem("User_ID","1");
+    sessionStorage.setItem("user_id" , "peter@gmail.com")
 </script>
 <!DOCTYPE html>
 <html>
@@ -85,8 +85,6 @@
     <h1 class="display-4 m-4 container mx-auto">Update Rental Status</h1>
 
     <div id="updatesuccessmessage" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully updated rental status.</div>
-    <div id="deletesuccessmessage" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully deleted your rental. </div>
-
     <div id="results">
         <table id="rentalTable" class='table table-striped border-1' id='rental-list' >
             <thead class='border-1'>
@@ -96,6 +94,7 @@
                     <th>End Date</th>
                     <th>Total rent price</th>
                     <th>Status</th>
+                    <th> </th>
                     <th> </th>
 
             </thead>
@@ -130,7 +129,7 @@
         $(async (event) => {
 
             //Get form data
-            var owner = sessionStorage.getItem("User_ID")
+            var owner = sessionStorage.getItem("user_id")
             var serviceURL = "http://localhost:5305/rental"
 
             try {
@@ -146,7 +145,7 @@
                         console.log(rentals);
 
                         for (r of rentals){
-                            if(r.owner_id == sessionStorage.getItem("User_ID")){
+                            if(r.owner_id == sessionStorage.getItem("user_id")){
                                 console.log(r)
                                 end_date = new Date(r.rent_end_date)
                                 end_date = end_date.toDateString()
@@ -159,9 +158,16 @@
                                         "<td>" + end_date + "</td>" +
                                         "<td> $" + r.total_price + "</td>";
 
+                                if(r.rental_status == "Pending"){
+                                    row += "<td> Pending Approval </td>"
+                                    row += "<td> <button onclick ='onAccept("+ r.rental_id +")' id ='accept' type='button' class='btn btn-success btn-default active' value ='"+ r.rental_id + "'> Accept </button> </td>"
+                                    row += "<td> <button onclick ='onDelete("+ r.rental_id +")' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
+                                }
+
+                                else{
                                 row += "<td> <select class='form-select'"+ "id='status' aria-label='Default select example'>";
 
-                                var statuses = ["Pending","Approved","Delivered", "Returned"]
+                                var statuses = ["Approved","Delivered", "Returned"]
                                 for(i=0; i<statuses.length ; i++){
                                     if(statuses[i] != r.rental_status){
                                         row += "<option value=" + statuses[i] + ">" + statuses[i] + "</option>"
@@ -174,8 +180,10 @@
                                 row += "<td> <button onclick ='onDelete("+ r.rental_id +")' id ='delete' type='button' class='btn btn-danger btn-default active' value ='"+ r.rental_id + "'> Delete </button> </td></tr>"
 
                                 // add all the rows to the table
-                                $('#rentalTable').append(row);
+                                
                             }
+                            $('#rentalTable').append(row);
+                        }
                         }
                     } else if (response.status == 404) {
                         // No books
@@ -196,6 +204,44 @@
 
             } // error
         });
+        async function onAccept(rental_value){
+
+            //invoke complex microservice 
+            var rental_id = rental_value;
+            console.log(rental_id);
+
+
+
+            var serviceURL = ""
+
+            try {
+                const response = await 
+                    fetch(
+                        serviceURL,{method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({rental_id:rental_id})
+
+            });
+                const data = response;
+                if (response.ok) {
+                    // open up ok message
+                    location.reload()
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+            };
+
 
         async function onDelete(rental_value){
 
@@ -218,8 +264,6 @@
                 const data = response;
                 if (response.ok) {
                     // open up ok message
-                    deletemessage = document.getElementById("deletesucessmessage")
-                    deletemessage.style.display = "block";
                     location.reload()
                     return false;
 
