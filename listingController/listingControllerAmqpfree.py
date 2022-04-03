@@ -40,7 +40,7 @@ def create_listing():
     # 1. validate the JSON sent over by the client
     if request.is_json:
         try:
-            listing = request.get_json()
+            listing = request.get_json() # lisitng is of type dict
             print("\n recieved listing creation request: ", listing)
 
             result = process_create_listing(listing)
@@ -121,18 +121,18 @@ def process_create_listing(listing):
     invoke method to get user phone number
     """
     print('\n\n-----Invoking user microservice to get phone number-----')
-    list_id = listing['listing_description']
-    print("list_id is: " + list_id)
+    list_description = listing['listing_description']
+    print("listing_description is: " + list_description)
 
     owner_id = listing['owner_id']
     print("owner_id is: " + owner_id)
 
     get_owner_phone_number_result = invoke_http(user_phone_url+owner_id, 'GET')
-    owner_phone_number = get_owner_phone_number_result['data']
+    owner_phone_number = get_owner_phone_number_result['data']['phone_number']
     print("owner_phone_number : " + owner_phone_number)
 
     data_pack = {
-        "listing_id": list_id,
+        "listing_id": list_description,
         "email": owner_id,
         "phone": owner_phone_number}
 

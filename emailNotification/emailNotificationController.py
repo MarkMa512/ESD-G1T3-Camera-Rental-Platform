@@ -11,7 +11,8 @@ CORS(app)
 @app.route("/listedEmail", methods=['POST'])
 def send_listed_email():
     subject = "Your listing has been created"
-    body = "your listing " + request.json['listing_id'] + " has been created"
+    body = "your listing " + \
+        request.json['listing_description'] + " has been created"
     to = request.json['email']
 
     emailNofication.email_alert(subject, body, to)
@@ -28,7 +29,7 @@ def send_listed_email():
 def send_requested_email():
     subject = "There is a new request for your listing"
     body = "There is a new request for your listing " + \
-        request.json['listing_id']
+        request.json['listing_description']
     to = request.json['email']
     emailNofication.email_alert(subject, body, to)
     return jsonify(
@@ -38,10 +39,12 @@ def send_requested_email():
         }
     )
 
+
 @app.route("/approvedEmail", methods=['POST'])
 def send_approved_email():
     subject = "There your request has been approved"
-    body = "Your request" + request.json['listing_id'] + "has been approved"
+    body = "Your request" + \
+        request.json['listing_description'] + "has been approved"
     to = request.json['email']
 
     emailNofication.email_alert(subject, body, to)
