@@ -25,7 +25,7 @@ email_url = "http://localhost:5301/listedEmail"
 # image_url = "http://localhost:5302/image"
 sms_url = "http://localhost:5306/listedSMS"
 listing_url = "http://localhost:5304/listing"
-user_url = "http://localhost:5303/userphone/"
+user_phone_url = "http://localhost:5303/userphone/"
 
 """
 for docker deployment
@@ -120,15 +120,23 @@ def process_create_listing(listing):
     """
     invoke method to get user phone number
     """
+    print('\n\n-----Invoking user microservice to get phone number-----')
     list_id = listing['listing_description']
     print("list_id is: " + list_id)
+
     owner_id = listing['owner_id']
-    print("owner_id" + owner_id)
-    # owner_phone_number = invoke_http(user_url+owner_id, 'POST', listing)
-    owner_phone_number = "+6592385972"
-    data_pack = {"listing_id": list_id,
-                 "email": owner_id, "phone": owner_phone_number}
-    print(data_pack)
+    print("owner_id is: " + owner_id)
+
+    get_owner_phone_number_result = invoke_http(user_phone_url+owner_id, 'GET')
+    owner_phone_number = get_owner_phone_number_result['data']
+    print("owner_phone_number : " + owner_phone_number)
+
+    data_pack = {
+        "listing_id": list_id,
+        "email": owner_id,
+        "phone": owner_phone_number}
+
+    print("The data_pack is: " + data_pack)
 
     """
     5. Invoke email microservice to send email to owner
@@ -137,7 +145,7 @@ def process_create_listing(listing):
 
     email_sending_result = invoke_http(
         email_url, method="POST", json=data_pack)
-    print("email_sending_result:", email_sending_result, '\n')
+    print("email_sending_result: ", email_sending_result, '\n')
 
     # Check the email sent result;
     # if a failure, send it to the error microservice.
