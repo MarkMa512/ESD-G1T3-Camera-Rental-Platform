@@ -16,7 +16,7 @@ def send_listed_sms():
     return jsonify(
         {
             "code": 200,
-            "message": "Email sent"
+            "message": "SMS sent"
         }
     )
 
@@ -30,7 +30,7 @@ def send_requested_sms():
     return jsonify(
         {
             "code": 200,
-            "message": "Email sent"
+            "message": "SMS sent"
         }
     )
 
@@ -44,9 +44,10 @@ def send_approved_sms():
     return jsonify(
         {
             "code": 200,
-            "message": "Email sent"
+            "message": "SMS sent"
         }
     )
+
 
 if __name__ == "__main__":
     app.run(port=5306, debug=True)

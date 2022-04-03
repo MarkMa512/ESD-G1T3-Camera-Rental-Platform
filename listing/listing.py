@@ -13,6 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
 
+#try try try try
 
 class Listing(db.Model):
     __tablename__ = 'listing'
@@ -83,7 +84,7 @@ def find_by_listing_id(listing_id):
     return jsonify(
         {
             "code": 404,
-            "message": "list not found"
+            "message": "listing not found"
         }
     ), 404
 
@@ -147,7 +148,7 @@ def update_listing(listing_id):
             list.listing_description = data['listing_description']  
 
         if data['availabiltity']:
-            list.availabiltity=data['availabiltity']
+            list.availabiltity=int(data['availabiltity'])
         
         db.session.commit()
 
