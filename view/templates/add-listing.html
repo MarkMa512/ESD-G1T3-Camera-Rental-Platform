@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-
+    sessionStorage.setItem("user_id","ningzhi.ma.2018@scis.smu.edu.sg");
 </script>
 <html>
 
@@ -24,6 +24,9 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 
     <style>
         .form-group {
@@ -133,13 +136,13 @@
             //Prevents screen from refreshing when submitting
             event.preventDefault();
 
-            var serviceURL = "http://127.0.0.1:5304/listing";
+            var serviceURL = "http://localhost:5304/create_listing";
 
             //Get form data
             
             var description = $('#listing_description').val();
             var price = parseFloat($('#price').val());
-            var availabiltity = true;
+            var availabiltity = 1;
             var brand = $('#brand').val();
             var model = $('#model').val();
             var daily_rate = parseFloat($("#daily_rate").val());
@@ -168,7 +171,7 @@
 
                 if (response.ok) {
                     // relocate to home page
-                    window.location.replace("upload-image.html");
+                    window.location.replace("/uploadimage");
                     return false;
                 } else {
                     console.log(data);
@@ -188,6 +191,8 @@
     <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
         integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
         crossorigin='anonymous'></script>
+    
+        <script src="https://unpkg.com/flowbite@latest/dist/flowbite.js"></script>
 
 </body>
 

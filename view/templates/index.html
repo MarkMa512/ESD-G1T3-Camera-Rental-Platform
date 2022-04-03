@@ -2,7 +2,7 @@
 
 <script>
   window.sessionStorage;  // <!-- this is to activate session storage-->
-
+  sessionStorage.setItem("user_id","ningzhi.ma.2018@scis.smu.edu.sg");
 </script>
 <html>
 
@@ -138,7 +138,7 @@
             else {
               availabiltity = "Not Available"
             }
-            if (lists.owner_id != user_id) {
+            if (lists.get_id != user_id) {
               eachRow = "<td><img width='150' height='100' src='" + lists.image_url + "'></td>" +
                 "<td>" + lists.model + "</td>" +
                 "<td>" + lists.brand + "</td>" +
