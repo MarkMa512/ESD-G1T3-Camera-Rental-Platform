@@ -96,7 +96,7 @@
   </div>
 
   <script>
-    user_id = sessionStorage.getItem("user_id");
+    
     // Helper function to display error message
     function showError(message) {
       // Hide the table and button in the event of error
@@ -111,8 +111,8 @@
     // anonymous async function 
     // - using await requires the function that calls it to be async
     $(async () => {
-      // temp = document.getElementById("sessionEmail").innerHTML;
-      // sessionStorage.setItem("user_id", temp)
+      temp = document.getElementById("sessionEmail").innerHTML;
+      sessionStorage.setItem("user_id", temp)
 
       // Change serviceURL to your own
       var serviceURL = "http://127.0.0.1:5304/listing";
@@ -138,7 +138,7 @@
             else {
               availabiltity = "Not Available"
             }
-            if (lists.owner_id != user_id) {
+            if (lists.get_id != user_id) {
               eachRow = "<td><img width='150' height='100' src='" + lists.image_url + "'></td>" +
                 "<td>" + lists.model + "</td>" +
                 "<td>" + lists.brand + "</td>" +

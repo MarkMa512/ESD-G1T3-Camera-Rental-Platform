@@ -228,8 +228,8 @@
 
                 const data = response;
                 if (response.ok) {
-                    // open up ok message
-                    location.reload()
+                    message = document.getElementById("updatesuccessmessage")
+                    message.style.display = "block";
                     return false;
 
                 } else {
@@ -248,7 +248,7 @@
         
         async function viewOneListing(x){
             sessionStorage.setItem("listing_id", x);
-            window.location.replace("one-listing.html");
+            window.location.replace("/onelisting");
         }
 
         async function onDelete(rental_value){

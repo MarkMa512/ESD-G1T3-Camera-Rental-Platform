@@ -63,6 +63,18 @@ def updatelisting():
 def addrental():
     return render_template("add-rental.html")
 
+@app.route("/onelisting")
+def one_list():
+    return render_template("one-listing.html")
+
+@app.route("/addlisting")
+def addlisting():
+    return render_template("add-listing.html")
+
+@app.route("/uploadimage")
+def upload_image():
+    return render_template("upload-image.html")
+
 
 @app.route('/logout')
 def logout():

@@ -7,13 +7,13 @@ from flask_cors import CORS
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/user_listing'
+
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 CORS(app)
 
-#try try try try
 
 class Listing(db.Model):
     __tablename__ = 'listing'
@@ -23,7 +23,7 @@ class Listing(db.Model):
     model = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
     image_url = db.Column(db.String(255), nullable=False)
-    availabiltity = db.Column(db.Boolean(), nullable=False)
+    availabiltity = db.Column(db.Integer(), nullable=False)
     listing_description = db.Column(db.String(1023), nullable=False)
     daily_rate = db.Column(db.Float(precision=2), nullable=False)
 
@@ -99,7 +99,6 @@ def create_list():
     daily_rate = request.json.get('daily_rate')
     availabiltity = request.json.get('availabiltity')
     image_url = request.json.get('image_url')
-    # order = Order(customer_id=customer_id, status='NEW')
 
     listing = Listing(owner_id=owner_id, availabiltity=availabiltity, brand=brand, daily_rate=daily_rate,
                       image_url=image_url, listing_description=listing_description, model=model,  price=price)
@@ -126,7 +125,7 @@ def create_list():
 @app.route("/listing/<string:listing_id>", methods=['PUT'])
 def update_listing(listing_id):
     list = Listing.query.filter_by(listing_id=listing_id).first()
-    
+
     if list:
         data = request.get_json()
         if data['brand']:
@@ -139,17 +138,17 @@ def update_listing(listing_id):
             list.price = data['price']
 
         if data['listing_id']:
-            list.listing_id = data['listing_id'] 
+            list.listing_id = data['listing_id']
 
         if data['daily_rate']:
             list.daily_rate = data['daily_rate']
 
         if data['listing_description']:
-            list.listing_description = data['listing_description']  
+            list.listing_description = data['listing_description']
 
         if data['availabiltity']:
-            list.availabiltity=int(data['availabiltity'])
-        
+            list.availabiltity = int(data['availabiltity'])
+
         db.session.commit()
 
         return jsonify(
