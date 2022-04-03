@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 from werkzeug.utils import secure_filename
 from flask import redirect
 
@@ -30,7 +30,13 @@ def upload():
     img = Img(img=pic.read(), name=filename, mimetype=mimetype)
     db.session.add(img)
     db.session.commit()
-    return redirect("http://localhost:5303/mylisting")
+
+    return jsonify(
+        {
+            "code": 200,
+            "message": "Image uploaded successfully",
+        }
+    ),200
 
 
 @app.route('/<int:id>')
