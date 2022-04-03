@@ -44,6 +44,11 @@ def signup():
     return render_template("signup.html")
 
 
+@app.route("/mylisting")
+def mylisting():
+    return render_template("my-listing.html")
+
+
 @app.route('/logout')
 def logout():
     # remove the username from the session if it is there
@@ -63,10 +68,10 @@ def signin():
         session['email'] = email
         try:
             user = auth.sign_in_with_email_and_password(email, password)
-            userId=user['localId']
-            session['id']=userId
+            userId = user['localId']
+            session['id'] = userId
             global uid
-            uid=userId
+            uid = userId
 
             userdetails = dict(db.child('users').child(userId).get().val())
             username = userdetails['name']
@@ -79,12 +84,13 @@ def signin():
 
     return render_template('login.html')
 
+
 @app.route('/index')
 def home():
     try:
         print(session['email'])
-        name=session['name']
-        return render_template("index.html",name=name)
+        name = session['name']
+        return render_template("index.html", name=name)
     except:
         return redirect(url_for('login'))
 
@@ -97,18 +103,19 @@ def register():
         email = result["email"]
         password = result["pass"]
         name = result["name"]
-        addr=result['addr']
-        phone=result['phone']
-        session['name']=name
-        sessionemail=email
+        addr = result['addr']
+        phone = result['phone']
+        session['name'] = name
+        sessionemail = email
         global uid
-            
+
         try:
-            user=auth.create_user_with_email_and_password(email, password)
-            #Append data to the firebase realtime database
-            data = {"name": name, "email": email, 'address':addr,'phone':phone}
-            session['id']=user['localId']
-            uid=user['localId']
+            user = auth.create_user_with_email_and_password(email, password)
+            # Append data to the firebase realtime database
+            data = {"name": name, "email": email,
+                    'address': addr, 'phone': phone}
+            session['id'] = user['localId']
+            uid = user['localId']
             db.child("users").child(user["localId"]).set(data)
 
             # Go to index page
@@ -145,9 +152,10 @@ def find_user(email):
 
 @app.route('/userphone/<string:email>')
 def get_phone(email):
-    userid=uid
-    result=dict(db.child("users").order_by_child('email').equal_to(email).get().val())
-    if result: 
+    userid = uid
+    result = dict(db.child("users").order_by_child(
+        'email').equal_to(email).get().val())
+    if result:
         user_phone_number = result[userid]['phone']
         return jsonify(
             {
@@ -166,8 +174,9 @@ def get_phone(email):
 # display the user id
 @app.route('/userid')
 def getId():
-    output=uid
+    output = uid
     return jsonify(output)
+
 
 if __name__ == "__main__":
     app.run(port=5303, debug=True)
