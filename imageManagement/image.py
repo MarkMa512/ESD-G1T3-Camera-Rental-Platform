@@ -30,12 +30,13 @@ def upload():
     img = Img(img=pic.read(), name=filename, mimetype=mimetype)
     db.session.add(img)
     db.session.commit()
+
     return jsonify(
         {
             "code": 200,
             "message": "Image uploaded successfully",
         }
-    )
+    ),200
 
 
 @app.route('/<int:id>')
