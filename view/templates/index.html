@@ -2,7 +2,6 @@
 
 <script>
   window.sessionStorage;  // <!-- this is to activate session storage-->
-  sessionStorage.setItem("user_id", "testing.com");
 </script>
 <html>
 
@@ -111,6 +110,9 @@
     // anonymous async function 
     // - using await requires the function that calls it to be async
     $(async () => {
+      temp = document.getElementById("sessionEmail").innerHTML;
+      sessionStorage.setItem("user_id", temp)
+
       // Change serviceURL to your own
       var serviceURL = "http://127.0.0.1:5304/listing";
 
@@ -205,6 +207,7 @@
           sessionStorage.setItem("listingidthatyouwanttorent", listing_id);
           window.location.replace("../add-rental.html");
           };
+
   </script>
 
   <!-- Bootstrap Javascript; at the end of the <body> -->
