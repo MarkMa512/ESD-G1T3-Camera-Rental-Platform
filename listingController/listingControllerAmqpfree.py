@@ -143,8 +143,8 @@ def process_create_listing(listing):
     print("The data_pack is: " + data_pack)
 
     """
-    5. Invoke email microservice to send email to owner
-    
+    Invoke email microservice to send email to owner
+
     """
     # print('\n\n-----Invoking email microservice-----')
 
@@ -154,47 +154,38 @@ def process_create_listing(listing):
 
     # Check the email sent result;
     # if a failure, send it to the error microservice.
-    # code = email_send_result["code"]
-    # if code not in range(200, 300):
+    code = email_sending_result["code"]
+    if code not in range(200, 300):
     #     # Inform the error microservice
-    #     print('\n\n-----Publishing the (email error) message with routing_key=email.error-----')
+         print('\n\n-----Publishing the (email error) message with routing_key=email.error-----')
 
     #     # invoke_http(error_URL, method="POST", json=shipping_result)
-    #     message = json.dumps(email_send_result)
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.error",
-    #                                      body=message, properties=pika.BasicProperties(delivery_mode=2))
+         message = json.dumps(email_sending_result)
+         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.error",
+                                          body=message, properties=pika.BasicProperties(delivery_mode=2))
 
-    #     print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
-    #         code), email_send_result)
+         print("\n email send status ({:d}) published to the RabbitMQ Exchange:".format(
+             code), email_sending_result)
 
-    #     # 7. Return error
-    #     return {
-    #         "code": 400,
-    #         "data": {
-    #             "listring_creation_result": create_listing_result,
-    #             "email_sent_result": email_send_result
-    #         },
-    #         "message": ""
-    #     }
 
     # 5. Invoke sms microservice to send email to owner
-    # print('\n\n-----Invoking sms microservice-----')
+    print('\n\n-----Invoking sms microservice-----')
 
     sms_sending_result = invoke_http(
         sms_url, method="POST", json=data_pack)
     print("sms_sending_result:", sms_sending_result, '\n')
 
-    # Check the shipping result;
+    # Check the sms_sending_result;
     # if a failure, send it to the error microservice.
-    # code = sms_sending_result["code"]
-    # if code not in range(200, 300):
+    code = sms_sending_result["code"]
+    if code not in range(200, 300):
     #     # Inform the error microservice
-    #     print('\n\n-----Publishing the (email error) message with routing_key=email.error-----')
+         print('\n\n-----Publishing the (email error) message with routing_key=email.error-----')
 
     #     # invoke_http(error_URL, method="POST", json=shipping_result)
-    #     message = json.dumps(sms_sending_result)
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.error",
-    #                                      body=message, properties=pika.BasicProperties(delivery_mode=2))
+         message = json.dumps(sms_sending_result)
+         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.error",
+                                          body=message, properties=pika.BasicProperties(delivery_mode=2))
 
     #     print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
     #         code), email_send_result)
@@ -214,7 +205,8 @@ def process_create_listing(listing):
         "code": 201,
         "data": {
             "create_listing_result": create_listing_result,
-            # "email_sent_result": sms_sending_result
+            "email_sent_result": email_sending_result, 
+            "sms_sending_result": sms_sending_result
         }
     }
 
