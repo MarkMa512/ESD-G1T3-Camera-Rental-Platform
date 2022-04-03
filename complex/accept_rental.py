@@ -17,29 +17,19 @@ user_url = "http://localhost:5303/user"         # check port num
 # error_URL = "http://localhost:5004/error"
 
 
-@app.route("/accept_request", methods=['POST'])
-def accept_request():
+@app.route("/accept_rental", methods=['POST'])
+def accept_rental():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            rental = request.get_json()
-            print("\nReceived a rental request in JSON:", rental)
+            rental_accept= request.get_json()
+            print("\nReceived an order in JSON:", rental_accept)
+
             # do the actual work
-            # Send rental request info {cart items}
-            # updatedRental = processRentalUpdate(rental)
-            print('\n-----Invoking rental microservice-----')
-            rental_result = invoke_http(rental_URL, method='POST', json=rental)
-            rental_update = json.load(rental_result)
-            # Update rental_status
-            rental_update.update({"rental_status": "Accepted"})
-            updatedStatus=json.dumps(rental_update)
-            print('rental_result:', updatedStatus)
-
-            # Get listingID from rental 
-            listingID = rental_update.get('listing_id')
-            updatedListing=processListingUpdate(listingID)
-
-            return updatedStatus, updatedListing, updatedListing["code"]
+            # 1. Send order info {cart items}
+            result = processAcceptRental(rental_accept)
+            result = processUpdateListing(result)
+            return jsonify(result), result["code"]
 
         except Exception as e:
             # Unexpected error in code
@@ -50,7 +40,7 @@ def accept_request():
 
             return jsonify({
                 "code": 500,
-                "message": "accept_rental_request.py internal error: " + ex_str
+                "message": "place_order.py internal error: " + ex_str
             }), 500
 
     # if reached here, not a JSON request.
@@ -60,75 +50,93 @@ def accept_request():
     }), 400
 
 
-# def processRentalUpdate(rental):
+def processAcceptRental(rental_accept):
+    # 2. Send the order info {cart items}
+    # Invoke the order microservice
+    print("\n-----  Invoking Order Micro Service ------- ")
+    rental2_URL = rental_URL + "/" + str(rental_accept["rental_id"])
+    rental_accept_result = invoke_http(rental2_URL, method = "PUT", json = rental_accept)
+    print('rental_result:', rental_accept_result)
 
-#     print('\n-----Invoking rental microservice-----')
-#     rental_result = invoke_http(rental_URL, method='POST', json=rental)
-#     rental_update = json.load(rental_result)
-#     # Update rental_status
-#     rental_update.update({"rental_status": "Accepted"})
-#     updatedStatus=json.dumps(rental_update)
-#     print('rental_result:', updatedStatus)
+def processUpdateListing(result2):
+    print("\n---- INVOKING LISTING MICROSERVICE -------")
+    listing2_URL = listing_URL + "/" + str(result2["listing_id"])
+    listing_update_result = invoke_http(listing2_URL, method = "GET", json=)
 
-#     return{'code':201,
-#         'data':{
-#             'rental_result':updatedStatus,
-#         }}
+    # # 4. Record new order
+    # print('\n\n-----Invoking activity_log microservice-----')
+    # invoke_http(activity_log_URL, method="POST", json=order_result)
+    # print("\nOrder sent to activity log.\n")
+    # # - reply from the invocation is not used;
+    # # continue even if this invocation fails
+    # # record the activity log anyway
 
-def processListingUpdate(listingID):
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL+'/'+listingID, method='POST', json=listing_result["data"])
-    listing_update = json.load(listing_result)
-    # Update listing availability
-    listing_update.update({"availability": False})
-    updatedListing=json.dumps(listing_update)
-    print('listing_result:', updatedListing)
-
-    return{'code':201,
-        'data':{
-            'rental_result':updatedListing,
-        }}
-
-
-# def getRentalDetails(rental):
-    
-    # 1. Invoke the rental microservice
-    # print('\n-----Invoking rental microservice-----')
-    # rental_result = invoke_http(rental_URL, method='POST', json=rental)
-    # print('rental_result:', rental_result)
-    
-    # Check the rental result; if a failure, send it to the error microservice.
-    # code = rental_result["code"]
+    # # Check the order result; if a failure, send it to the error microservice.
+    # code = order_result["code"]
     # if code not in range(200, 300):
-
-    #     # Inform the error microservice
-    #     print('\n\n-----Invoking error microservice as request fails-----')
-        
-        ##### do amqp instead??
-        # invoke_http(error_URL, method="POST", json=rental_result)
-        # - reply from the invocation is not used; 
-        # continue even if this invocation fails
-        # print("Rental request status ({:d}) sent to the error microservice:".format(code), rental_result)
-
-        # 7. Return error
-        # return {
-        #         "code": 500,
-        #         "data": {"rental_result": rental_result},
-        #         "message": "Rental details retrival failure sent for error handling."
-        #     }
-    
-    # 2. Invoke listing microservice
-    ###   Get listing_ID from rental_result? then invoke listing_url that has listing_ID appended behind..?
+    #     print('\n\n-----Invoking error microservice as order fails-----')
+    #     invoke_http(error_URL, method="POST", json=order_result)
+    #     # - reply from the invocation is not used; 
+    #     # continue even if this invocation fails
+    #     print("Order status ({:d}) sent to the error microservice:".format(
+    #         code), order_result)
 
 
-    
+    # Inform the error microservice
+
+    # 7. Return error
+    return {
+            "code": 500,
+            "data": {"rental_accept_result": rental_accept_result},
+            "message": "Order creation failure sent for error handling."
+        }
+
+
+    # 5. Send new order to shipping
+    # Invoke the shipping record microservice
+    print('\n\n-----Invoking shipping_record microservice-----')
+    shipping_result = invoke_http(
+        shipping_record_URL, method="POST", json=order_result['data'])
+    print("shipping_result:", shipping_result, '\n')
+
+
+    # Check the shipping result;
+    # if a failure, send it to the error microservice.
+    code = shipping_result["code"]
+    if code not in range(200, 300):
+
+
+    # Inform the error microservice
+        print('\n\n-----Invoking error microservice as shipping fails-----')
+        invoke_http(error_URL, method="POST", json=shipping_result)
+        print("Shipping status ({:d}) sent to the error microservice:".format(code), shipping_result)
+
+
+    # 7. Return error
+    return {
+            "code": 400,
+            "data": {
+                "order_result": order_result,
+                "shipping_result": shipping_result
+            },
+            "message": "Simulated shipping record error sent for error handling."
+        }
+
+
+    # 7. Return created order, shipping record
+    return {"code": 201,
+        "data": {
+            "order_result": order_result,
+            "shipping_result": shipping_result
+        }
+}
+
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
-          " for updating listing and rental status...")
+          " for placing an order...")
     app.run(port=5308, debug=True)
-
 
 
     # Notes for the parameters:
