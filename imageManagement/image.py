@@ -30,7 +30,7 @@ def upload():
     img = Img(img=pic.read(), name=filename, mimetype=mimetype)
     db.session.add(img)
     db.session.commit()
-    return redirect("http://localhost:5303/home")
+    return redirect("http://localhost:5303/mylisting")
 
 
 @app.route('/<int:id>')

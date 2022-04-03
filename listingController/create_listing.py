@@ -36,7 +36,7 @@ for docker deployment
 # list_url = os.environ.get('LIST_URL')
 
 
-@app.route("/createListing", methods=['POST'])
+@app.route("/create_listing", methods=['POST'])
 def create_listing():
     # 1. validate the JSON sent over by the client
     if request.is_json:
