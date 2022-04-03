@@ -77,13 +77,14 @@ def signin():
 
     return render_template('login.html')
 
-# @app.route('/index')
-# # def home():
-# #     print(session['email'])
-# #     name=session['name']
-# #     return render_template("index.html",name=name)
-#     # except KeyError:
-#     #     return redirect(url_for('login'))
+@app.route('/index')
+def home():
+    try:
+        print(session['email'])
+        name=session['name']
+        return render_template("index.html",name=name)
+    except:
+        return redirect(url_for('login'))
 
 
 # If someone clicks on register, they are redirected to /register
