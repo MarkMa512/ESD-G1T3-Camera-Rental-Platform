@@ -12,9 +12,10 @@ CORS(app)
 
 rental_URL = "http://localhost:5305/rental"
 listing_URL = "http://localhost:5304/listing"
-user_url = "http://localhost:5303/user"         # check port num
-# activity_log_URL = "http://localhost:5003/activity_log"
-# error_URL = "http://localhost:5004/error"
+email_url = "http://localhost:5301/requestedEmail"
+sms_url = "http://localhost:5306/requestedSMS"
+user_url = "http://localhost:5303/user"    
+
 
 
 @app.route("/accept_request", methods=['POST'])
@@ -62,20 +63,30 @@ def accept_request():
     }), 400
 
 
-# def processRentalUpdate(rental):
+def processRentalUpdate(rental):
 
-#     print('\n-----Invoking rental microservice-----')
-#     rental_result = invoke_http(rental_URL, method='POST', json=rental)
-#     rental_update = json.load(rental_result)
-#     # Update rental_status
-#     rental_update.update({"rental_status": "Accepted"})
-#     updatedStatus=json.dumps(rental_update)
-#     print('rental_result:', updatedStatus)
+    print('\n-----Invoking rental microservice-----')
+    rental_result = invoke_http(rental_URL, method='POST', json=rental)
 
-#     return{'code':201,
-#         'data':{
-#             'rental_result':updatedStatus,
-#         }}
+    # change the format to python dict
+    rental_update = json.load(rental_result)
+
+    # Update rental_status
+    rental_update.update({"rental_status": "Accepted"})
+    # go back to json format
+    updatedStatus=json.dumps(rental_update)
+
+    print('updated rental_result:', updatedStatus)
+
+
+    print('\n-----Invoking processListingUpdate to change-----')
+    listingID = rental_update.get('listing_id')
+    listing_info = processListingUpdate(listingID)
+
+    # return{'code':201,
+    #     'data':{
+    #         'rental_result':updatedStatus,
+    #     }}
 
 def processListingUpdate(listingID):
     print('\n-----Invoking listing microservice-----')
