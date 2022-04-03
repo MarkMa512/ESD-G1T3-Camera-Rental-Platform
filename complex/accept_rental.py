@@ -12,9 +12,10 @@ CORS(app)
 
 rental_URL = "http://localhost:5305/rental"
 listing_URL = "http://localhost:5304/listing"
-user_url = "http://localhost:5303/user"         # check port num
-# activity_log_URL = "http://localhost:5003/activity_log"
-# error_URL = "http://localhost:5004/error"
+email_url = "http://localhost:5301/requestedEmail"
+sms_url = "http://localhost:5306/requestedSMS"
+user_url = "http://localhost:5303/user"    
+
 
 
 @app.route("/accept_rental", methods=['POST'])
