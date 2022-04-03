@@ -1,6 +1,6 @@
 <script>
     window.sessionStorage;  // <!-- this is to activate session storage-->
-    sessionStorage.setItem("user_id" , "ningzhi.ma.2018@scis.smu.edu.sg")
+    sessionStorage.setItem("user_id" , "peter@gmail.com")
 </script>
 <!DOCTYPE html>
 <html>
@@ -63,7 +63,7 @@
           <div class="hidden w-full md:block md:w-auto" id="mobile-menu">
             <ul class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
               <li>
-                <a href="index.html"
+                <a href="./templates/index.html"
                   class="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
                   aria-current="page">Home</a>
               </li>
@@ -85,8 +85,11 @@
     <h1 class="display-4 m-4 container mx-auto">Update Rental Status</h1>
 
     <div id="updatesuccessmessage" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully updated rental status.</div>
+    <div id="norentalmsg" style = "display: none"class="p-3 mb-2 bg-info text-light"> You have no rental requests pending for approval nor have you rented out any yet.
+    </div>
+
     <div id="results">
-        <table id="rentalTable" class='table table-striped border-1' id='rental-list' >
+        <table id="rentalTable" class='table table-striped border-1' id='rental-list' style='text-align:center;">
             <thead class='border-1'>
                 <th>Listing ID</th>
                     <th>Rental ID</th>
@@ -99,11 +102,12 @@
 
             </thead>
         </table>
+        <div id = "norentalmsg"> </div>
     </div>
 
     <div id="results">
         <form id="status" method="GET">
-            <input type="submit" value="Confirm">
+            <input type="submit" value="Confirm" style= "display: none; background-color: green; padding: 8px; color: white; margin-left: 20px;" id="cfmbutton">
         </form>
     </div>
 
@@ -141,15 +145,16 @@
                         var rentals = data.data.rentals;
                         console.log(rentals);
 
+                       var row = "";
+
                         for (r of rentals){
                             if(r.owner_id == sessionStorage.getItem("user_id")){
-                                console.log(r)
                                 end_date = new Date(r.rent_end_date)
                                 end_date = end_date.toDateString()
                                 start_date = new Date(r.rent_start_date)
                                 start_date = start_date.toDateString()
 
-                                row ="<tr><td>" + r.listing_id + "</td>" +
+                                row ="<tr style='text-align:center;'><td> <button type = 'button' class = 'btn btn-success btn-default active' onclick ='viewOneListing("+ r.listing_id +")'>" + r.listing_id  +" </button> </td>" +
                                         "<td> <input type='hidden' id='rental_id' value="+ r.rental_id + ">" + r.rental_id + "</td>" +
                                         "<td>" +start_date + "</td>" +
                                         "<td>" + end_date + "</td>" +
@@ -162,6 +167,7 @@
                                 }
 
                                 else{
+                                document.getElementById("cfmbutton").style.display = "block";
                                 row += "<td> <select class='form-select'"+ "id='status' aria-label='Default select example'>";
 
                                 var statuses = ["Approved","Delivered", "Returned"]
@@ -181,6 +187,10 @@
                             }
                             $('#rentalTable').append(row);
                         }
+                        }
+                        if (row == ""){
+                            document.getElementById("norentalmsg").style.display = "block";
+                            
                         }
                     } else if (response.status == 404) {
                         // No books
@@ -237,7 +247,11 @@
 
             } // error
             };
-
+        
+        async function viewOneListing(x){
+            sessionStorage.setItem("listing_id", x);
+            window.location.replace("one-listing.html");
+        }
 
         async function onDelete(rental_value){
 

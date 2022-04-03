@@ -113,7 +113,7 @@
                                         "<td><input type='text' id='price' value='" + r.price + "'></td>" +
                                         "<td><input type='text' id='daily_rate' value='" + r.daily_rate + "'></td>" +
                                         "<td><input type='text' id='description' value='" + r.listing_description + "'></td>" +
-                                        "<td>" + avai + "</td>"+
+                                        "<td><input type='text' id='availabiltity' value='" + avai + "'></td>" +
                                         "<td> <button onClick ='onUpdate("+r.listing_id+")' id ='updatebutton" + r.listing_id + "'  "
                                             + "type='button' class='btn btn-danger btn-default active' value =' "+ r.listing_id+ " '> Update </button> </td>"; 
 
@@ -149,8 +149,14 @@
             var price = parseFloat($('#price').val());
             var daily_rate = parseFloat($("#daily_rate").val());
             var listing_description = $('#description').val();
+            var availabiltity = $("#availabiltity").val();
 
-            
+            if(availabiltity == "Not Available"){
+                availabiltity=0;
+            }
+            else{
+                availabiltity=1;
+            }
 
             var serviceURL = "http://localhost:5304/listing" +"/"+ listing_id;
             
@@ -165,7 +171,8 @@
                             model:model,
                             price:price, 
                             daily_rate:daily_rate, 
-                            listing_description:listing_description})
+                            listing_description:listing_description,
+                            availabiltity:availabiltity})
 
             });
                 const data = await response.json();

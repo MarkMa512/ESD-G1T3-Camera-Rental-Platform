@@ -9,7 +9,7 @@ import pika
 # import amqp_setup
 
 import requests
-from complex.invokes import invoke_http
+from invokes import invoke_http
 
 app = Flask(__name__)
 CORS(app)

@@ -145,6 +145,9 @@ def update_listing(listing_id):
 
         if data['listing_description']:
             list.listing_description = data['listing_description']  
+
+        if data['availabiltity']:
+            list.availabiltity=data['availabiltity']
         
         db.session.commit()
 
@@ -160,7 +163,7 @@ def update_listing(listing_id):
             "data": {
                 "listing_id": listing_id
             },
-            "message": "Book not found."
+            "message": "Listing not found."
         }
     ), 404
 
