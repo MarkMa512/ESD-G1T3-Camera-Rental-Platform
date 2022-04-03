@@ -55,6 +55,10 @@ def mylisting():
 def updaterental():
     return render_template("update-rental.html")
 
+@app.route("/updatelisting")
+def updatelisting():
+    return render_template("update-listing.html")
+
 @app.route("/addrental")
 def addrental():
     return render_template("add-rental.html")
