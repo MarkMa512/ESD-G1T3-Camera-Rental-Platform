@@ -24,9 +24,11 @@ def accept_request():
         try:
             rental = request.get_json()
             print("\nReceived a rental request in JSON:", rental)
+
             # do the actual work
             # Send rental request info {cart items}
             # updatedRental = processRentalUpdate(rental)
+            
             print('\n-----Invoking rental microservice-----')
             rental_result = invoke_http(rental_URL, method='POST', json=rental)
             rental_update = json.load(rental_result)
