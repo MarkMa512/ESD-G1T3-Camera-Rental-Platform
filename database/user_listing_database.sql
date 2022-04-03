@@ -24,7 +24,7 @@ create table listing(
     model varchar(255),
     price double,
     image_url varchar(255), 
-    availabiltity boolean, 
+    availabiltity int not null,
     listing_description varchar(1023), 
     daily_rate double, 
     

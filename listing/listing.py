@@ -147,7 +147,7 @@ def update_listing(listing_id):
             list.listing_description = data['listing_description']  
 
         if data['availabiltity']:
-            list.availabiltity=data['availabiltity']
+            list.availabiltity=int(data['availabiltity'])
         
         db.session.commit()
 

@@ -151,13 +151,6 @@
             var listing_description = $('#description').val();
             var availabiltity = $("#availabiltity").val();
 
-            if(availabiltity == "Not Available"){
-                availabiltity=0;
-            }
-            else{
-                availabiltity=1;
-            }
-
             var serviceURL = "http://localhost:5304/listing" +"/"+ listing_id;
             
             try {
