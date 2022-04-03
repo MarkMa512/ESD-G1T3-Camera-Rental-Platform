@@ -63,6 +63,10 @@ def updatelisting():
 def addrental():
     return render_template("add-rental.html")
 
+@app.route("/onelisting")
+def one_list():
+    return render_template("one-listing.html")
+
 
 @app.route('/logout')
 def logout():
