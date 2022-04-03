@@ -2,7 +2,7 @@
 
 <script>
   window.sessionStorage;  // <!-- this is to activate session storage-->
-  sessionStorage.setItem("user_id", "peter@gmail.com")
+
 </script>
 <html>
 
@@ -38,7 +38,7 @@
       <div class="flex items-center">
         <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Camera And Equipments
           Rental</span>
-          <div id="sessionEmail" class="hidden">{{session}}</div>
+        <div id="sessionEmail" class="hidden">{{session}}</div>
       </div>
       <button data-collapse-toggle="mobile-menu" type="button"
         class="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
@@ -58,26 +58,26 @@
       <div class="hidden w-full md:block md:w-auto" id="mobile-menu">
         <ul class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
           <li>
-            <a href="index.html"
+            <a href="/userindex"
               class="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
               aria-current="page">Home</a>
           </li>
           <li>
-            <a href="./my-listing.html"
+            <a href="/mylisting"
               class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
               My Listing</a>
           </li>
           <li>
-            <a href="../update-rental.html"
+            <a href="/updaterental"
               class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-               My Rentals</a>
+              My Rentals</a>
           </li>
           <li>Hello, {{name}}</li>
         </ul>
       </div>
     </div>
   </nav>
-  <div id="main-container" class="container">
+  <div id="main-container" class="container" >
     <h1 class="display-4">Listing</h1>
     <table class='table table-striped border-1'>
       <thead class='table-dark'>
@@ -143,8 +143,8 @@
                 "<td>" + lists.model + "</td>" +
                 "<td>" + lists.brand + "</td>" +
                 "<td> $" + lists.daily_rate + " /day</td>" +
-                "<td>" + availabiltity + "</td>"+
-                "<td> <button onclick ='onRent("+ lists.listing_id +")' id ='requestrent' type='button' class='btn btn-success btn-default active' value ='"+ lists.listing_id + "'> Rent This </button> </td></tr>"
+                "<td>" + availabiltity + "</td>" +
+                "<td> <button onclick ='onRent(" + lists.listing_id + ")' id ='requestrent' type='button' class='btn btn-success btn-default active' value ='" + lists.listing_id + "'> Rent This </button> </td></tr>"
               rows += "<tr>" + eachRow + "</tr>";
             }
           }
@@ -164,50 +164,51 @@
       } // error
     });
 
-     async function onDelete(rental_value){
+    async function onDelete(rental_value) {
 
-            //Get form data
-            var rental_id = rental_value;
-            console.log(rental_id);
+      //Get form data
+      var rental_id = rental_value;
+      console.log(rental_id);
 
 
 
-            var serviceURL = "http://localhost:5305/rental" +"/"+ rental_id;
-            
-            try {
-                const response = await 
-                    fetch(
-                        serviceURL,{method: 'DELETE',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({rental_id:rental_id})
+      var serviceURL = "http://localhost:5305/rental" + "/" + rental_id;
 
-            });
-                const data = response;
-                if (response.ok) {
-                    // open up ok message
-                    location.reload()
-                    return false;
+      try {
+        const response = await
+          fetch(
+            serviceURL, {
+            method: 'DELETE',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rental_id: rental_id })
 
-                } else {
-                    console.log(data);
-                    showError(data.message);
-                }
+          });
+        const data = response;
+        if (response.ok) {
+          // open up ok message
+          location.reload()
+          return false;
 
-            } catch (error) {
-                // Errors when calling the service; such as network error, 
-                // service offline, etc
-                showError
-                    ("There is a problem adding this update, please try again later. " + error);
+        } else {
+          console.log(data);
+          showError(data.message);
+        }
 
-            } // error
-        };
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        showError
+          ("There is a problem adding this update, please try again later. " + error);
 
-        async function onRent(x){
+      } // error
+    };
 
-          listing_id = x;
-          sessionStorage.setItem("listingidthatyouwanttorent", listing_id);
-          window.location.replace("../add-rental.html");
-          };
+    async function onRent(x) {
+
+      listing_id = x;
+      sessionStorage.setItem("listingidthatyouwanttorent", listing_id);
+      window.location.replace("/addrental");
+    };
 
   </script>
 
