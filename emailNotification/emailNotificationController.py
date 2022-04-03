@@ -16,7 +16,12 @@ def send_listed_email():
 
     emailNofication.email_alert(subject, body, to)
 
-    return "success"
+    return jsonify(
+        {
+            "code": 200,
+            "message": "Email sent"
+        }
+    )
 
 
 @app.route("/requestedEmail", methods=['POST'])
@@ -26,8 +31,12 @@ def send_requested_email():
         request.json['listing_id']
     to = request.json['email']
     emailNofication.email_alert(subject, body, to)
-    return "success"
-
+    return jsonify(
+        {
+            "code": 200,
+            "message": "Email sent"
+        }
+    )
 
 @app.route("/approvedEmail", methods=['POST'])
 def send_approved_email():
@@ -36,8 +45,13 @@ def send_approved_email():
     to = request.json['email']
 
     emailNofication.email_alert(subject, body, to)
-    return "success"
+    return jsonify(
+        {
+            "code": 200,
+            "message": "Email sent"
+        }
+    )
 
 
 if __name__ == "__main__":
-    app.run(port=5301,debug=True)
+    app.run(port=5301, debug=True)
