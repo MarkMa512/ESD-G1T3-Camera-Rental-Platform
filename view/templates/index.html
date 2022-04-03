@@ -113,7 +113,7 @@
     $(async () => {
       temp = document.getElementById("sessionEmail").innerHTML;
       sessionStorage.setItem("user_id", temp)
-
+      user_id = sessionStorage.getItem("user_id");
       // Change serviceURL to your own
       var serviceURL = "http://127.0.0.1:5304/listing";
 
