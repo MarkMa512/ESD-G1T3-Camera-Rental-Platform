@@ -48,6 +48,10 @@ def signup():
 def mylisting():
     return render_template("my-listing.html")
 
+@app.route("/updaterental")
+def mylisting():
+    return render_template("update-rental.html")
+
 
 @app.route('/logout')
 def logout():
