@@ -43,6 +43,9 @@ def login():
 def signup():
     return render_template("signup.html")
 
+@app.route("/userindex")
+def userindex():
+    return render_template("index.html")
 
 @app.route("/mylisting")
 def mylisting():
