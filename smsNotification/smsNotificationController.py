@@ -11,7 +11,7 @@ CORS(app)
 def send_listed_sms():
     to_number = request.json['phone']
     message = "your listing " + \
-        request.json['listing_id'] + " has been created"
+        request.json['listing_description'] + " has been created"
     smsNotification.send_sms(to_number, message)
     return jsonify(
         {
@@ -25,7 +25,7 @@ def send_listed_sms():
 def send_requested_sms():
     to_number = request.json['phone']
     message = "There is a new request for your listing " + \
-        request.json['listing_id']
+        request.json['listing_description']
     smsNotification.send_sms(to_number, message)
     return jsonify(
         {
@@ -38,7 +38,8 @@ def send_requested_sms():
 @app.route("/requestedSMS", methods=['POST'])
 def send_approved_sms():
     to_number = request.json['phone']
-    message = "Your request" + request.json['listing_id'] + "has been approved"
+    message = "Your request" + \
+        request.json['listing_description'] + "has been approved"
     smsNotification.send_sms(to_number, message)
     return jsonify(
         {
@@ -46,7 +47,6 @@ def send_approved_sms():
             "message": "Email sent"
         }
     )
-
 
 if __name__ == "__main__":
     app.run(port=5306, debug=True)

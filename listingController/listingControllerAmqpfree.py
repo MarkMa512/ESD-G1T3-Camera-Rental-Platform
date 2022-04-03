@@ -121,8 +121,8 @@ def process_create_listing(listing):
     invoke method to get user phone number
     """
     print('\n\n-----Invoking user microservice to get phone number-----')
-    list_id = listing['listing_description']
-    print("list_id is: " + list_id)
+    listing_description = listing['listing_description']
+    print("listing_description is: " + listing_description)
 
     owner_id = listing['owner_id']
     print("owner_id is: " + owner_id)
@@ -132,7 +132,7 @@ def process_create_listing(listing):
     print("owner_phone_number : " + owner_phone_number)
 
     data_pack = {
-        "listing_id": list_id,
+        "listing_id": listing_description,
         "email": owner_id,
         "phone": owner_phone_number}
 
