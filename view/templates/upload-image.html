@@ -57,8 +57,8 @@
     data = document.querySelector('#pic');
     owner=sessionStorage.getItem("user_id");
 
-    var formdata = new FormData();
-    formdata.append("snap",data);
+    //var formdata = new FormData();
+    //formdata.append("snap",data);
 
     console.log(formdata);
     
@@ -68,7 +68,8 @@
                 serviceURL, 
                 {
                 method: 'POST',
-                body: formdata
+                headers: { "Content-Type": "multipart/form-data" },
+                body: data //formdata
             });
         const data = await response.json();
 
