@@ -5,7 +5,6 @@ import json
 import os
 import sys
 
-import requests
 from invokes import invoke_http
 
 import os
@@ -14,7 +13,6 @@ import json
 
 import pika
 import amqp_setup
-import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -72,7 +70,8 @@ def process_create_listing(listing):
     1. Invoke the listing microservice to create the listing
     """
     print('\n ---Invoking listing microservice---')
-    create_listing_result = invoke_http(listing_url, 'POST', listing)
+    create_listing_result = invoke_http(
+        url=listing_url, method='POST', json=listing)
     # create_listing_result is a type of dictionary
 
     # Check the create listing result; if a failure, send it to the error microservice.
@@ -112,7 +111,7 @@ def process_create_listing(listing):
             '\n\n-----Publishing the (listing info) create_listing_message with routing_key=listing.info-----')
 
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="listing.info",
-                                         body=create_listing_message)
+                                         body=create_listing_message, properties=pika.BasicProperties(delivery_mode=2))
 
     print("\nlisting information published to RabbitMQ Exchange.\n")
     # - reply from the invocation is not used;
@@ -126,7 +125,8 @@ def process_create_listing(listing):
     print("listing_description is: " + listing_description)
     owner_id = listing['owner_id']
     print("owner_id is: " + owner_id)
-    get_owner_phone_number_result = invoke_http(user_phone_url+owner_id, 'GET')
+    get_owner_phone_number_result = invoke_http(
+        url=user_phone_url+owner_id, method='GET')
     # get_owner_phone_number_result is of type dict
     owner_phone_number = str(get_owner_phone_number_result['data'])
     print("owner_phone_number : " + owner_phone_number)
@@ -163,7 +163,7 @@ def process_create_listing(listing):
             '\n\n-----Publishing the (email info) email_sending_message with routing_key=email.info-----')
 
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.info",
-                                         body=email_sending_message)
+                                         body=email_sending_message, properties=pika.BasicProperties(delivery_mode=2))
 
     """
     4. Invoke SMS microservice to send email to owner
@@ -192,7 +192,7 @@ def process_create_listing(listing):
         print('\n\n-----Publishing the (email info) sms_sending_message with routing_key=sms.info-----')
 
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="sms.info",
-                                         body=sms_sending_message)
+                                         body=sms_sending_message, properties=pika.BasicProperties(delivery_mode=2))
 
     # 7. Return create_listing_result, email_sent_result, sms_sending_result
     return {
