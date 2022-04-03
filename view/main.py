@@ -1,10 +1,9 @@
 import traceback
 from pyrebase import pyrebase
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for, jsonify
-# from flask_session import Session
-# from firebase_admin import credentials
-
-app = Flask(__name__)       #Initialze flask constructor
+import requests
+import os
+from flask_session import Session
 
 #Firebase configuration
 config = {
@@ -19,15 +18,16 @@ config = {
   "measurementId": "G-71JZ1N6ZPH",
 
 }
+app = Flask(__name__)       #Initialze flask constructor
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+app.config.update(SECRET_KEY=os.urandom(24))
+# Session(app)
 
 #initialize firebase
-# app.secret_key='YdeGnJFEFp2Cc5v7L8wYy3D4bwZTTeDwQpOkuum9'
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
-
-#Initialze person as dictionary
-person = {"is_logged_in": False, "name": "", "email": "", "uid": "",'address':"",'phone':''}
 
 #Login
 @app.route("/")
@@ -39,93 +39,70 @@ def login():
 def signup():
     return render_template("signup.html")
 
-#Index page
-@app.route("/index")
-def home():
-    if person["is_logged_in"] == True:
-        return render_template("index.html", email = person["email"], name = person["name"])
-    else:
-        return redirect(url_for('login'))
+@app.route('/logout')
+def logout():
+   # remove the username from the session if it is there
+   session.clear()
+   return redirect(url_for('login'))
 
-#If someone clicks on login, they are redirected to /result
-@app.route("/home", methods = ["POST", "GET"])
+global sessionemail
+@app.route("/login", methods = ["POST", "GET"])
 def signin():
     if request.method == "POST":        #Only if data has been posted
-        result = request.form           #Get the data
+        result = request.form           #Get the data]
         email = result["email"]
         password = result["pass"]
-
+        session['email']=email
         try:
-            #Try signing in the user with the given information
             user = auth.sign_in_with_email_and_password(email, password)
-            # user=auth.refresh(user['refreshToken'])
-            # user_id=user['idToken']
-            # session['usr']=user_id
+            userId=user['localId']
+            session['id']=userId
 
-            #Insert the user data in the global person
-            global person
-            person["is_logged_in"] = True
-            person["email"] = user["email"]
-            person["uid"] = user["localId"]
-            # print(session['usr'])
+            userdetails=dict(db.child('users').child(userId).get().val())
+            username=userdetails['name']
+            sessionemail=userdetails['email']
+            session['name']=username
 
-            #Get the name of the user
-            data = db.child("users").get()
-            person["name"] = data.val()[person["uid"]]["name"]
-            #Redirect to index page
-            return render_template("index.html", email = person["email"], name = person["name"])
+            return render_template("index.html",name=username,session=sessionemail)
         except:
-            #If there is any error, redirect back to login
-            return redirect(url_for('login'))
-    else:
-        if person["is_logged_in"] == True:
-           
-            return render_template("index.html", email = person["email"], name = person["name"])
-        else:
-            return redirect(url_for('login'))
+            traceback.print_exc
+        
+    return render_template('login.html')
+
+# @app.route('/index')
+# # def home():
+# #     print(session['email'])
+# #     name=session['name']
+# #     return render_template("index.html",name=name)
+#     # except KeyError:
+#     #     return redirect(url_for('login'))
+
 
 #If someone clicks on register, they are redirected to /register
 @app.route("/register",methods=['POST', 'GET'])
 def register():
-    if request.method == "POST":        #Only listen to POST
+    if  request.method == "POST":     #Only if data has been posted
         result = request.form           #Get the data submitted
         email = result["email"]
         password = result["pass"]
         name = result["name"]
         addr=result['addr']
         phone=result['phone']
+        session['name']=name
+        sessionemail=email
+            
         try:
-            #Try creating the user account using the provided data
-            auth.create_user_with_email_and_password(email, password)
-            #Login the user
-            user = auth.sign_in_with_email_and_password(email, password)
-            # user=auth.refresh(user['refreshToken'])
-            # user_id=user['idToken']
-            # session['usr']=user_id
-
-            #Add data to global person
-            global person
-            person["is_logged_in"] = True
-            person["email"] = user["email"]
-            person["uid"] = user["localId"]
-            person["name"] = name
-            person['address']=addr
-            person['phone']=phone
+            user=auth.create_user_with_email_and_password(email, password)
             #Append data to the firebase realtime database
             data = {"name": name, "email": email, 'address':addr,'phone':phone}
+            session['id']=user['localId']
             db.child("users").child(user["localId"]).set(data)
-            #Go to index page
-            return render_template("index.html", email = person["email"], name = person["name"])
 
+            #Go to index page
+            return render_template("index.html", name=name, session=sessionemail)
         except:
             traceback.print_exc
-            # dumps(result)
-            
-    else:
-        if person["is_logged_in"] == True:
-            return render_template("index.html", email = person["email"], name = person["name"])
-        else:
-            return redirect(url_for('register'))
+    return render_template('signup.html')
 
 # Retrieve all users
 @app.route('/user')
@@ -149,10 +126,10 @@ def find_user(email):
 # Retrieve user's phone
 @app.route('/userphone/<string:email>')
 def get_phone(email):
-    user_id=person['uid']
+    userid=session['id']
     result=dict(db.child("users").order_by_child('email').equal_to(email).get().val())
     if result: 
-        return result[user_id]['phone']
+        return result[userid]['phone']
     return jsonify(
             {
                 "code": 404,
