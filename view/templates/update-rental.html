@@ -216,19 +216,16 @@
 
             //invoke complex microservice 
             var rental_id = rental_value;
-            console.log(rental_id);
 
             var serviceURL = "http://localhost:5308/accept_rental"
-            var rental_status=''
-
             try {
                 const response = await 
                     fetch(
                         serviceURL,{method: 'POST',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({rental_id:rental_id,renter_id:renter, rent_start_date:rent_start_date, rent_end_date:rent_end_date,listing_id:listing_id, owner_id:owner, price:price,rental_status:'Approved'})
-
+                        body: JSON.stringify({rental_id:rental_id, rental_status:"Approved"})
             });
+
                 const data = response;
                 if (response.ok) {
                     // open up ok message

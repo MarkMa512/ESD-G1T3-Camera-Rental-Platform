@@ -24,13 +24,14 @@ def accept_rental():
     if request.is_json:
         try:
             rental_accept= request.get_json()
-            print("\nReceived an order in JSON:", rental_accept)
+            print("\nReceived an rental request in JSON:", rental_accept)
 
             # do the actual work
             # 1. Send order info {cart items}
-            result = processAcceptRental(rental_accept)
-            result = processUpdateListing(result)
-            return jsonify(result), result["code"]
+            rental_accept_result = processAcceptRental(rental_accept)
+            listing_result = processGetListing(rental_accept_result)
+            listing_update_result = processUpdateListing(listing_result)
+            return jsonify(listing_update_result), listing_update_result["code"]
 
         except Exception as e:
             # Unexpected error in code
@@ -54,15 +55,82 @@ def accept_rental():
 def processAcceptRental(rental_accept):
     # 2. Send the order info {cart items}
     # Invoke the order microservice
-    print("\n-----  Invoking Order Micro Service ------- ")
+    print("\n-----  Invoking Rental Micro Service ------- ")
     rental2_URL = rental_URL + "/" + str(rental_accept["rental_id"])
     rental_accept_result = invoke_http(rental2_URL, method = "PUT", json = rental_accept)
     print('rental_result:', rental_accept_result)
 
-def processUpdateListing(result2):
-    print("\n---- INVOKING LISTING MICROSERVICE -------")
-    listing2_URL = listing_URL + "/" + str(result2["listing_id"])
-    listing_update_result = invoke_http(listing2_URL, method = "GET", json=)
+    code = rental_accept_result["code"]
+    message = json.dumps(rental_accept_result)
+
+    if code not in range(200,300):
+        print("Error has occurred")
+        print(message)
+
+        return {
+                "code": 500,
+                "data": {"rental_accept_result": rental_accept_result},
+                "message": "Rental update failure sent for error handling."
+            }
+    
+    else:
+        print("\nRental Accepted Successful ")
+        return rental_accept_result
+
+
+def processGetListing(rental_accept_result):
+    print("\n---- INVOKING GET LISTING MICROSERVICE -------")
+    print(rental_accept_result)
+    listing_id = rental_accept_result["data"]["listing_id"]
+    get_listing_url = listing_URL + "/" + str(listing_id)
+    listing_details = invoke_http(get_listing_url, method = "GET")
+    print("\n---------- LISTING DETAILS -----------", listing_details["data"])
+
+    code = listing_details["code"]
+    message = json.dumps(listing_details)
+
+    if code not in range(200,300):
+        print("An error has occurred")
+        print(message)
+
+        return {
+                "code": 500,
+                "data": {"Get Listing Result": listing_details},
+                "message": "Get Listing failure sent for error handling."
+            }
+    else:
+        print(" Get Listing Successful")
+        return listing_details
+
+def processUpdateListing(listing_result):
+    print("\n---- INVOKING UPDATE LISTING MICROSERVICE -------")
+    tosend = listing_result["data"]
+    tosend["availabiltity"] = "0"
+    listing_id = tosend["listing_id"]
+
+
+    listing_url_update = listing_URL + "/" + str(listing_id)
+    listing_update_result = invoke_http(listing_url_update, method = "PUT", json = tosend)
+    print("\n--------listing_update_result", listing_update_result)
+
+    code = listing_update_result["code"]
+    message = json.dumps(listing_update_result)
+
+    if code not in range(200,300):
+        print ("An error has occured")
+        print(message)
+
+        return {
+            "code": 500,
+            "data" : {
+                "Update Listing Result" : listing_update_result},
+                "message" : "Update listing failure sent for error handling."
+            }
+    else:
+        print("Listing Update is successful")
+        return listing_update_result
+    
+    
 
     # # 4. Record new order
     # print('\n\n-----Invoking activity_log microservice-----')
@@ -84,53 +152,6 @@ def processUpdateListing(result2):
 
 
     # Inform the error microservice
-
-    # 7. Return error
-    return {
-            "code": 500,
-            "data": {"rental_accept_result": rental_accept_result},
-            "message": "Order creation failure sent for error handling."
-        }
-
-
-    # 5. Send new order to shipping
-    # Invoke the shipping record microservice
-    print('\n\n-----Invoking shipping_record microservice-----')
-    shipping_result = invoke_http(
-        shipping_record_URL, method="POST", json=order_result['data'])
-    print("shipping_result:", shipping_result, '\n')
-
-
-    # Check the shipping result;
-    # if a failure, send it to the error microservice.
-    code = shipping_result["code"]
-    if code not in range(200, 300):
-
-
-    # Inform the error microservice
-        print('\n\n-----Invoking error microservice as shipping fails-----')
-        invoke_http(error_URL, method="POST", json=shipping_result)
-        print("Shipping status ({:d}) sent to the error microservice:".format(code), shipping_result)
-
-
-    # 7. Return error
-    return {
-            "code": 400,
-            "data": {
-                "order_result": order_result,
-                "shipping_result": shipping_result
-            },
-            "message": "Simulated shipping record error sent for error handling."
-        }
-
-
-    # 7. Return created order, shipping record
-    return {"code": 201,
-        "data": {
-            "order_result": order_result,
-            "shipping_result": shipping_result
-        }
-}
 
 
 # Execute this program if it is run as a main script (not by 'import')
