@@ -13,7 +13,6 @@ import json
 
 import pika
 import amqp_setup
-import requests
 
 app = Flask(__name__)
 CORS(app)
