@@ -42,7 +42,7 @@ def accept_rental():
 
             return jsonify({
                 "code": 500,
-                "message": "place_order.py internal error: " + ex_str
+                "message": "Place_Rental.py internal error: " + ex_str
             }), 500
 
     # if reached here, not a JSON request.

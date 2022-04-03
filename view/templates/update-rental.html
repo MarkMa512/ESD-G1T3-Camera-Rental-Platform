@@ -228,8 +228,8 @@
 
                 const data = response;
                 if (response.ok) {
-                    // open up ok message
-                    location.reload()
+                    message = document.getElementById("updatesuccessmessage")
+                    message.style.display = "block";
                     return false;
 
                 } else {
