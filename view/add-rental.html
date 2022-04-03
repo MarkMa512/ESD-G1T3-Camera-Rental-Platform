@@ -36,7 +36,7 @@
 
 </head>
 
-<body>
+<body onbeforeunload = "return Erase()" onload="return Check()">
     <h1 class="display-4 m-4 container mx-auto">Add a rental</h1>
     
     <form id='addRentalForm' class="p-4 container">
@@ -190,6 +190,16 @@
 
         //     } // error
         // });
+
+    function Erase(){
+        sessionStorage.removeItem("listingidthatyouwanttorent")
+    }
+
+    function Check(){
+        if(sessionStorage.getItem("listingidthatyouwanttorent") == null){
+            window.location.replace("templates/index.html");
+        }
+    }
 
 
     </script>

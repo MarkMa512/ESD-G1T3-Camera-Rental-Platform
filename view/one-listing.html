@@ -2,7 +2,7 @@
 <script>
     window.sessionStorage; 
     sessionStorage.setItem("user_id","peter@gmail.com");
-
+    sessionStorage.setItem("listing_id","1"); // hard code!!!! 
 </script>
 <html>
 <head>
@@ -34,7 +34,7 @@
  
 </head>
  
-<body >
+<body  onbeforeunload = "return Erase()" onload="return Check()">
     <nav class="border-gray-200 px-2 sm:px-4 py-2.5 rounded bg-gray-400 mb-10">
         <div class="container flex flex-wrap justify-between items-center mx-auto">
           <div class="flex items-center">
@@ -94,8 +94,6 @@
             </thead>
         	<tbody id="ListingTable"></tbody>
   </table>
-        <a id="addListingBtn" class="btn btn-primary" 
-     href="add-listing.html">Add another listing</a>
     </div>
 
     <form id="delete" method="GET"></form>
@@ -103,6 +101,7 @@
     <script>
 
         user_id=sessionStorage.getItem("user_id");
+        listing_id = sessionStorage.getItem("listing_id")
         console.log(user_id);
 
         // Helper function to display error message
@@ -120,7 +119,7 @@
         // - using await requires the function that calls it to be async
         $(async(event) => {           
             // Change serviceURL to your own
-            var serviceURL = "http://localhost:5304/listing";
+            var serviceURL = "http://localhost:5304/listing/" + listing_id;
      
             try {
                 const response =
@@ -129,14 +128,11 @@
                 );
                 const result = await response.json();
                  if (response.status === 200) {
-                    // success case
-                    var listings = result.data.listings;
-                    console.log(listings); 
+                     listing = result.data
                     var rows = "";
                     var availabiltity="";
-                   
-                    for (lists of listings) {
-                        if(lists.availabiltity == true){
+
+                        if(listing.availabiltity == true){
                             availabiltity = "Available"
                         }
                         else
@@ -144,21 +140,16 @@
                             availabiltity = "Not Available"
                         }
 
-                        if(lists.owner_id==user_id){
-    
-                       eachRow ="<td><img width='150' height='100' src='" + lists.image_url + "'></td>" +
-                                "<td> " + lists.model + "</td>" +
-                                "<td>" + lists.brand + "</td>" +
-                                "<td> $" + lists.daily_rate + " /day</td>" +
+                       eachRow ="<td><img width='150' height='100' src='" + listing.image_url + "'></td>" +
+                                "<td> " + listing.model + "</td>" +
+                                "<td>" + listing.brand + "</td>" +
+                                "<td> $" + listing.daily_rate + " /day</td>" +
                                 "<td>" + availabiltity + "</td>"+
-                                "<td><a href='update-listing.html'"+lists.listing_id+">Update Listing</a></td>"+
-                                "<td> <button onClick ='onDelete("+lists.listing_id+")' id ='deletebutton" + lists.listing_id + "'  "
-                                + "type='button' class='btn btn-danger btn-default active' value =' "+ lists.listing_id+ " '> Delete </button> </td>"; 
+                                "<td><a href='update-listing.html'"+listing.listing_id+">Update Listing</a></td>"+
+                                "<td> <button onClick ='onDelete("+listing.listing_id+")' id ='deletebutton" + listing.listing_id + "'  "
+                                + "type='button' class='btn btn-danger btn-default active' value =' "+ listing.listing_id+ " '> Delete </button> </td>"; 
                        rows += "<tr>" + eachRow + "</tr>";
                        
-                        }
-                        
-                    }
                     $('#ListingTable').append(rows);
                 
                         // add all the rows to the table
@@ -212,6 +203,17 @@
   
             } // error
         };
+
+        function Erase(){
+        sessionStorage.removeItem("listing_id");
+    }
+
+    function Check(){
+        if(sessionStorage.getItem("listing_id") == null){
+            window.location.replace("templates/index.html");
+        }
+    }
+
 
     </script>
     

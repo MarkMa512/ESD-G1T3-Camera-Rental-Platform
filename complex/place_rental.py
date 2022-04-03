@@ -13,6 +13,8 @@ rental_URL = "http://localhost:5305/rental"
 listing_URL = "http://localhost:5304/listing"
 email_url = "http://localhost:5301/requestedEmail"
 sms_url = "http://localhost:5306/requestedSMS"
+activity_url = ""
+error_url =""
 
 
 
@@ -54,6 +56,9 @@ def processPlaceRental(rental):
     print("\n-----  Invoking Order Micro Service ------- ")
     rental_result = invoke_http(rental_URL, method = "POST", json = rental)
     print('rental_result:', rental_result)
+
+    print("Invoking Activity_Log Microservice")
+
 
 #     # 4. Record new order
 #     print('\n\n-----Invoking activity_log microservice-----')

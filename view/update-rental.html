@@ -89,7 +89,7 @@
     </div>
 
     <div id="results">
-        <table id="rentalTable" class='table table-striped border-1' id='rental-list' >
+        <table id="rentalTable" class='table table-striped border-1' id='rental-list' style='text-align:center;">
             <thead class='border-1'>
                 <th>Listing ID</th>
                     <th>Rental ID</th>
@@ -154,7 +154,7 @@
                                 start_date = new Date(r.rent_start_date)
                                 start_date = start_date.toDateString()
 
-                                row ="<tr><td>" + r.listing_id + "</td>" +
+                                row ="<tr style='text-align:center;'><td> <button type = 'button' class = 'btn btn-success btn-default active' onclick ='viewOneListing("+ r.listing_id +")'>" + r.listing_id  +" </button> </td>" +
                                         "<td> <input type='hidden' id='rental_id' value="+ r.rental_id + ">" + r.rental_id + "</td>" +
                                         "<td>" +start_date + "</td>" +
                                         "<td>" + end_date + "</td>" +
@@ -247,7 +247,11 @@
 
             } // error
             };
-
+        
+        async function viewOneListing(x){
+            sessionStorage.setItem("listing_id", x);
+            window.location.replace("one-listing.html");
+        }
 
         async function onDelete(rental_value){
 
