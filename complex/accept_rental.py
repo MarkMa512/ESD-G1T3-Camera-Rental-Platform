@@ -28,10 +28,12 @@ def accept_rental():
 
             # do the actual work
             # 1. Send order info {cart items}
+            
+            rental_address = processGetAddress(rental_accept["address"])
             rental_accept_result = processAcceptRental(rental_accept)
             listing_result = processGetListing(rental_accept_result)
             listing_update_result = processUpdateListing(listing_result)
-            return jsonify(listing_update_result), listing_update_result["code"]
+            return jsonify(listing_update_result,rental_address), listing_update_result["code"]
 
         except Exception as e:
             # Unexpected error in code
@@ -50,6 +52,14 @@ def accept_rental():
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
+
+def processGetAddress(address):
+    print("\n---- INVOKING GET POSTAL CODE MICROSERVICE -------")
+    rental2_URL = rental_URL + "/" + address
+    postal_code_result = invoke_http(rental2_URL,method="POST", json=address)
+    print("postal_code_result", postal_code_result)
+    
+    return postal_code_result
 
 
 def processAcceptRental(rental_accept):

@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy 
 from os import environ
 from flask_cors import CORS
+import requests
 
 app = Flask(__name__) 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
@@ -172,6 +173,30 @@ def delete_rental(rental_id):
             "message": "Rental not found."
         }
     ), 404
+
+
+@app.route("/rental/<string:address>", methods=['POST'])
+def get_distance(address):
+    url = "https://developers.onemap.sg/privateapi/auth/post/getToken"
+    details = {
+                "email" : "glendyslau@gmail.com",
+                "password" : "Zinedine77!!"
+            }
+    
+    response = requests.post(url, json = details)
+    data = response.json()
+    apitoken = data["access_token"]
+
+    url = "https://developers.onemap.sg/commonapi/search?searchVal=" + address + "&returnGeom=N&getAddrDetails=Y";
+    response = requests.get(url)
+    data = response.json()
+    return data["results"][0]["POSTAL"]
+
+    
+
+
+    
+
 
 
 if __name__ == '__main__':

@@ -214,6 +214,8 @@
         });
         async function onAccept(rental_value){
 
+            address = prompt("What is the user addresss?")
+
             //invoke complex microservice 
             var rental_id = rental_value;
 
@@ -223,13 +225,16 @@
                     fetch(
                         serviceURL,{method: 'POST',
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({rental_id:rental_id, rental_status:"Approved"})
+                        body: JSON.stringify({rental_id:rental_id, rental_status:"Approved", address:address})
             });
 
-                const data = response;
+                const data = await response.json();
+                console.log(data[1])
                 if (response.ok) {
                     message = document.getElementById("updatesuccessmessage")
                     message.style.display = "block";
+                    postalcode = String(data[1])
+                    window.alert("Renter postal code is " +postalcode)
                     return false;
 
                 } else {
