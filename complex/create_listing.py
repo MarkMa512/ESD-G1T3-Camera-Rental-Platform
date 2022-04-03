@@ -21,7 +21,6 @@ CORS(app)
 For localhost testing:
 """
 email_url = "http://localhost:5301/listedEmail"
-# image_url = "http://localhost:5302/image"
 sms_url = "http://localhost:5306/listedSMS"
 listing_url = "http://localhost:5304/listing"
 user_phone_url = "http://localhost:5303/userphone/"

@@ -6,7 +6,7 @@ volumes:
 services:
 
   ###################################
-  #Order of start: 
+  # Order of start: 
   # Database
   # User
   # Image: 
