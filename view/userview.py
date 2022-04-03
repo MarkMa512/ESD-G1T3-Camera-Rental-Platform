@@ -148,8 +148,8 @@ def get_phone(email):
     userid=uid
     result=dict(db.child("users").order_by_child('email').equal_to(email).get().val())
     if result: 
-        return result[userid]['phone']
-    return jsonify(
+        user_phone_number = result[userid]['phone']
+        return jsonify(
             {
                 "code": 200,
                 "data": user_phone_number
