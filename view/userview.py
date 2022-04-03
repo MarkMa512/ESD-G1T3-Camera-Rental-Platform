@@ -49,7 +49,7 @@ def mylisting():
     return render_template("my-listing.html")
 
 @app.route("/updaterental")
-def mylisting():
+def updaterental():
     return render_template("update-rental.html")
 
 
