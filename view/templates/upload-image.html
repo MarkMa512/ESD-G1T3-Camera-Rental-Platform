@@ -22,7 +22,7 @@
   <div class="row">
     <div class="col-md-6 m-auto">
       <h1 class="text-center display-4 my-4">Upload an image for your listing</h1>
-      <form id="uploadimage" method="POST" enctype="multipart/form-data">
+      <form id="uploadimage" enctype="multipart/form-data">
         <div class="custom-file mb-3">
           <input type="file" name="pic" id="pic" class="custom-file-input">
           <label for="pic" class="custom-file-label">Choose an Image</label>
@@ -40,14 +40,10 @@
 
   $("#uploadimage").submit(async (event) => {
     //Prevents screen from refreshing when submitting
-    event.preventDefault();
-
+    event.preventDefault()
     var serviceURL = "http://localhost:5302/upload";
-
     //Get form data
-    
     var data = document.querySelector('#pic');
-
     owner=sessionStorage.getItem("user_id");
     
     try {
