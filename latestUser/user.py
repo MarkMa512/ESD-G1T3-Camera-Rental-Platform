@@ -57,6 +57,8 @@ def signin():
             user = auth.sign_in_with_email_and_password(email, password)
             userId=user['localId']
             session['id']=userId
+            global uid
+            uid=userId
 
             userdetails=dict(db.child('users').child(userId).get().val())
             username=userdetails['name']
@@ -91,12 +93,14 @@ def register():
         phone=result['phone']
         session['name']=name
         sessionemail=email
+        global uid
             
         try:
             user=auth.create_user_with_email_and_password(email, password)
             #Append data to the firebase realtime database
             data = {"name": name, "email": email, 'address':addr,'phone':phone}
             session['id']=user['localId']
+            uid=user['localId']
             db.child("users").child(user["localId"]).set(data)
 
             #Go to index page
@@ -127,7 +131,7 @@ def find_user(email):
 # Retrieve user's phone
 @app.route('/userphone/<string:email>')
 def get_phone(email):
-    userid=session['id']
+    userid=uid
     result=dict(db.child("users").order_by_child('email').equal_to(email).get().val())
     if result: 
         return result[userid]['phone']
@@ -137,6 +141,12 @@ def get_phone(email):
                 "message": "User not found"
             }
         ), 404
+
+# display the user id
+@app.route('/userid')
+def getId():
+    output=uid
+    return jsonify(output)
 
 if __name__ == "__main__":
     app.run(port=5303,debug=True)
