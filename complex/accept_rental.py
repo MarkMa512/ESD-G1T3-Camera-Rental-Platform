@@ -168,7 +168,7 @@ def processUpdateListing(listing_result):
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
           " for placing an order...")
-    app.run(port=5308, debug=True)
+    app.run(host="0.0.0.0" ,port=5308, debug=True)
 
 
     # Notes for the parameters:

@@ -200,4 +200,4 @@ def get_distance(address):
 
 
 if __name__ == '__main__':
-    app.run(port=5305, debug=True) 
+    app.run(host="0.0.0.0" , port=5305, debug=True) 
