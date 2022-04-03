@@ -13,6 +13,12 @@ def send_listed_sms():
     message = "your listing " + \
         request.json['listing_id'] + " has been created"
     smsNotification.send_sms(to_number, message)
+    return jsonify(
+        {
+            "code": 200,
+            "message": "Email sent"
+        }
+    )
 
 
 @app.route("/requestedSMS", methods=['POST'])
@@ -21,6 +27,12 @@ def send_requested_sms():
     message = "There is a new request for your listing " + \
         request.json['listing_id']
     smsNotification.send_sms(to_number, message)
+    return jsonify(
+        {
+            "code": 200,
+            "message": "Email sent"
+        }
+    )
 
 
 @app.route("/requestedSMS", methods=['POST'])
@@ -28,7 +40,13 @@ def send_approved_sms():
     to_number = request.json['phone']
     message = "Your request" + request.json['listing_id'] + "has been approved"
     smsNotification.send_sms(to_number, message)
+    return jsonify(
+        {
+            "code": 200,
+            "message": "Email sent"
+        }
+    )
 
 
 if __name__ == "__main__":
-    app.run(port=5306,debug=True)
+    app.run(port=5306, debug=True)
