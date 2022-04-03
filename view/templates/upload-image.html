@@ -22,7 +22,7 @@
   <div class="row">
     <div class="col-md-6 m-auto">
       <h1 class="text-center display-4 my-4">Upload an image for your listing</h1>
-      <form action="http://localhost:5302/upload" method="POST" enctype="multipart/form-data">
+      <form id="uploadimage" method="POST" enctype="multipart/form-data">
         <div class="custom-file mb-3">
           <input type="file" name="pic" id="pic" class="custom-file-input">
           <label for="pic" class="custom-file-label">Choose an Image</label>
@@ -32,6 +32,51 @@
     </div>
   </div>
 </div>
+
+#http://localhost:5302/upload
+
+<script>
+
+
+  $("#addListForm").submit(async (event) => {
+    //Prevents screen from refreshing when submitting
+    event.preventDefault();
+
+    var serviceURL = "http://localhost:5302/upload";
+
+    //Get form data
+    
+    var data = document.querySelector('#pic');
+
+    owner=sessionStorage.getItem("user_id");
+    
+    try {
+        const response =
+            await fetch(
+                serviceURL, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: data
+            });
+        const data = await response.json();
+
+        if (response.ok) {
+            // relocate to home page
+            window.location.replace("/mylisting");
+            return false;
+        } else {
+            console.log(data);
+            showError(data.message);
+        }
+    } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        showError
+            ("There is a problem adding this listing, please try again later. " + error);
+
+    } // error
+});
+</script>
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
