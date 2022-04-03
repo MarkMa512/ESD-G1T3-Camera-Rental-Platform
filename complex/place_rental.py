@@ -6,6 +6,10 @@ import os, sys
 import requests
 from invokes import invoke_http
 
+import amqp_setup
+import pika
+import json
+
 app = Flask(__name__)
 CORS(app)
 
@@ -57,7 +61,41 @@ def processPlaceRental(rental):
     rental_result = invoke_http(rental_URL, method = "POST", json = rental)
     print('rental_result:', rental_result)
 
-    print("Invoking Activity_Log Microservice")
+    code = rental_result["code"]
+    message = json.dump(rental_result)
+
+    if code not in range(200, 300):
+        print('an error has occurred')
+        print(message)
+
+        # # invoke_http(error_URL, method="POST", json=order_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="rental.error",
+                                         body=message, properties=pika.BasicProperties(delivery_mode=2))
+        # # make message persistent within the matching queues until it is received by some receiver
+        # # (the matching queues have to exist and be durable and bound to the exchange)
+
+        # # - reply from the invocation is not used;
+        # # continue even if this invocation fails
+        print("\n Rental Creation status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), rental_result)
+
+        return {
+            "code": 500,
+            "data": {"listing creation result result": rental_result},
+            "message": "listing creation failure sent for error handling."
+        }
+
+    else:
+        print("Rental creation successful")
+        print(" invoking activity.py")
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="rental.info",
+                                         body=message, properties=pika.BasicProperties(delivery_mode=2))
+
+
+
+
+    # print("Invoking Activity_Log Microservice")
+    # invoke_http(activity_log_URL, method = "POST",json=rental_result);
 
 
 #     # 4. Record new order
@@ -68,15 +106,15 @@ def processPlaceRental(rental):
 #     # continue even if this invocation fails
 #     # record the activity log anyway
 
-#     # Check the order result; if a failure, send it to the error microservice.
-#     code = order_result["code"]
-#     if code not in range(200, 300):
-#         print('\n\n-----Invoking error microservice as order fails-----')
-#         invoke_http(error_URL, method="POST", json=order_result)
-#         # - reply from the invocation is not used; 
-#         # continue even if this invocation fails
-#         print("Order status ({:d}) sent to the error microservice:".format(
-#             code), order_result)
+    # Check the order result; if a failure, send it to the error microservice.
+    # code = rental_result["code"]
+    # if code not in range(200, 300):
+    #     print('\n\n-----Invoking error microservice as order fails-----')
+    #     invoke_http(error_URL, method="POST", json=order_result)
+    #     # - reply from the invocation is not used; 
+    #     # continue even if this invocation fails
+    #     print("Order status ({:d}) sent to the error microservice:".format(
+    #         code), order_result)
 
 
 #     # Inform the error microservice
@@ -119,62 +157,62 @@ def processPlaceRental(rental):
 #             "message": "Simulated shipping record error sent for error handling."
 #         }
     """
-    invoke method to get user phone number
-    """
-    list_id = rental['listing_id']
-    print("list_id is: " + list_id)
-    owner_id = rental['owner_id'] #put as renter_id if you want to test -> setItems as ur email in add-rental
-    print("owner_id" + owner_id)
-    # owner_phone_number = invoke_http(user_url+owner_id, 'POST', listing)
-    owner_phone_number = "+6592385972"
-    data_pack = {"listing_id": list_id,
-                 "email": owner_id, "phone": owner_phone_number}
-    print(data_pack)
+    # invoke method to get user phone number
+    # """
+    # list_id = rental['listing_id']
+    # print("list_id is: " + list_id)
+    # owner_id = rental['owner_id'] #put as renter_id if you want to test -> setItems as ur email in add-rental
+    # print("owner_id" + owner_id)
+    # # owner_phone_number = invoke_http(user_url+owner_id, 'POST', listing)
+    # owner_phone_number = "+6592385972"
+    # data_pack = {"listing_id": list_id,
+    #              "email": owner_id, "phone": owner_phone_number}
+    # print(data_pack)
 
-    """
-    5. Invoke email microservice to send email to owner
-    """
-    # print('\n\n-----Invoking email microservice-----')
+    # """
+    # 5. Invoke email microservice to send email to owner
+    # """
+    # # print('\n\n-----Invoking email microservice-----')
 
-    email_sending_result = invoke_http(
-        email_url, method="POST", json=data_pack)
-    print("email_sending_result:", email_sending_result, '\n')
-
-    sms_sending_result = invoke_http(
-    sms_url, method="POST", json=data_pack)
-    print("sms_sending_result:", sms_sending_result, '\n')
-
-    # Check the email sent result;
-    # if a failure, send it to the error microservice.
-    # code = email_send_result["code"]
-    # if code not in range(200, 300):
-    #     # Inform the error microservice
-    #     print('\n\n-----Publishing the (email error) message with routing_key=email.error-----')
-
-    #     # invoke_http(error_URL, method="POST", json=shipping_result)
-    #     message = json.dumps(email_send_result)
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.error",
-    #                                      body=message, properties=pika.BasicProperties(delivery_mode=2))
-
-    #     print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
-    #         code), email_send_result)
-
-    #     # 7. Return error
-    #     return {
-    #         "code": 400,
-    #         "data": {
-    #             "listring_creation_result": create_listing_result,
-    #             "email_sent_result": email_send_result
-    #         },
-    #         "message": ""
-    #     }
-
-    # 5. Invoke sms microservice to send email to owner
-    # print('\n\n-----Invoking sms microservice-----')
+    # email_sending_result = invoke_http(
+    #     email_url, method="POST", json=data_pack)
+    # print("email_sending_result:", email_sending_result, '\n')
 
     # sms_sending_result = invoke_http(
-    #     sms_url, method="POST", json=data_pack)
+    # sms_url, method="POST", json=data_pack)
     # print("sms_sending_result:", sms_sending_result, '\n')
+
+    # # Check the email sent result;
+    # # if a failure, send it to the error microservice.
+    # # code = email_send_result["code"]
+    # # if code not in range(200, 300):
+    # #     # Inform the error microservice
+    # #     print('\n\n-----Publishing the (email error) message with routing_key=email.error-----')
+
+    # #     # invoke_http(error_URL, method="POST", json=shipping_result)
+    # #     message = json.dumps(email_send_result)
+    # #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.error",
+    # #                                      body=message, properties=pika.BasicProperties(delivery_mode=2))
+
+    # #     print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
+    # #         code), email_send_result)
+
+    # #     # 7. Return error
+    # #     return {
+    # #         "code": 400,
+    # #         "data": {
+    # #             "listring_creation_result": create_listing_result,
+    # #             "email_sent_result": email_send_result
+    # #         },
+    # #         "message": ""
+    # #     }
+
+    # # 5. Invoke sms microservice to send email to owner
+    # # print('\n\n-----Invoking sms microservice-----')
+
+    # # sms_sending_result = invoke_http(
+    # #     sms_url, method="POST", json=data_pack)
+    # # print("sms_sending_result:", sms_sending_result, '\n')
 
 
 
