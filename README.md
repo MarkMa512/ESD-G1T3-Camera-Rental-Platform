@@ -24,3 +24,10 @@ _The following assumes you are a Windows User_
     * Make sure you are executing in the correct path e.g. C:\ESD\ESD-G1T3-Camera-Rental-Platform\view
     
 5. 
+
+
+Special Note
+* Due to the trial account of Twillio that only enable sending of SMS to one phone number
+* PLEASE Log In using ONLY
+* email: ningzhi.ma.2018@scis.smu.edu.sg
+* pw: ningzhi
