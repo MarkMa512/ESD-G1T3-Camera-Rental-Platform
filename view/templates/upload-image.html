@@ -43,7 +43,11 @@
 //http://localhost:5302/upload
 
 <script>
-
+  // Helper function to display error message
+  function showError(message) {
+    // Display an error under the the predefined label with error as the id
+    $('#error').text(message);
+}
 
   $("#uploadimage").submit(async (event) => {
     //Prevents screen from refreshing when submitting
@@ -68,7 +72,7 @@
             return false;
         } else {
             console.log(data);
-
+            showError(data.message);
         }
     } catch (error) {
         // Errors when calling the service; such as network error, 
