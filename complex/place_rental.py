@@ -1,14 +1,18 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import json
 
-import os, sys
+import os
+import sys
 
-import requests
 from invokes import invoke_http
 
-import amqp_setup
-import pika
+import os
+import sys
 import json
+
+import pika
+import amqp_setup
 
 app = Flask(__name__)
 CORS(app)
@@ -65,7 +69,7 @@ def processPlaceRental(rental):
 
     if code not in range(200, 300):
         print('an error has occurred')
-        print(message)
+        print(rental_result)
 
         # # invoke_http(error_URL, method="POST", json=order_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="rental.error",
