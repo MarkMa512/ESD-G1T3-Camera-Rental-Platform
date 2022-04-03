@@ -62,7 +62,7 @@ def processPlaceRental(rental):
     print('rental_result:', rental_result)
 
     code = rental_result["code"]
-    message = json.dump(rental_result)
+    message = json.dumps(rental_result)
 
     if code not in range(200, 300):
         print('an error has occurred')
