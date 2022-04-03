@@ -57,14 +57,18 @@
     data = document.querySelector('#pic');
     owner=sessionStorage.getItem("user_id");
 
-    console.log(data)
+    var formdata = new FormData();
+    formdata.append(data);
+
+    console.log(data);
     
     try {
         const response =
             await fetch(
-                serviceURL, {
+                serviceURL, 
+                {
                 method: 'POST',
-                body: data
+                body: formdata
             });
         const data = await response.json();
 
