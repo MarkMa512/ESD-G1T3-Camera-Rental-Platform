@@ -4,11 +4,13 @@ from flask import redirect
 
 from db import db_init, db
 from models import Img
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///img.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db_init(app)
+CORS(app)
 
 
 @app.route('/')
@@ -36,7 +38,7 @@ def upload():
             "code": 200,
             "message": "Image uploaded successfully",
         }
-    ),200
+    ), 200
 
 
 @app.route('/<int:id>')

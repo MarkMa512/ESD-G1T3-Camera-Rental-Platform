@@ -4,6 +4,7 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import requests
 import os
 from flask_session import Session
+from flask_cors import CORS
 
 # Firebase configuration
 config = {
@@ -22,6 +23,7 @@ app = Flask(__name__)  # Initialze flask constructor
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config.update(SECRET_KEY=os.urandom(24))
+CORS(app)
 # Session(app)
 
 # initialize firebase
@@ -43,33 +45,41 @@ def login():
 def signup():
     return render_template("signup.html")
 
+
 @app.route("/userindex")
 def userindex():
     return render_template("index.html")
+
 
 @app.route("/mylisting")
 def mylisting():
     return render_template("my-listing.html")
 
+
 @app.route("/updaterental")
 def updaterental():
     return render_template("update-rental.html")
+
 
 @app.route("/updatelisting")
 def updatelisting():
     return render_template("update-listing.html")
 
+
 @app.route("/addrental")
 def addrental():
     return render_template("add-rental.html")
+
 
 @app.route("/onelisting")
 def one_list():
     return render_template("one-listing.html")
 
+
 @app.route("/addlisting")
 def addlisting():
     return render_template("add-listing.html")
+
 
 @app.route("/uploadimage")
 def upload_image():
