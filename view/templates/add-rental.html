@@ -169,7 +169,13 @@
                             const response = await fetch(serviceURL, {
                                method: "POST",
                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({listing_id:listing_id,renter_id:renter_id,owner_id:owner_id, price:price, rent_start_date:rent_start_date, rent_end_date:rent_end_date, rental_status:"Pending"})
+                                body: JSON.stringify({listing_id:listing_id,
+                                  renter_id:renter_id,
+                                  owner_id:owner_id, 
+                                  price:price, 
+                                  rent_start_date:rent_start_date, 
+                                  rent_end_date:rent_end_date, 
+                                  rental_status:"Pending"})
                             });
 
                         if(response.ok){
