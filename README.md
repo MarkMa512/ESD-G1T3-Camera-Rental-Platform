@@ -16,7 +16,7 @@ _The following assumes you are a Windows User_
     * Click “Go”
     * Repeat for `activity_error.sql`, before doing the same for `mock_data.sql`
 
-3. Install `requirements.txt` in **view** folder
+3. Install `requirements.txt` in **userview** folder
     * Enter the command `pip install -r requirements.txt`
 
 4. Run `userview.py` 
