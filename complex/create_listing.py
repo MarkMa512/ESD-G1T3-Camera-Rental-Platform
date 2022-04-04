@@ -7,7 +7,7 @@ import sys
 
 from invokes import invoke_http
 
-import os
+from os import environ
 import sys
 import json
 
@@ -20,10 +20,10 @@ CORS(app)
 """
 For localhost testing:
 """
-email_url = "http://localhost:5301/listedEmail"
-sms_url = "http://localhost:5306/listedSMS"
-listing_url = "http://localhost:5304/listing"
-user_phone_url = "http://localhost:5303/userphone/"
+# email_url = "http://localhost:5301/listedEmail"
+# sms_url = "http://localhost:5306/listedSMS"
+# listing_url = "http://localhost:5304/listing"
+# user_phone_url = "http://localhost:5303/userphone/"
 
 """
 for docker deployment
@@ -31,6 +31,11 @@ for docker deployment
 # email_url = os.environ.get('EMAIL_URL')
 # sms_url = os.environ.get('SMS_URL')
 # list_url = os.environ.get('LIST_URL')
+
+email_URL = environ.get('email_URL') or "http://localhost:5301/listedEmail"
+listing_URL = environ.get("listing_URL") or "http://localhost:5304/listing"
+user_URL = environ.get("user_URL") or "http://localhost:5303/userphone"
+sms_URL = environ.get("sms_URL") or "http://localhost:5306/listedSMS"
 
 
 @app.route("/create_listing", methods=['POST'])
