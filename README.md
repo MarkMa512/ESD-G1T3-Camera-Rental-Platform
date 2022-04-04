@@ -27,7 +27,7 @@ _The following assumes you are a Windows User_
 
 6. In a CMD window, run the following command:
     * `docker-compose up`
-    * Change directory to the folder containing `docker-compose.yml` 
+    * Ensure your directory points to the folder containing `docker-compose.yml` 
 
 
 
