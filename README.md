@@ -23,7 +23,7 @@ _The following assumes you are a Windows User_
     * Execute the command `python userview.py` in CMD
     * Make sure you are executing in the correct directory e.g. C:\ESD\ESD-G1T3-Camera-Rental-Platform\view
 
-5. Open `docker-compose.yml` file, replace all the <dockerid> with your own 
+5. Open `docker-compose.yml` file, replace all the _dockerid_ with your own 
 
 6. In a CMD window, run the following command:
     * `docker-compose up`
