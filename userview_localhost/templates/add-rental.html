@@ -121,7 +121,7 @@
               </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" onclick="location.href = 'index.html';" >Confirm</button>
+              <button type="button" class="btn btn-primary" onclick="location.href = '/userindex';" >Confirm</button>
             </div>
           </div>
         </div>
@@ -248,7 +248,7 @@
 
     function Check(){
         if(sessionStorage.getItem("listingidthatyouwanttorent") == null){
-            window.location.replace("templates/index.html");
+            window.location.replace("/userindex");
         }
     }
 
