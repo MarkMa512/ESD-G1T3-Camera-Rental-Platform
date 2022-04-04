@@ -12,12 +12,12 @@
   <meta charset="UTF-8">
   <title>Upload listing image</title>
 
-    <!-- Bootstrap CSS -->
-    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet'
-        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous'>
+  <!-- Bootstrap CSS -->
+  <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet'
+    integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous'>
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 
 <!-- <body>
@@ -29,7 +29,7 @@
   <div class="row">
     <div class="col-md-6 m-auto">
       <h1 class="text-center display-4 my-4">Upload an image for your listing</h1>
-      <form id="uploadimage" enctype="multipart/form-data">
+      <form action="http://localhost:5302/upload" id="uploadimage" enctype="multipart/form-data" method="POST">
         <div class="custom-file mb-3">
           <input type="file" name="pic" id="pic" class="custom-file-input">
           <label for="pic" class="custom-file-label">Choose an Image</label>
@@ -40,9 +40,9 @@
   </div>
 </div>
 
-//http://localhost:5302/upload
+<!-- //http://localhost:5302/upload -->
 
-<script>
+<!-- <script>
   // Helper function to display error message
   function showError(message) {
     // Display an error under the the predefined label with error as the id
@@ -88,7 +88,7 @@
 
     } // error
 });
-</script>
+</script> -->
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

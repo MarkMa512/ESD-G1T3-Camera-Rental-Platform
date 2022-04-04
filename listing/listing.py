@@ -5,10 +5,11 @@ from os import environ
 from flask_cors import CORS
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user_listing'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/user_listing'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -194,4 +195,7 @@ def delete_listing(listing_id):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0" ,port=5304, debug=True)
+    app.run(host="0.0.0.0", port=5304, debug=True)
+
+# if __name__ == '__main__':
+#     app.run(port=5304, debug=True)
