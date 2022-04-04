@@ -2,8 +2,7 @@
 The group project by IS213 Enterprise Solution G1 Team 3
 
 ### Description
-
-
+This is a containerised microservice architecture for camera rental services (namely, create a listing, place a rental request, accept a rental request). 
 
 ### Instructions 
 _The following assumes you are a Windows User_
