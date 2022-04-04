@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<script>
+    window.sessionStorage;  // <!-- this is to activate session storage-->
+    sessionStorage.setItem("user_id","ningzhi.ma.2018@scis.smu.edu.sg");
+</script>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Add a Listing</title>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- Bootstrap libraries -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <!-- Bootstrap CSS -->
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet'
+        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous'>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+        .form-group {
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="border-gray-200 px-2 sm:px-4 py-2.5 rounded bg-gray-400 mb-10">
+        <div class="container flex flex-wrap justify-between items-center mx-auto">
+          <div class="flex items-center">
+            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Camera And Equipments
+              Rental</span>
+            <div id="sessionEmail" class="hidden">{{session}}</div>
+          </div>
+          <button data-collapse-toggle="mobile-menu" type="button"
+            class="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="mobile-menu-2" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </button>
+          <div class="hidden w-full md:block md:w-auto" id="mobile-menu">
+            <ul class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
+              <li>
+                <a href="/userindex"
+                  class="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                  aria-current="page">Home</a>
+              </li>
+              <li>
+                <a href="/mylisting"
+                  class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                  My Listing</a>
+              </li>
+              <li>
+                <a href="/updaterental"
+                  class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                  My Rentals</a>
+              </li>
+              <li>Hello, {{name}}</li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <h1 class="display-4 m-4 container mx-auto">Add a Listing</h1>
+
+    <form id='addListForm' class="p-4 container">
+        <!-- <div class="form-group">
+            <label for="owner">Owner</label>
+            <input type="text" class="form-control " id="owner_id" placeholder="">
+        </div> -->
+        <!-- <div class="form-group">
+            <label for="listing">Listing ID</label>
+            <input type="text" class="form-control " id="listing_id" placeholder="">
+        </div> -->
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" class="form-control" id="model"
+                placeholder="e.g. Nikon Z 7 Mirrorless Digital Camera with 24-70mm Lens and FTZ Adapter">
+        </div>
+
+        <!-- <div class="form-group">
+            <label for="img">Select image:</label>
+            <br>
+            <input type="file" id="img" name="img" accept="image/*">
+        </div> -->
+        <div class="form-group">
+            <label for="description">Description</label><br />
+            <input type="text" class="form-control" id="listing_description"
+                placeholder="e.g. Bought in 2006, my favourite lens/camera">
+        </div>
+        <div class="form-group">
+            <label for="brand">Brand</label>
+            <input type="text" class="form-control" id="brand" placeholder="e.g. Canon">
+        </div>
+        <div class="form-group">
+            <label for="price">Price ($)</label>
+            <input type="text" class="form-control" id="price" placeholder="e.g. 4195.00">
+        </div>
+        <div class="form-group">
+            <label for="daily_rate">Daily Rate ($/Day)</label>
+            <input type="text" class="form-control" id="daily_rate" placeholder="e.g. 15">
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>
+    <label id="error" class="text-danger"></label>
+    <script>
+
+        // Helper function to display error message
+        function showError(message) {
+            // Display an error under the the predefined label with error as the id
+            $('#error').text(message);
+        }
+
+
+        $("#addListForm").submit(async (event) => {
+            //Prevents screen from refreshing when submitting
+            event.preventDefault();
+
+            var serviceURL = "http://localhost:5309/create_listing";
+
+            //Get form data
+            
+            var description = $('#listing_description').val();
+            var price = parseFloat($('#price').val());
+            var availabiltity = 1;
+            var brand = $('#brand').val();
+            var model = $('#model').val();
+            var daily_rate = parseFloat($("#daily_rate").val());
+            var image = "http://localhost:5302/latest";
+
+            owner=sessionStorage.getItem("user_id");
+            
+            try {
+                const response =
+                    await fetch(
+                        serviceURL, {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            availabiltity: availabiltity,
+                            brand: brand,
+                            daily_rate: daily_rate,
+                            image_url: image,
+                            listing_description: description,
+                            model: model,
+                            owner_id: owner,
+                            price: price
+                        })
+                    });
+                const data = await response.json();
+
+                if (response.ok) {
+                    // relocate to home page
+                    window.location.replace("/uploadimage");
+                    return false;
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this listing, please try again later. " + error);
+
+            } // error
+        });
+    </script>
+
+    <!-- Bootstrap Javascript -->
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
+        integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
+        crossorigin='anonymous'></script>
+    
+    <script src="https://unpkg.com/flowbite@latest/dist/flowbite.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,259 @@
+<script>
+    window.sessionStorage;  // <!-- this is to activate session storage-->
+</script>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    
+
+    <title>Update listing</title>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- Bootstrap libraries -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="">
+
+    <!-- Bootstrap CSS -->
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
+        rel='stylesheet'
+        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
+        crossorigin='anonymous'>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+        .form-group{
+            margin-bottom:10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <nav class="border-gray-200 px-2 sm:px-4 py-2.5 rounded bg-gray-400 mb-10">
+        <div class="container flex flex-wrap justify-between items-center mx-auto">
+          <div class="flex items-center">
+            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Camera And Equipments
+              Rental</span>
+            <div id="sessionEmail" class="hidden">{{session}}</div>
+          </div>
+          <button data-collapse-toggle="mobile-menu" type="button"
+            class="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="mobile-menu-2" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </button>
+          <div class="hidden w-full md:block md:w-auto" id="mobile-menu">
+            <ul class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
+              <li>
+                <a href="/userindex"
+                  class="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                  aria-current="page">Home</a>
+              </li>
+              <li>
+                <a href="/mylisting"
+                  class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                  My Listing</a>
+              </li>
+              <li>
+                <a href="/updaterental"
+                  class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                  My Rentals</a>
+              </li>
+              <li>Hello, {{name}}</li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <h1 class="display-4 m-4 container mx-auto">Update Listing</h1>
+
+    <div id="message" style = "display: none"class="p-3 mb-2 bg-success text-light"> You have sucessfully updated listing.</div>
+
+    <div id="results" style="display:flex">
+        <table id="rentalTable" class='table table-striped border-1' id='rental-list' >
+            <thead class='border-1'>
+                <th>Image</th>
+                    <th>Listing ID</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Daily Rate</th>
+                    <th>Description</th>
+                    <th>Availability</th>
+                    <th> </th>
+
+            </thead>
+        </table>
+    </div>
+
+
+    <form id="update" method="GET"></form>
+
+
+    <label id="error" class="text-danger"></label>
+
+    <script>
+
+
+
+
+        // Helper function to display error message
+        function showError(message) {
+            // Display an error under the the predefined label with error as the id
+            $("#results").hide();
+            $('#error').text(message);
+            $('#error').show();
+            $('#status').hide();
+            $('#delete').hide();
+        }
+
+        //try try try try
+
+        $(async (event) => {
+
+            //Get form data
+            var owner = sessionStorage.getItem("User_ID")
+            var serviceURL = "http://localhost:5304/listing"
+
+            try {
+                    const response =
+                        await fetch(
+                            serviceURL, { method: 'GET' }
+                        );
+                    const data = await response.json();
+
+                    if (response.status === 200) {
+                        var listings = data.data.listings;
+
+                        var avai ="";
+                        for (r of listings){
+                            if(r.availabiltity==true){
+                                avai="Available";
+                            }
+                            else{
+                                avai="Not Available";
+                            }
+
+                            if(r.owner_id == sessionStorage.getItem("User_ID")){
+
+                                row ="<tr><td><img width=150 height=130 src='" + r.image_url + "'></td>"  +
+                                        "<td> <input type='text' id='list_id' size='5' value='" + r.listing_id+ "' readonly></td>" +
+                                        "<td><input type='text' id='brand' size='8' value='" + r.brand + "'></td>" +
+                                        "<td><input type='text' id='model' value='" + r.model + "'></td>" +
+                                        "<td><input type='text' id='price' size='8' value='" + r.price + "'></td>" +
+                                        "<td><input type='text' id='daily_rate' size='8' value='" + r.daily_rate + "'></td>" +
+                                        "<td><input type='text' id='description' value='" + r.listing_description + "'></td>" +
+                                        "<td><input type='text' id='availabiltity' value='" + avai + "'></td>" +
+                                        "<td> <button onClick ='onUpdate("+r.listing_id+")' id ='updatebutton" + r.listing_id + "'  "
+                                            + "type='button' class='btn btn-danger btn-default active' value =' "+ r.listing_id+ " '> Update </button> </td>"; 
+
+                                // add all the rows to the table
+                                $('#rentalTable').append(row);
+                            }
+                        }
+                    } else if (response.status == 404) {
+                        // No books
+                        showError(result.message);
+                    } else {
+                        // unexpected outcome, throw the error
+                        throw response.status;
+                    }
+                
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There are no rental request, please try again later. " + error);
+
+            } // error
+        });
+
+        async function onUpdate(x) {
+            //Prevents screen from refreshing when submitting
+            event.preventDefault();
+
+            //Get form data
+            var listing_id = $('#list_id').val();
+            var brand = $('#brand').val();
+            var model = $('#model').val();
+            var price = parseFloat($('#price').val());
+            var daily_rate = parseFloat($("#daily_rate").val());
+            var listing_description = $('#description').val();
+            var availabiltity = $("#availabiltity").val();
+
+     
+            var serviceURL = "http://localhost:5304/listing" +"/"+ listing_id;
+            
+            try {
+                const response =
+                    await fetch(
+                        serviceURL,{method: 'PUT',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(
+                            {listing_id:listing_id,
+                            brand:brand,
+                            model:model,
+                            price:price, 
+                            daily_rate:daily_rate, 
+                            listing_description:listing_description,
+                            availabiltity:availabiltity})
+
+            });
+                const data = await response.json();
+
+
+                if (response.ok) {
+                    // open up ok message
+                    console.log(response);
+                    window.location.replace("my-listing.html");
+                    message = document.getElementById("message")
+                    return false;
+
+                } else {
+                    console.log(data);
+                    showError(data.message);
+                }
+
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+                    ("There is a problem adding this update, please try again later. " + error);
+
+            } // error
+        };
+
+
+    </script>
+
+    <!-- Bootstrap Javascript -->
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
+        integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
+        crossorigin='anonymous'></script>
+
+    <script src="https://unpkg.com/flowbite@latest/dist/flowbite.js"></script>
+
+</body>
+
+
+</html>

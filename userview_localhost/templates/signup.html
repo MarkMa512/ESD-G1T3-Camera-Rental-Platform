@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Flask_Sign Up</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css') }}">
+</head>
+<body>
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+    <a href="http://127.0.0.1:5303/"><h2 class="inactive underlineHover"> Sign In </h2></a>
+    <h2 class="active">Sign Up </h2>
+
+    <!-- Icon -->
+    <div class="fadeIn first">
+      <img src="{{ url_for('static', filename = 'user.png') }}" id="icon" alt="User Icon" />
+    </div>
+
+    <!-- Sign Up Form -->
+    <form action="http://127.0.0.1:5303/register" method="POST">
+      <input type="text" id="username" class="fadeIn second" name="name" placeholder="myusername">
+      <input type="email" id="signupemail" class="fadeIn second" name="email" placeholder="email">
+      <input type="text" id="address" class="fadeIn third" name="addr" placeholder="residential address">
+      <input type="text" id="phone" class="fadeIn third" name="phone" placeholder="phone number">
+      <input type="password" id="password" class="fadeIn third" name="pass" placeholder="password">
+      <input type="submit" class="fadeIn fourth" value="Sign Up">
+    </form>
+
+  </div>
+</div>
+</body>
+</html>

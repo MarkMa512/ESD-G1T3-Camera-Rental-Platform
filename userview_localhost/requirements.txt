@@ -1,0 +1,5 @@
+pyrebase4==4.5.0
+Flask==2.0.2
+traceback
+Flask-Cors==3.0.10
+flask_session==0.4.0
