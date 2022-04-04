@@ -1,2 +1,2 @@
-twilio
+twilio==7.8.0
 requests==2.11.1

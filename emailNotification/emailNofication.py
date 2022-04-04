@@ -1,7 +1,7 @@
 import smtplib
 from email.message import EmailMessage
 
-import keys
+from keys import *
 import email
 
 

@@ -26,24 +26,24 @@ services:
   #######################################################
   # User: The User microservice
   #######################################################
-  order:
-    build:
-      context: ./user/
-      dockerfile: user.Dockerfile
-    image: <markma512>/user:esdproject
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/order
-      PYTHONUNBUFFERED: 1
+  # order:
+  #   build:
+  #     context: ./user/
+  #     dockerfile: user.Dockerfile
+  #   image: <glendyslau>/user:esdproject
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/order
+  #     PYTHONUNBUFFERED: 1
 
   #######################################################
   # Image: The Image microservice
   #######################################################
   image:
     build:
-      context: ./image/
+      context: ./imageManagement/
       dockerfile: image.Dockerfile
-    image: <markma512>/image:esdproject
+    image: glendyslau/image:esdproject
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
@@ -55,9 +55,10 @@ services:
     build:
       context: ./listing/
       dockerfile: listing.Dockerfile
-    image: <markma512>/listing:esdproject
+    image: glendyslau/listing:esdproject
     restart: always
     environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/user_listing
       PYTHONUNBUFFERED: 1
 
   #######################################################
@@ -67,9 +68,10 @@ services:
     build:
       context: ./rental/
       dockerfile: rental.Dockerfile
-    image: <markma512>/rental:esdproject
+    image: glendyslau/rental:esdproject
     restart: always
     environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/user_listing
       PYTHONUNBUFFERED: 1
 
   #######################################################
@@ -77,9 +79,9 @@ services:
   #######################################################
   email:
     build:
-      context: ./emailNotification/
+      context: ./emailnotification/
       dockerfile: email.Dockerfile
-    image: <markma512>/email:esdproject
+    image: glendyslau/emailnotification:esdproject
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
@@ -89,9 +91,9 @@ services:
   #######################################################
   sms:
     build:
-      context: ./smsNotification/
+      context: ./smsnotification/
       dockerfile: sms.Dockerfile
-    image: <markma512>/sms:esdproject
+    image: glendyslau/smsnotification:esdproject
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
@@ -114,9 +116,9 @@ services:
   #################################################
   activity_log:
     build:
-      context: ./activity/
+      context: ./logging/
       dockerfile: activity_log.Dockerfile
-    image: <markma512>/activity_log:esdproject
+    image: glendyslau/activity_log:esdproject
     restart: always
     depends_on:
       - rabbitmq
@@ -130,9 +132,9 @@ services:
   ###################################
   error:
     build:
-      context: ./error/
+      context: ./logging/
       dockerfile: error.Dockerfile
-    image: <markma512>/error:esdproject
+    image: glendyslau/error:esdproject
     restart: always
     depends_on:
       - rabbitmq
@@ -148,11 +150,13 @@ services:
   ###############################################
   create_listing:
     build:
-      context: ./create_listing/
+      context: ./complex/
       dockerfile: create_listing.Dockerfile
-    image: <markma512>/place_order:esdproject
+    image: glendyslau/create_listing:esdproject
     restart: always
     depends_on:
+      - email
+      - sms
       - image
       - listing
       - activity_log
@@ -161,11 +165,13 @@ services:
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
-      order_URL: http://order:5001/order
-      shipping_record_URL: http://shipping_record:5002/shipping_record
+      listing_URL: http://listing:5304/listing
+      user_URL: http://user:5303/userphone
+      email_URL : http://email:5301/listedEmail
+      sms_URL : http://sms:5306/listedSMS
       PYTHONUNBUFFERED: 1
     ports:
-      - "5100:5100"
+      - "5309:5309"
 
   ###############################################
   # create-listing 
@@ -174,12 +180,13 @@ services:
   ###############################################
   place_rental:
     build:
-      context: ./create_listing/
-      dockerfile: create_listing.Dockerfile
-    image: <markma512>/place_order:esdproject
+      context: ./complex/
+      dockerfile: place_rental.Dockerfile
+    image: glendyslau/place_rental:esdproject
     restart: always
     depends_on:
-      - image
+      - rental
+      - email
       - listing
       - activity_log
       - error
@@ -187,11 +194,13 @@ services:
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
-      order_URL: http://order:5001/order
-      shipping_record_URL: http://shipping_record:5002/shipping_record
+      listing_URL: http://listing:5304/listing
+      email_URL : http://email:5301/requestedEmail
+      sms_URL : http://sms:5306/requestedSMS
+      rental_URL : http://rental:5305/rental
       PYTHONUNBUFFERED: 1
     ports:
-      - "5100:5100"
+      - "5307:5307"
 
   ###############################################
   # create-listing 
@@ -200,36 +209,31 @@ services:
   ###############################################
   accept_rental:
     build:
-      context: ./create_listing/
-      dockerfile: create_listing.Dockerfile
-    image: <markma512>/place_order:esdproject
+      context: ./complex/
+      dockerfile: accept_rental.Dockerfile
+    image: glendyslau/accept_rental:esdproject
     restart: always
     depends_on:
-      - image
       - listing
-      - activity_log
-      - error
-      - rabbitmq
+      - rental
     environment:
-      rabbit_host: rabbitmq
-      rabbit_port: 5672
-      order_URL: http://order:5001/order
-      shipping_record_URL: http://shipping_record:5002/shipping_record
+      # rabbit_host: rabbitmq
+      # rabbit_port: 5672
+      listing_URL: http://listing:5304/listing
+      rental_URL : http://rental:5305/rental
       PYTHONUNBUFFERED: 1
-    ports:
-      - "5100:5100"
 
   ##################################
   # Book: The Book microservice
   ##################################
-  book:
-    build:
-      context: ./
-      dockerfile: book.Dockerfile
-    image: <markma512>/book:esdproject
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/book
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5000:5000"
+  # book:
+  #   build:
+  #     context: ./
+  #     dockerfile: book.Dockerfile
+  #   image: <glendyslau>/book:esdproject
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/book
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5000:5000"

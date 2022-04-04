@@ -3,6 +3,7 @@ from flask_cors import CORS
 import json
 
 import os, sys
+from os import environ
 
 import requests
 from invokes import invoke_http
@@ -10,11 +11,16 @@ from invokes import invoke_http
 app = Flask(__name__)
 CORS(app)
 
-rental_URL = "http://localhost:5305/rental"
-listing_URL = "http://localhost:5304/listing"
-email_url = "http://localhost:5301/requestedEmail"
-sms_url = "http://localhost:5306/requestedSMS"
-user_url = "http://localhost:5303/user"    
+# rental_URL = "http://localhost:5305/rental"
+# listing_URL = "http://localhost:5304/listing"
+# email_url = "http://localhost:5301/requestedEmail"
+# sms_url = "http://localhost:5306/requestedSMS"
+
+
+rental_URL = environ.get('rental_URL') or "http://localhost:5305/rental"
+email_URL = environ.get('email_URL') or "http://localhost:5301/requestedEmail"
+listing_URL = environ.get("listing_URL") or "http://localhost:5304/listing"
+sms_URL = environ.get("sms_URL") or "http://localhost:5306/requestedSMS"
 
 
 

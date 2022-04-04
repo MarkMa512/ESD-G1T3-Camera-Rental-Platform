@@ -4,6 +4,7 @@ import json
 
 import os
 import sys
+from os import environ
 
 from invokes import invoke_http
 
@@ -17,10 +18,15 @@ import amqp_setup
 app = Flask(__name__)
 CORS(app)
 
-rental_URL = "http://localhost:5305/rental"
-listing_URL = "http://localhost:5304/listing"
-email_url = "http://localhost:5301/requestedEmail"
-sms_url = "http://localhost:5306/requestedSMS"
+# rental_URL = "http://localhost:5305/rental"
+# listing_URL = "http://localhost:5304/listing"
+# email_url = "http://localhost:5301/requestedEmail"
+# sms_url = "http://localhost:5306/requestedSMS"
+
+rental_URL = environ.get('rental_URL') or "http://localhost:5305/rental"
+email_URL = environ.get('email_URL') or "http://localhost:5301/requestedEmail"
+listing_URL = environ.get("listing_URL") or "http://localhost:5304/listing"
+sms_URL = environ.get("sms_URL") or "http://localhost:5306/requestedSMS"
 
 
 
