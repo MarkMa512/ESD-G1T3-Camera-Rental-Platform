@@ -1,10 +1,6 @@
 # ESD-G1T3-Camera-Rental-Platform
 The group project by IS213 Enterprise Solution G1 Team 3
 
-### Description
-
-
-
 ### Instructions 
 _The following assumes you are a Windows User_
 
