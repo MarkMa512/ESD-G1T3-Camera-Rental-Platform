@@ -1,4 +1,8 @@
 Flask==2.0.2
+Flask-Cors==3.0.10
+Flask-Session==0.4.0
 Flask-SQLAlchemy==2.5.1
 mysql-connector-python==8.0.27
-Flask-Cors==3.0.10
+pika==1.2.0
+requests==2.27.1
+requests-toolbelt==0.9.1
