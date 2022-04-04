@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, Response, jsonify
 from werkzeug.utils import secure_filename
 from flask import redirect
@@ -7,6 +8,8 @@ from models import Img
 from flask_cors import CORS
 
 app = Flask(__name__)
+redirect_url = os.environ.get(
+    'REDIRECT_URL') or "http://localhost:5303/mylisting"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///img.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db_init(app)
@@ -33,12 +36,14 @@ def upload():
     db.session.add(img)
     db.session.commit()
 
-    return jsonify(
-        {
-            "code": 200,
-            "message": "Image uploaded successfully",
-        }
-    ), 200
+    # return jsonify(
+    #     {
+    #         "code": 200,
+    #         "message": "Image uploaded successfully",
+    #     }
+    # ), 200
+
+    return redirect(redirect_url)
 
 
 @app.route('/<int:id>')
