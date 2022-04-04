@@ -1,17 +1,19 @@
-from flask import Flask, request, jsonify 
-from flask_sqlalchemy import SQLAlchemy 
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from flask_cors import CORS
 import requests
 
-app = Flask(__name__) 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/user_listing'
+app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/user_listing'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/user_listing'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
 
+
 class Rental(db.Model):
-    __tablename__ = 'rental' 
+    __tablename__ = 'rental'
     rental_id = db.Column(db.Integer, primary_key=True)
     listing_id = db.Column(db.Integer, nullable=False)
     owner_id = db.Column(db.String, nullable=False)
@@ -21,9 +23,8 @@ class Rental(db.Model):
     total_price = db.Column(db.Float(precision=2), nullable=False)
     rental_status = db.Column(db.String(), nullable=False)
 
-
- 
-    def __init__(self, listing_id,owner_id, renter_id, rent_start_date, rent_end_date, total_price, rental_status): # constructor in an object oriented approach
+    # constructor in an object oriented approach
+    def __init__(self, listing_id, owner_id, renter_id, rent_start_date, rent_end_date, total_price, rental_status):
         self.owner_id = owner_id
         self.listing_id = listing_id
         self.renter_id = renter_id
@@ -32,50 +33,50 @@ class Rental(db.Model):
         self.total_price = total_price
         self.rental_status = rental_status
 
- 
-    def json(self): #specify the properties of a Book
+    def json(self):  # specify the properties of a Book
         return {
-            "rental_id": self.rental_id, 
-            "listing_id" : self.listing_id,
-            "owner_id": self.owner_id, 
-            "renter_id": self.renter_id, 
+            "rental_id": self.rental_id,
+            "listing_id": self.listing_id,
+            "owner_id": self.owner_id,
+            "renter_id": self.renter_id,
             "rent_start_date": self.rent_start_date,
-            "rent_end_date": self.rent_end_date, 
-            "total_price": self.total_price, 
+            "rent_end_date": self.rent_end_date,
+            "total_price": self.total_price,
             "rental_status": self.rental_status
-            
-            }
+
+        }
+
 
 @app.route("/rental")
-def get_all(): 
-	rental_list = Rental.query.all()
-	if len(rental_list):
-			return jsonify(
-				{
-					"code": 200,
-					"data": {
-						"rentals": [rental.json() for rental in rental_list] 
-					}
-				}
-			)
-	return jsonify(
-			{ 
-				"code": 404,
-				"message": "There are no rental."
-			}
-		), 404
+def get_all():
+    rental_list = Rental.query.all()
+    if len(rental_list):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "rentals": [rental.json() for rental in rental_list]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no rental."
+        }
+    ), 404
 
- 
-@app.route("/rental/<string:rental_id>") 
+
+@app.route("/rental/<string:rental_id>")
 def find_by_rental_id(rental_id):
-    rental = Rental.query.filter_by(rental_id=rental_id).all() 
+    rental = Rental.query.filter_by(rental_id=rental_id).all()
     if len(rental):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-						"rentals": [r.json() for r in rental] 
-					}
+                    "rentals": [r.json() for r in rental]
+                }
             }
         )
     return jsonify(
@@ -84,7 +85,8 @@ def find_by_rental_id(rental_id):
             "message": "Rental not found."
         }
     ), 404
- 
+
+
 @app.route("/rental", methods=['POST'])
 def create_rental():
     owner_id = request.json.get('owner_id')
@@ -94,17 +96,18 @@ def create_rental():
     rent_start_date = request.json.get('rent_start_date')
     rent_end_date = request.json.get('rent_end_date')
 
-    rental = Rental(owner_id = owner_id, listing_id = listing_id, total_price = total_price, renter_id = renter_id, rent_end_date= rent_end_date , rent_start_date=rent_start_date, rental_status="Pending" )
+    rental = Rental(owner_id=owner_id, listing_id=listing_id, total_price=total_price, renter_id=renter_id,
+                    rent_end_date=rent_end_date, rent_start_date=rent_start_date, rental_status="Pending")
     try:
-        db.session.add(rental) 
+        db.session.add(rental)
         db.session.commit()
     except Exception as e:
-            return jsonify(
-                {
-                    "code": 500,
-                    "message": "An error occurred while creating the list. " + str(e)
-                }
-            ), 500
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred while creating the list. " + str(e)
+            }
+        ), 500
 
     return jsonify(
         {
@@ -113,18 +116,19 @@ def create_rental():
         }
     ), 201
 
+
 @app.route("/rental/<string:rental_id>", methods=['PUT'])
 def update_rental(rental_id):
     try:
-        rental= Rental.query.filter_by(rental_id=rental_id).first()
+        rental = Rental.query.filter_by(rental_id=rental_id).first()
         if not rental:
             return jsonify(
                 {
                     "code": 404,
-                        "data": {
-                            "rental_id": rental_id
-                        },
-                        "message": "Rental not found."
+                    "data": {
+                        "rental_id": rental_id
+                    },
+                    "message": "Rental not found."
                 }
             ), 404
         # update status
@@ -141,14 +145,15 @@ def update_rental(rental_id):
 
     except Exception as e:
         return jsonify(
-                {
-                    "code": 500,
-                    "data": {
-                        "rental_id": rental_id
-                    },
-                    "message": "An error occurred while updating the rental. " + str(e)
-                }
-            ), 500
+            {
+                "code": 500,
+                "data": {
+                    "rental_id": rental_id
+                },
+                "message": "An error occurred while updating the rental. " + str(e)
+            }
+        ), 500
+
 
 @app.route("/rental/<string:rental_id>", methods=['DELETE'])
 def delete_rental(rental_id):
@@ -168,7 +173,7 @@ def delete_rental(rental_id):
         {
             "code": 404,
             "data": {
-                 "rental_id": rental_id
+                "rental_id": rental_id
             },
             "message": "Rental not found."
         }
@@ -179,25 +184,22 @@ def delete_rental(rental_id):
 def get_distance(address):
     url = "https://developers.onemap.sg/privateapi/auth/post/getToken"
     details = {
-                "email" : "glendyslau@gmail.com",
-                "password" : "Zinedine77!!"
-            }
-    
-    response = requests.post(url, json = details)
+        "email": "glendyslau@gmail.com",
+        "password": "Zinedine77!!"
+    }
+
+    response = requests.post(url, json=details)
     data = response.json()
     apitoken = data["access_token"]
 
-    url = "https://developers.onemap.sg/commonapi/search?searchVal=" + address + "&returnGeom=N&getAddrDetails=Y";
+    url = "https://developers.onemap.sg/commonapi/search?searchVal=" + \
+        address + "&returnGeom=N&getAddrDetails=Y"
     response = requests.get(url)
     data = response.json()
     return data["results"][0]["POSTAL"]
 
-    
 
-
-    
-
-
-
+# if __name__ == '__main__':
+#     app.run(host="0.0.0.0" , port=5305, debug=True)
 if __name__ == '__main__':
-    app.run(host="0.0.0.0" , port=5305, debug=True) 
+    app.run(port=5305, debug=True)

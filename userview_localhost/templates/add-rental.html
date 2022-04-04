@@ -1,42 +1,40 @@
 <script>
-    window.sessionStorage;  // <!-- this is to activate session storage-->
+  window.sessionStorage;  // <!-- this is to activate session storage-->
 </script>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width">
-    
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width">
 
-    <title>Add a rental</title>
-    <!--[if lt IE 9]>
+
+  <title>Add a rental</title>
+  <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <!-- Bootstrap libraries -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Bootstrap libraries -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://unpkg.com/flowbite@latest/dist/flowbite.min.css" />
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 
-    <!-- Bootstrap CSS -->
-    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-        rel='stylesheet'
-        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-        crossorigin='anonymous'>
+  <!-- Bootstrap CSS -->
+  <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet'
+    integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous'>
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <style>
-        .form-group{
-            margin-bottom:10px;
-        }
-    </style>
+  <style>
+    .form-group {
+      margin-bottom: 10px;
+    }
+  </style>
 
 </head>
 
-<body onbeforeunload = "return Erase()" onload="return Check()">
+<body onbeforeunload="return Erase()" onload="return Check()">
   <nav class="border-gray-200 px-2 sm:px-4 py-2.5 rounded bg-gray-400 mb-10">
     <div class="container flex flex-wrap justify-between items-center mx-auto">
       <div class="flex items-center">
@@ -82,186 +80,188 @@
     </div>
   </nav>
 
-    <h1 class="display-4 m-4 container mx-auto">Add a rental</h1>
-    
-    <form id='addRentalForm' class="p-4 container">
-        <div class="form-group" >
-            <input type="hidden" class="form-control " id="owner_id" placeholder="">
-        </div>
+  <h1 class="display-4 m-4 container mx-auto">Add a rental</h1>
 
-        <!-- this part should not be a form input but passed into using the complex microservce -->
-        <div class="form-group">
-            <label for="rent_start_date">Rental Start Date</label>
-            <input type="date" class="form-control" id="rent_start_date" placeholder="Enter the start date of rental">
-        </div>
-        <div class="form-group">
-            <label for="rent_end_date">Rental End Date </label>
-            <input type="date" class="form-control" id="rent_end_date" placeholder="Enter the end date of rental">
-        </div>
-        <div class="form-group">
-            <label for="price">Total Price of Rental</label>
-            <input type="text" class="form-control" id="price" placeholder="$">
-        </div>
-    
-       
-        <button type="submit" class="btn btn-primary mt-2">Submit</button>
-    </form>
+  <form id='addRentalForm' class="p-4 container">
+    <div class="form-group">
+      <input type="hidden" class="form-control " id="owner_id" placeholder="">
+    </div>
 
-    <div id="myModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Rental Confirmation</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <p>Your rental request has been sent!
-              </p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" onclick="location.href = 'templates/index.html';" >Confirm</button>
-            </div>
-          </div>
-        </div>
+    <!-- this part should not be a form input but passed into using the complex microservce -->
+    <div class="form-group">
+      <label for="rent_start_date">Rental Start Date</label>
+      <input type="date" class="form-control" id="rent_start_date" placeholder="Enter the start date of rental">
+    </div>
+    <div class="form-group">
+      <label for="rent_end_date">Rental End Date </label>
+      <input type="date" class="form-control" id="rent_end_date" placeholder="Enter the end date of rental">
+    </div>
+    <div class="form-group">
+      <label for="price">Total Price of Rental</label>
+      <input type="text" class="form-control" id="price" placeholder="$">
     </div>
 
 
-    <label id="error" class="text-danger"></label>
+    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+  </form>
 
-    <script>
+  <div id="myModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Rental Confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Your rental request has been sent!
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="location.href = '/userindex';">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Helper function to display error message
-        function showError(message) {
-            // Display an error under the the predefined label with error as the id
-            $('#error').text(message);
-        }
+
+  <label id="error" class="text-danger"></label>
+
+  <script>
+
+    // Helper function to display error message
+    function showError(message) {
+      // Display an error under the the predefined label with error as the id
+      $('#error').text(message);
+    }
 
 
-        $("#addRentalForm").submit(async (event) => {
-            //Prevents screen from refreshing when submitting
-            event.preventDefault();
+    $("#addRentalForm").submit(async (event) => {
+      //Prevents screen from refreshing when submitting
+      event.preventDefault();
 
-            //Get form data
-        
-            var listing_id = sessionStorage.getItem("listingidthatyouwanttorent")
-            var renter_id = sessionStorage.getItem("user_id")
-            var price = parseFloat($('#price').val());
-            var rent_start_date = $('#rent_start_date').val();
-            var rent_end_date = $("#rent_end_date").val()
-            
-            var serviceURL = "http://localhost:5304/listing/"+listing_id;
-            
-            try {
-                const response = await
-                    fetch(
-                        serviceURL, {method:"GET"}
-                    );
+      //Get form data
 
-                    const data = await response.json()
-                    if(response.ok){
-                        listingdetails = data.data;
-                        owner_id = listingdetails.owner_id;
+      var listing_id = sessionStorage.getItem("listingidthatyouwanttorent")
+      var renter_id = sessionStorage.getItem("user_id")
+      var price = parseFloat($('#price').val());
+      var rent_start_date = $('#rent_start_date').val();
+      var rent_end_date = $("#rent_end_date").val()
 
-                        var serviceURL = "http://localhost:5307/place_rental"
-                        try{
-                            const response = await fetch(serviceURL, {
-                               method: "POST",
-                               headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({listing_id:listing_id,
-                                  renter_id:renter_id,
-                                  owner_id:owner_id, 
-                                  price:price, 
-                                  rent_start_date:rent_start_date, 
-                                  rent_end_date:rent_end_date, 
-                                  rental_status:"Pending"})
-                            });
+      var serviceURL = "http://localhost:5304/listing/" + listing_id;
 
-                        if(response.ok){
-                            console.log("YES")
-                            $('#myModal').modal('show');
+      try {
+        const response = await
+          fetch(
+            serviceURL, { method: "GET" }
+          );
 
-                            // listing_id = sessionStorage.getItem("listingidthatyouwanttorent")
-                            // renter_id = sessionStorage.getItem("user_id")
+        const data = await response.json()
+        if (response.ok) {
+          listingdetails = data.data;
+          owner_id = listingdetails.owner_id;
 
-                            // console.log(listing_id)
-                            // console.log(renter_id)
-                            // var serviceURL = "http://127.0.0.1:5301/requestedEmail";
-                            // try{
-                            // const response = await fetch(serviceURL, {
-                            //    method: "POST",
-                            //    headers: { "Content-Type": "application/json" },
-                            //     body: JSON.stringify({listing_id:listing_id, email:renter_id})
-                            // });
+          var serviceURL = "http://localhost:5307/place_rental"
+          try {
+            const response = await fetch(serviceURL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                listing_id: listing_id,
+                renter_id: renter_id,
+                owner_id: owner_id,
+                price: price,
+                rent_start_date: rent_start_date,
+                rent_end_date: rent_end_date,
+                rental_status: "Pending"
+              })
+            });
 
-                            // }catch(error){
-                            //     showError("There is a problem", +error)
-                            // }}
+            if (response.ok) {
+              console.log("YES")
+              $('#myModal').modal('show');
 
-                        }else{
-                            console.log(data)
-                        }
+              // listing_id = sessionStorage.getItem("listingidthatyouwanttorent")
+              // renter_id = sessionStorage.getItem("user_id")
 
-                        }
-                        catch(error){
-                            showError("There is a problem", +error)
-                        }
-                    }
-            }catch (error){
-                showError
-                ("There is a problem adding this listing, please try again later" + error)
+              // console.log(listing_id)
+              // console.log(renter_id)
+              // var serviceURL = "http://127.0.0.1:5301/requestedEmail";
+              // try{
+              // const response = await fetch(serviceURL, {
+              //    method: "POST",
+              //    headers: { "Content-Type": "application/json" },
+              //     body: JSON.stringify({listing_id:listing_id, email:renter_id})
+              // });
+
+              // }catch(error){
+              //     showError("There is a problem", +error)
+              // }}
+
+            } else {
+              console.log(data)
             }
-        });
 
-        //     try {
-        //         const response =
-        //             await fetch(
-        //                 serviceURL, {
-        //                 method: 'POST',
-        //                 headers: { "Content-Type": "application/json" },
-        //                 body: JSON.stringify({renter_id:renter, rent_start_date:rent_start_date, rent_end_date:rent_end_date,listing_id:listing_id, owner_id:owner, price:price})
-        //             });
-        //         const data = await response.json();
-
-        //         if (response.ok) {
-        //             // relocate to home page
-                    
-        //             $('#myModal').modal('show'); 
-        //             return false;
-        //         } else {
-        //             console.log(data);
-        //             showError(data.message);
-        //         }
-        //     } catch (error) {
-        //         // Errors when calling the service; such as network error, 
-        //         // service offline, etc
-        //         showError
-        //             ("There is a problem adding this listing, please try again later. " + error);
-
-        //     } // error
-        // });
-
-    function Erase(){
-        sessionStorage.removeItem("listingidthatyouwanttorent")
-    }
-
-    function Check(){
-        if(sessionStorage.getItem("listingidthatyouwanttorent") == null){
-            window.location.replace("templates/index.html");
+          }
+          catch (error) {
+            showError("There is a problem", +error)
+          }
         }
+      } catch (error) {
+        showError
+          ("There is a problem adding this listing, please try again later" + error)
+      }
+    });
+
+    //     try {
+    //         const response =
+    //             await fetch(
+    //                 serviceURL, {
+    //                 method: 'POST',
+    //                 headers: { "Content-Type": "application/json" },
+    //                 body: JSON.stringify({renter_id:renter, rent_start_date:rent_start_date, rent_end_date:rent_end_date,listing_id:listing_id, owner_id:owner, price:price})
+    //             });
+    //         const data = await response.json();
+
+    //         if (response.ok) {
+    //             // relocate to home page
+
+    //             $('#myModal').modal('show'); 
+    //             return false;
+    //         } else {
+    //             console.log(data);
+    //             showError(data.message);
+    //         }
+    //     } catch (error) {
+    //         // Errors when calling the service; such as network error, 
+    //         // service offline, etc
+    //         showError
+    //             ("There is a problem adding this listing, please try again later. " + error);
+
+    //     } // error
+    // });
+
+    function Erase() {
+      sessionStorage.removeItem("listingidthatyouwanttorent")
+    }
+
+    function Check() {
+      if (sessionStorage.getItem("listingidthatyouwanttorent") == null) {
+        window.location.replace("/userindex");
+      }
     }
 
 
-    </script>
+  </script>
 
-    <!-- Bootstrap Javascript -->
-    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
-        integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
-        crossorigin='anonymous'></script>
+  <!-- Bootstrap Javascript -->
+  <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
+    integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
+    crossorigin='anonymous'></script>
 
-    
-    <script src="https://unpkg.com/flowbite@latest/dist/flowbite.js"></script>
+
+  <script src="https://unpkg.com/flowbite@latest/dist/flowbite.js"></script>
 </body>
 
 </html>

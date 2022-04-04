@@ -20,22 +20,18 @@ CORS(app)
 """
 For localhost testing:
 """
-# email_url = "http://localhost:5301/listedEmail"
-# sms_url = "http://localhost:5306/listedSMS"
-# listing_url = "http://localhost:5304/listing"
-# user_phone_url = "http://localhost:5303/userphone/"
+email_url = "http://localhost:5301/listedEmail"
+sms_url = "http://localhost:5306/listedSMS"
+listing_url = "http://localhost:5304/listing"
+user_phone_url = "http://localhost:5303/userphone/"
 
 """
 for docker deployment
 """
-# email_url = os.environ.get('EMAIL_URL')
-# sms_url = os.environ.get('SMS_URL')
-# list_url = os.environ.get('LIST_URL')
-
-email_URL = environ.get('email_URL') or "http://localhost:5301/listedEmail"
-listing_URL = environ.get("listing_URL") or "http://localhost:5304/listing"
-user_URL = environ.get("user_URL") or "http://localhost:5303/userphone"
-sms_URL = environ.get("sms_URL") or "http://localhost:5306/listedSMS"
+# email_URL = environ.get('email_URL') or "http://localhost:5301/listedEmail"
+# listing_URL = environ.get("listing_URL") or "http://localhost:5304/listing"
+# user_URL = environ.get("user_URL") or "http://localhost:5303/userphone"
+# sms_URL = environ.get("sms_URL") or "http://localhost:5306/listedSMS"
 
 
 @app.route("/create_listing", methods=['POST'])
@@ -210,10 +206,10 @@ def process_create_listing(listing):
 
 
 # Execute this program if it is run as a main script (not by 'import')
-if __name__ == "__main__":
-    print("This is flask " + os.path.basename(__file__) +
-          " for placing an order...")
-    app.run(host="0.0.0.0" ,port=5309, debug=True)
+# if __name__ == "__main__":
+#     print("This is flask " + os.path.basename(__file__) +
+#           " for placing an order...")
+#     app.run(host="0.0.0.0" ,port=5309, debug=True)
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program,
@@ -222,3 +218,8 @@ if __name__ == "__main__":
     #   -- i.e., it gives permissions to hosts with any IP to access the flask program,
     #   -- as long as the hosts can already reach the machine running the flask program along the network;
     #   -- it doesn't mean to use http://0.0.0.0 to access the flask program.
+
+if __name__ == "__main__":
+    print("This is flask " + os.path.basename(__file__) +
+          " for placing an order...")
+    app.run(port=5309, debug=True)

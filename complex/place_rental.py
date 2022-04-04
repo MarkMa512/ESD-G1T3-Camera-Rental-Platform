@@ -18,15 +18,15 @@ import amqp_setup
 app = Flask(__name__)
 CORS(app)
 
-# rental_URL = "http://localhost:5305/rental"
-# listing_URL = "http://localhost:5304/listing"
-# email_url = "http://localhost:5301/requestedEmail"
-# sms_url = "http://localhost:5306/requestedSMS"
+rental_URL = "http://localhost:5305/rental"
+listing_URL = "http://localhost:5304/listing"
+email_url = "http://localhost:5301/requestedEmail"
+sms_url = "http://localhost:5306/requestedSMS"
 
-rental_URL = environ.get('rental_URL') or "http://localhost:5305/rental"
-email_URL = environ.get('email_URL') or "http://localhost:5301/requestedEmail"
-listing_URL = environ.get("listing_URL") or "http://localhost:5304/listing"
-sms_URL = environ.get("sms_URL") or "http://localhost:5306/requestedSMS"
+# rental_URL = environ.get('rental_URL') or "http://localhost:5305/rental"
+# email_URL = environ.get('email_URL') or "http://localhost:5301/requestedEmail"
+# listing_URL = environ.get("listing_URL") or "http://localhost:5304/listing"
+# sms_URL = environ.get("sms_URL") or "http://localhost:5306/requestedSMS"
 
 
 
@@ -187,10 +187,10 @@ def processPlaceRental(rental):
 
 
 # Execute this program if it is run as a main script (not by 'import')
-if __name__ == "__main__":
-    print("This is flask " + os.path.basename(__file__) +
-          " for placing an order...")
-    app.run(host="0.0.0.0" ,port=5307, debug=True)
+# if __name__ == "__main__":
+#     print("This is flask " + os.path.basename(__file__) +
+#           " for placing an rental request...")
+#     app.run(host="0.0.0.0" ,port=5307, debug=True)
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program,
@@ -199,3 +199,8 @@ if __name__ == "__main__":
     #   -- i.e., it gives permissions to hosts with any IP to access the flask program,
     #   -- as long as the hosts can already reach the machine running the flask program along the network;
     #   -- it doesn't mean to use http://0.0.0.0 to access the flask program.
+
+if __name__ == "__main__":
+    print("This is flask " + os.path.basename(__file__) +
+          " for placing a rental request...")
+    app.run(port=5307, debug=True)
