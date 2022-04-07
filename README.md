@@ -27,12 +27,3 @@ _The following assumes you are a Windows User_
 6. In a CMD window, run the following command:
     * `docker-compose up`
     * Ensure your directory points to the folder containing `docker-compose.yml` 
-
-
-
-
-_Special Note_
-* The trial account of Twillio only allows one phone number to be linked to receive the SMS
-* Please Log In using **only** the following:
-* email: ningzhi.ma.2018@scis.smu.edu.sg
-* pw: ningzhi
